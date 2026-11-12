@@ -164,7 +164,7 @@ export default function ContactSection() {
                     className="mt-1 w-full px-4 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-white text-xs focus:border-cyan-400 focus:outline-none"
                   >
                     <option value="Custom Web Development / Clone Commission">Custom Web Development / Website Clone Commission</option>
-                    <option value="SMC Forex Academy & Mentorship">SMC Institutional Forex Academy & Video Mentorship</option>
+                    <option value="Forex Trading Academy & Mentorship">Nexa Forex Trading Academy & Video Mentorship</option>
                     <option value="Full-Stack Web Dev Academy">Full-Stack Web Development Academy Cohort</option>
                     <option value="K-12 1-on-1 Academic Tutoring">K-12 1-on-1 Academic STEM Tutoring (Math, Calculus, Physics)</option>
                     <option value="General Collaboration">General Innovation / Educational Partnership</option>

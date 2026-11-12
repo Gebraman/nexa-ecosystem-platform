@@ -81,7 +81,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
         {/* 3 Quick-Launch Interactive Service Pills */}
         <div className="mt-14 max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
           <div
-            onClick={() => onOpenService('smc-forex')}
+            onClick={() => onOpenService('forex-trading')}
             className="cursor-pointer p-4 rounded-2xl bg-dark-900/80 border border-slate-800/80 hover:border-amber-500/50 backdrop-blur-md transition-all group flex items-center justify-between shadow-lg hover:shadow-amber-950/20"
           >
             <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
               </div>
               <div>
                 <p className="text-xs font-mono text-amber-400 font-bold uppercase">Academy 01</p>
-                <h4 className="text-sm font-bold text-white group-hover:text-amber-300">SMC Forex Mastery</h4>
+                <h4 className="text-sm font-bold text-white group-hover:text-amber-300">Forex Trading Academy</h4>
               </div>
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
