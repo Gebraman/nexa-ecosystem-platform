@@ -29,7 +29,10 @@ import {
   X,
   Maximize2,
   Layers,
-  MonitorPlay
+  MonitorPlay,
+  AlertTriangle,
+  Check,
+  Link as LinkIcon
 } from 'lucide-react';
 import { ecosystemData } from '../data/ecosystemData';
 
@@ -37,6 +40,41 @@ export default function ServicesSection({ selectedServiceId, onSelectService }) 
   // Forex Trading sub-tab
   const [forexSubTab, setForexSubTab] = useState('orientation'); // 'orientation', 'strategy', 'backtesting', 'calculator'
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  // SMC Strategy Sub-Module state & custom YouTube video linking
+  const [smcActiveModuleId, setSmcActiveModuleId] = useState('sideways-markets');
+  const [smcVideoUrls, setSmcVideoUrls] = useState({
+    'sideways-markets': 'https://youtu.be/Bl8oljJwgZ4',
+    'premium-discount-zones': 'https://youtu.be/Bl8oljJwgZ4',
+    'applying-smc-strategy': 'https://youtu.be/Bl8oljJwgZ4',
+  });
+  const [customVideoInput, setCustomVideoInput] = useState('https://youtu.be/Bl8oljJwgZ4');
+  const [checkedSmcSteps, setCheckedSmcSteps] = useState({ '01': true, '02': true, '03': true });
+
+  const getYouTubeEmbedUrl = (rawUrl) => {
+    if (!rawUrl) return '';
+    if (rawUrl.includes('/embed/')) return rawUrl;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = rawUrl.match(regExp);
+    return (match && match[2].length === 11)
+      ? `https://www.youtube.com/embed/${match[2]}`
+      : rawUrl;
+  };
+
+  const currentSmcModule = (ecosystemData.forexAcademy.smcModules && ecosystemData.forexAcademy.smcModules.find(m => m.id === smcActiveModuleId)) 
+    || (ecosystemData.forexAcademy.smcModules && ecosystemData.forexAcademy.smcModules[0])
+    || {};
+  const activeSmcVideoUrl = smcVideoUrls[currentSmcModule.id] || currentSmcModule.defaultVideoUrl || 'https://youtu.be/Bl8oljJwgZ4';
+
+  const handleToggleSmcStep = (step) => {
+    setCheckedSmcSteps(prev => ({ ...prev, [step]: !prev[step] }));
+  };
+
+  const handleUpdateSmcVideo = (moduleId, newUrl) => {
+    if (newUrl && newUrl.trim()) {
+      setSmcVideoUrls(prev => ({ ...prev, [moduleId]: newUrl.trim() }));
+    }
+  };
 
   // Full-Stack Academy state
   const [devVideoCategory, setDevVideoCategory] = useState('master'); // 'master', 'html-subs', 'css-basics', 'css-props', 'roadmap'
@@ -75,40 +113,139 @@ export default function ServicesSection({ selectedServiceId, onSelectService }) 
   const handleDownloadCheatsheet = () => {
     const cheatsheetText = `
 ================================================================================
-               NEXA FOREX TRADING ACADEMY - INSTITUTIONAL CHEATSHEET
-                   Foundations, Price Action & Risk Control Rules
+           NEXA FOREX TRADING ACADEMY - INSTITUTIONAL SMC PLAYBOOK
+       Sideways Markets, Premium/Discount Zones & 10-Step Execution
 ================================================================================
 
 Orientation Video: https://youtu.be/Bl8oljJwgZ4
 
-1. FOUNDATIONAL MARKET PILLARS
 --------------------------------------------------------------------------------
-* Currency Pairs: Majors (EUR/USD, GBP/USD, USD/JPY), Crosses, Commodities (Gold/XAU).
-* Pips & Lot Sizing: 1 Standard Lot = 100,000 units ($10/pip). Never trade without calculating!
-* Risk Rule: Maximum 1% to 1.5% account equity per single setup.
-
-2. PRICE ACTION & MARKET STRUCTURE
+LESSON 1: TRADING STRATEGIES IN A SIDEWAYS MARKET (MEMORY NOTES)
 --------------------------------------------------------------------------------
-* ORDER BLOCKS (OB):
-  - Bullish OB: The last down-close candle prior to an impulsive upward expansion 
-    that breaks market structure (BOS) leaving an Imbalance (FVG).
-  - Bearish OB: The last up-close candle prior to an aggressive downward displacement.
+1. Why this matters:
+   - Choppy, sideways markets ruin setups without proper range reading.
+   - Most damage comes from fake breakouts and liquidity traps.
+   - Ranges are opportunities: "Range = liquidity storage."
 
-* FAIR VALUE GAP (FVG / IMBALANCE):
-  - Occurs in a 3-candle sequence where Candle 1 wick and Candle 3 wick do not overlap.
-  - Entry Rule: Wait for price to retrace into the 50% equilibrium of the gap.
+2. What is a Range?
+   - Range High = Buy-Side Liquidity (BSL) resting above it.
+   - Range Low = Sell-Side Liquidity (SSL) resting below it.
+   - Equilibrium (0.5) = The midpoint. Above is Premium; below is Discount.
 
-* LIQUIDITY SWEEPS (BSL & SSL):
-  - Buy-Side Liquidity (BSL): Above equal highs, previous day highs (PDH).
-  - Sell-Side Liquidity (SSL): Below equal lows, previous day lows (PDL).
-  - Golden Rule: Never buy the breakout of a high; wait for the institutional sweep, 
-    rejection candle, and lower timeframe confirmation.
+3. Accumulation vs Distribution:
+   - Accumulation: Smart Money buys quietly after downtrend -> Retail sells -> Outcome: MARKUP.
+   - Distribution: Smart Money sells quietly after uptrend -> Retail buys -> Outcome: MARKDOWN.
+   - Core Idea: Institutions build positions using retail stops as liquidity.
 
-3. EXECUTION DISCIPLINE
+4. Deviations (The Setup):
+   - Deviation: Price briefly breaks outside the range, then quickly returns inside.
+   - Break below SSL and return inside = Bullish (SPRING), sweep of SSL.
+   - Break above BSL and return inside = Bearish (UPTHRUST), sweep of BSL.
+   - Deviation sets the stage because retail stops have just been taken.
+
+5. Spotting Fakeouts & Liquidity Traps:
+   - RULE: "Wick = Warning, Close = Confirmation."
+   - Fakeout Signs: Only a wick breaks; closes back inside; no strong momentum impulse.
+   - Breakout Signs: Candle closes beyond range; strong impulse; retest holds.
+   - Liquidity Traps: Equal Highs/Lows attract breakout traders who get trapped on reversal.
+
+6. Range Trading Strategies:
+   - Strike Protocol:
+     * Mark Range High, Low, and Equilibrium (0.5).
+     * Wait for sweep/deviation at one edge.
+     * Confirmation: Returns inside range, then small BoS/CHoCH opposite.
+     * Entry: At OB or FVG in Discount (buys) or Premium (sells).
+     * Stop: Beyond the sweep wick extreme.
+     * Targets: Equilibrium first, then opposite edge.
+   - When to Stay Out:
+     * Middle of range (near equilibrium - no edge).
+     * Tight choppy range with small candles.
+     * No sweep has happened yet.
+     * Trading against HTF trend without confirmation.
+     * Right before high-impact news.
+
+7. Lesson 1 Memory Tricks:
+   - "Range = liquidity storage."
+   - "Sweep the edge, return inside, trade the other side."
+   - "Buy discount, sell premium, skip the middle."
+   - "Deviation is the setup, confirmation is the trigger."
+   - "Accumulation then markup, distribution then markdown."
+
 --------------------------------------------------------------------------------
-* Minimum Target R:R: 1 : 3.5. Never accept trades with less than 1:3 reward.
-* Stop Loss: Placed strictly beyond the invalidating swing point.
+LESSON 2: MASTER PREMIUM & DISCOUNT ZONES (MEMORY NOTES)
+--------------------------------------------------------------------------------
+1. Why this matters:
+   - Retail chases; institutions plan.
+   - Premium/Discount gives a mathematical framework to find high-probability areas.
 
+2. Zones Breakdown:
+   - Premium (> 0.5): Expensive -> Look exclusively to SELL.
+   - Equilibrium (0.5): Fair price -> No edge, skip the middle.
+   - Discount (< 0.5): Cheap -> Look exclusively to BUY.
+   - Precise entries: Deep in discount (OTE 0.618 to 0.79) for buys; deep in premium for sells.
+   - Rule: Buy low, sell high relative to range. Never buy in premium or sell in discount.
+
+3. Points of Interest (POIs):
+   - POIs: Order Blocks (OBs), Fair Value Gaps (FVGs), Liquidity Pools.
+   - Best POIs: In correct zone, strong impulse with BoS, fresh/unmitigated, formed after sweep.
+
+4. First Trouble Areas (FTAs):
+   - The first opposing zone (OB, FVG, liquidity pool) between entry and target.
+   - If FTA is very close to entry -> weak trade (skip or TP at FTA).
+   - If FTA is far away or cleared -> superior Risk-to-Reward.
+
+5. Syncing Multiple Timeframes:
+   - RULE: "HTF gives the direction. LTF gives the entry."
+   - HTF (Daily/4H): Bias, range, premium/discount, major POIs, target liquidity.
+   - LTF (15M/5M/1M): Wait for HTF POI tap, sweep, BoS/CHoCH, precision entry.
+   - Swing Trading: Weekly/Daily HTF, 4H/1H LTF (Days to weeks).
+   - Intraday: 4H/1H HTF, 15M/5M LTF (Minutes to hours).
+
+6. Lesson 2 Memory Tricks:
+   - "Buy in discount, sell in premium, skip equilibrium."
+   - "HTF = direction, LTF = entry."
+   - "POI + right zone + FTA clear = strong trade."
+   - "FTA is the first obstacle. Check it before you enter."
+   - "Plan the trade, then trade the plan."
+
+--------------------------------------------------------------------------------
+LESSON 3: APPLYING SMART MONEY CONCEPT STRATEGY (MEMORY NOTES)
+--------------------------------------------------------------------------------
+1. 10-Step Top-Down Checklist:
+   [01] HTF Directional Bias (Daily/4H)
+   [02] Mark dealing range and Equilibrium (0.5)
+   [03] Map Liquidity (BSL, SSL, internal vs external)
+   [04] Identify fresh POIs (OB/FVG in correct zone)
+   [05] Wait patiently for price to tap POI (no chasing)
+   [06] LTF Confirmation: Liquidity sweep + BoS/CHoCH
+   [07] Precision Entry: At LTF OB/FVG in OTE (0.618 - 0.79)
+   [08] Check FTA: Ensure path to target has room to run
+   [09] Stop Loss: Beyond swing or POI invalidation extreme
+   [10] Target: Opposing liquidity pool (Minimum 1:3 R:R)
+
+2. Confluence Stacking:
+   - HTF bias aligned.
+   - Price in right zone (Discount for buy, Premium for sell).
+   - Liquidity sweep just happened.
+   - BoS follows with strong impulse.
+   - Fresh POI in OTE zone.
+   - FTA far away.
+   - RULE: "The more confluences, the higher the probability."
+
+3. Execution Discipline:
+   - Simulate first, risk later.
+   - Journal every setup with screenshots.
+   - Process > Outcome.
+   - Never risk more than 1% per trade.
+
+4. Lesson 3 Memory Tricks:
+   - "Top-down: bias, range, liquidity, POI, confirm, enter."
+   - "Sweep, BoS, pullback to POI, enter."
+   - "More confluence, more probability."
+   - "Simulate first, risk later."
+   - "Trust the process, not one trade."
+
+================================================================================
 Generated by Nexa Forex Trading Academy // Addis Ababa & Global
 ================================================================================
     `;
@@ -117,7 +254,7 @@ Generated by Nexa Forex Trading Academy // Addis Ababa & Global
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Nexa_Forex_Trading_Institutional_Rules.txt');
+    link.setAttribute('download', 'Nexa_Institutional_SMC_Playbook.txt');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -494,22 +631,638 @@ Generated by Nexa Forex Trading Academy // Addis Ababa & Global
                     </div>
                   )}
 
-                  {/* TAB 2: MARKET STRUCTURE & SMC STRATEGY */}
+                  {/* TAB 2: MARKET STRUCTURE & SMC STRATEGY STUDIO */}
                   {forexSubTab === 'strategy' && (
-                    <div className="space-y-6 animate-fade-in">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {ecosystemData.forexAcademy.coreTenets.map((tenet, idx) => (
-                          <div key={idx} className="p-6 rounded-2xl bg-dark-900 border border-slate-800 flex flex-col justify-between">
+                    <div className="space-y-10 animate-fade-in">
+                      {/* Top Header & Strategy Intro */}
+                      <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-950/80 border border-amber-800 text-amber-400 text-xs font-mono uppercase font-bold mb-2">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            <span>Institutional Smart Money Framework</span>
+                          </div>
+                          <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+                            Smart Money Concept (SMC) Strategy Studio
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-400 mt-2 max-w-3xl leading-relaxed">
+                            Master ranges, liquidity engineering, Premium vs. Discount pricing, First Trouble Areas (FTAs), and the complete 10-step top-down institutional execution checklist.
+                          </p>
+                        </div>
+
+                        {/* Cheatsheet quick download */}
+                        <button
+                          onClick={handleDownloadCheatsheet}
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all self-start md:self-auto shrink-0"
+                        >
+                          <Download className="w-4 h-4 text-amber-400" />
+                          <span>Download Complete SMC Playbook</span>
+                        </button>
+                      </div>
+
+                      {/* 3 Master Modules Selector Tabs */}
+                      <div className="flex flex-wrap items-center gap-3 border-b border-slate-800 pb-4">
+                        {ecosystemData.forexAcademy.smcModules && ecosystemData.forexAcademy.smcModules.map((mod) => (
+                          <button
+                            key={mod.id}
+                            onClick={() => {
+                              setSmcActiveModuleId(mod.id);
+                              setCustomVideoInput(smcVideoUrls[mod.id] || mod.defaultVideoUrl);
+                            }}
+                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                              smcActiveModuleId === mod.id
+                                ? 'bg-amber-500 text-dark-950 shadow-lg shadow-amber-500/20'
+                                : 'bg-dark-900 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700'
+                            }`}
+                          >
+                            <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-black/20">{mod.badge}</span>
+                            <span>{mod.title}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Active Module Video Theater Player & Public YouTube Linker */}
+                      {currentSmcModule && currentSmcModule.title && (
+                        <div className="rounded-3xl bg-dark-900 border border-slate-800 p-6 sm:p-8 space-y-6">
+                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
-                              <span className="text-xs font-mono font-bold text-amber-400">0{idx + 1}</span>
-                              <h4 className="text-base font-bold text-white mt-1">{tenet.concept}</h4>
-                              <p className="text-xs text-slate-400 mt-2 leading-relaxed">{tenet.description}</p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-mono text-amber-400 uppercase font-bold flex items-center gap-1.5">
+                                  <Play className="w-3.5 h-3.5" /> {currentSmcModule.badge}
+                                </span>
+                                <span className="text-xs text-slate-500 font-mono">• {currentSmcModule.duration}</span>
+                              </div>
+                              <h4 className="text-xl sm:text-2xl font-bold text-white mt-1">
+                                {currentSmcModule.title}
+                              </h4>
+                              <p className="text-xs text-slate-400 mt-1">
+                                {currentSmcModule.subtitle}
+                              </p>
                             </div>
-                            <div className="mt-4 pt-3 border-t border-slate-800 text-[11px] font-mono text-amber-400/90">
-                              Rule: {tenet.rule}
+
+                            <a
+                              href={activeSmcVideoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition-all self-start md:self-auto shrink-0"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Open on YouTube (New Tab)</span>
+                            </a>
+                          </div>
+
+                          {/* 16:9 Video Frame */}
+                          <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-800 bg-black shadow-2xl">
+                            <iframe
+                              src={getYouTubeEmbedUrl(activeSmcVideoUrl)}
+                              title={currentSmcModule.title}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              className="w-full h-full"
+                            />
+                          </div>
+
+                          {/* Public YouTube Video URL Connector / Previews Bar */}
+                          <div className="p-4 rounded-2xl bg-dark-950 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 text-xs text-slate-300">
+                              <LinkIcon className="w-4 h-4 text-amber-400 shrink-0" />
+                              <span className="font-semibold">Connect Public YouTube Video:</span>
+                              <span className="text-slate-500 text-[11px] hidden sm:inline">(Paste any public YouTube video link to stream in this lesson)</span>
+                            </div>
+
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                              <input
+                                type="text"
+                                placeholder="https://youtu.be/... or https://youtube.com/watch?v=..."
+                                value={customVideoInput}
+                                onChange={(e) => setCustomVideoInput(e.target.value)}
+                                className="w-full sm:w-80 px-3 py-1.5 rounded-lg bg-dark-900 border border-slate-700 text-slate-200 font-mono text-xs focus:border-amber-400 focus:outline-none"
+                              />
+                              <button
+                                onClick={() => handleUpdateSmcVideo(currentSmcModule.id, customVideoInput)}
+                                className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs shrink-0 transition-all"
+                              >
+                                Link Video
+                              </button>
                             </div>
                           </div>
-                        ))}
+                        </div>
+                      )}
+
+                      {/* LESSON DETAILS ACCORDING TO MODULE */}
+                      {/* ========================================================================= */}
+                      {/* MODULE 1: TRADING STRATEGIES IN A SIDEWAYS MARKET                         */}
+                      {/* ========================================================================= */}
+                      {smcActiveModuleId === 'sideways-markets' && currentSmcModule.whatIsARange && (
+                        <div className="space-y-8 animate-fade-in">
+                          {/* 1. Why this matters & What is a range */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">01. Why This Matters</span>
+                              <h4 className="text-lg font-bold text-white">The Truth About Choppy & Sideways Markets</h4>
+                              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                {currentSmcModule.whyItMatters}
+                              </p>
+                              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/40 text-amber-300 text-xs font-mono">
+                                💡 Key Concept: Ranges are not dead markets — they are where institutional inventory is accumulated or distributed.
+                              </div>
+                            </div>
+
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">02. What Is A Range?</span>
+                              <h4 className="text-lg font-bold text-white">Market Anatomy Between High & Low</h4>
+                              <p className="text-xs text-slate-300 leading-relaxed">
+                                {currentSmcModule.whatIsARange.definition}
+                              </p>
+                              <div className="space-y-2 text-xs font-mono mt-3">
+                                <div className="p-2.5 rounded-lg bg-dark-950 border border-slate-800 text-red-300">
+                                  🔴 {currentSmcModule.whatIsARange.rangeHigh}
+                                </div>
+                                <div className="p-2.5 rounded-lg bg-dark-950 border border-slate-800 text-amber-300">
+                                  ⚖️ {currentSmcModule.whatIsARange.equilibrium}
+                                </div>
+                                <div className="p-2.5 rounded-lg bg-dark-950 border border-slate-800 text-emerald-300">
+                                  🟢 {currentSmcModule.whatIsARange.rangeLow}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* INTERACTIVE RANGE & DEVIATION VISUALIZER */}
+                          <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 space-y-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                              <div>
+                                <span className="text-xs font-mono text-amber-400 font-bold uppercase">Visual Architecture</span>
+                                <h4 className="text-xl font-bold text-white mt-0.5">The Institutional Dealing Range</h4>
+                              </div>
+                              <span className="text-xs font-mono text-slate-400 bg-dark-950 px-3 py-1 rounded-full border border-slate-800">
+                                Equilibrium (0.5) Midpoint
+                              </span>
+                            </div>
+
+                            {/* Range Visual Graphic Container */}
+                            <div className="p-6 rounded-2xl bg-dark-950 border border-slate-800 space-y-4">
+                              {/* Range High */}
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-red-950/40 border border-red-800/60 text-xs font-mono">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                                  <strong className="text-red-300">RANGE HIGH</strong>
+                                </div>
+                                <span className="text-red-300 font-bold">Buy-Side Liquidity (BSL) resting above</span>
+                              </div>
+
+                              {/* Premium Zone */}
+                              <div className="px-4 py-3 rounded-lg bg-red-950/10 border border-dashed border-red-900/40 text-center text-xs font-mono text-red-400">
+                                ▲ PREMIUM ZONE (&gt; 0.5) — Institutional Expensive Pricing • Look Exclusively for Sells / Upthrust Sweeps
+                              </div>
+
+                              {/* Equilibrium */}
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-amber-950/40 border border-amber-800/60 text-xs font-mono">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                                  <strong className="text-amber-300">EQUILIBRIUM (0.5 MIDPOINT)</strong>
+                                </div>
+                                <span className="text-amber-300">Fair Price • Zero Statistical Edge (Skip The Middle)</span>
+                              </div>
+
+                              {/* Discount Zone */}
+                              <div className="px-4 py-3 rounded-lg bg-emerald-950/10 border border-dashed border-emerald-900/40 text-center text-xs font-mono text-emerald-400">
+                                ▼ DISCOUNT ZONE (&lt; 0.5) — Institutional Cheap Pricing • Look Exclusively for Buys / Spring Sweeps
+                              </div>
+
+                              {/* Range Low */}
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-xs font-mono">
+                                <div className="flex items-center gap-2">
+                                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                                  <strong className="text-emerald-300">RANGE LOW</strong>
+                                </div>
+                                <span className="text-emerald-300 font-bold">Sell-Side Liquidity (SSL) resting below</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* 3. Accumulation vs Distribution Table */}
+                          <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 space-y-6">
+                            <div>
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">03. Institutional Cycle</span>
+                              <h4 className="text-xl font-bold text-white mt-1">Accumulation vs. Distribution</h4>
+                              <p className="text-xs text-slate-400 mt-1">
+                                {currentSmcModule.institutionalCoreIdea}
+                              </p>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left text-xs font-mono">
+                                <thead>
+                                  <tr className="border-b border-slate-800 text-slate-400">
+                                    <th className="py-3 px-4">Market Metric</th>
+                                    <th className="py-3 px-4 text-emerald-400">Accumulation Phase</th>
+                                    <th className="py-3 px-4 text-red-400">Distribution Phase</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                                  {currentSmcModule.accumulationVsDistribution.map((row, i) => (
+                                    <tr key={i} className="hover:bg-dark-950/40">
+                                      <td className="py-3.5 px-4 font-bold text-white">{row.aspect}</td>
+                                      <td className="py-3.5 px-4 text-emerald-300">{row.accumulation}</td>
+                                      <td className="py-3.5 px-4 text-red-300">{row.distribution}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+                          {/* 4. Deviations (Spring / Upthrust) & 5. Spotting Fakeouts */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Deviations */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-4">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">04. The Setup: Deviations</span>
+                              <h4 className="text-lg font-bold text-white">{currentSmcModule.deviations.title}</h4>
+                              <p className="text-xs text-slate-300">{currentSmcModule.deviations.explanation}</p>
+                              
+                              <div className="p-3.5 rounded-xl bg-dark-950 border border-slate-800 space-y-2 text-xs">
+                                <div className="text-emerald-400 font-mono font-semibold">
+                                  🌱 Bullish Spring: {currentSmcModule.deviations.spring}
+                                </div>
+                                <div className="text-red-400 font-mono font-semibold">
+                                  ⚡ Bearish Upthrust: {currentSmcModule.deviations.upthrust}
+                                </div>
+                              </div>
+
+                              <p className="text-xs text-amber-300 font-mono">
+                                {currentSmcModule.deviations.keyInsight}
+                              </p>
+                            </div>
+
+                            {/* Fakeouts vs Breakouts */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-4">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">05. Filtering Fakeouts</span>
+                              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs">
+                                📌 Golden Rule: {currentSmcModule.fakeoutsVsBreakouts.rule}
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div className="p-3 rounded-xl bg-dark-950 border border-slate-800">
+                                  <strong className="text-red-400 block mb-1">Fakeout Signs:</strong>
+                                  <ul className="space-y-1 text-slate-400 text-[11px]">
+                                    {currentSmcModule.fakeoutsVsBreakouts.fakeoutSigns.map((s, i) => (
+                                      <li key={i}>• {s}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div className="p-3 rounded-xl bg-dark-950 border border-slate-800">
+                                  <strong className="text-emerald-400 block mb-1">Real Breakout Signs:</strong>
+                                  <ul className="space-y-1 text-slate-400 text-[11px]">
+                                    {currentSmcModule.fakeoutsVsBreakouts.breakoutSigns.map((s, i) => (
+                                      <li key={i}>• {s}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <p className="text-[11px] text-slate-400">
+                                ⚠️ {currentSmcModule.fakeoutsVsBreakouts.liquidityTraps}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* 6. Execution Protocol: When to Strike vs When to Stay Out */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <h4 className="text-base font-bold text-emerald-400 flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                                06. When To Strike (Execution Blueprint)
+                              </h4>
+                              <div className="space-y-2 mt-2">
+                                {currentSmcModule.rangeTradingExecution.whenToStrike.map((step, idx) => (
+                                  <div key={idx} className="p-2.5 rounded-lg bg-dark-950 border border-slate-800/80 text-xs text-slate-300">
+                                    {step}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <h4 className="text-base font-bold text-red-400 flex items-center gap-2">
+                                <AlertTriangle className="w-5 h-5 text-red-400" />
+                                When To Stay Out (Preserve Capital)
+                              </h4>
+                              <div className="space-y-2 mt-2">
+                                {currentSmcModule.rangeTradingExecution.whenToStayOut.map((reason, idx) => (
+                                  <div key={idx} className="p-2.5 rounded-lg bg-dark-950 border border-slate-800/80 text-xs text-slate-400 flex items-start gap-2">
+                                    <span className="text-red-400 font-bold">✕</span>
+                                    <span>{reason}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* 7. Mistakes to Avoid & Memory Tricks */}
+                          <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 space-y-6">
+                            <div>
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">07. Institutional Discipline</span>
+                              <h4 className="text-xl font-bold text-white mt-1">Memory Tricks & Mental Models</h4>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                              {currentSmcModule.memoryTricks.map((trick, i) => (
+                                <div key={i} className="p-4 rounded-xl bg-dark-950 border border-amber-500/20 text-xs text-amber-300 font-mono font-semibold flex items-center gap-2 shadow-inner">
+                                  <span>🧠</span>
+                                  <span>{trick}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ========================================================================= */}
+                      {/* MODULE 2: MASTER PREMIUM & DISCOUNT ZONES                                  */}
+                      {/* ========================================================================= */}
+                      {smcActiveModuleId === 'premium-discount-zones' && currentSmcModule.zonesTable && (
+                        <div className="space-y-8 animate-fade-in">
+                          {/* Why this matters & Zones Table */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">01. Why This Matters</span>
+                              <h4 className="text-lg font-bold text-white">Think Like Institutions, Not Retail</h4>
+                              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                {currentSmcModule.whyItMatters}
+                              </p>
+                              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold">
+                                ⚖️ {currentSmcModule.goldenRule}
+                              </div>
+                            </div>
+
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">02. Mathematical Zone Matrix</span>
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-left text-xs font-mono">
+                                  <thead>
+                                    <tr className="border-b border-slate-800 text-slate-400">
+                                      <th className="py-2.5 px-3">Zone</th>
+                                      <th className="py-2.5 px-3">Level</th>
+                                      <th className="py-2.5 px-3">Pricing</th>
+                                      <th className="py-2.5 px-3">Action</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                                    {currentSmcModule.zonesTable.map((z, idx) => (
+                                      <tr key={idx}>
+                                        <td className="py-2.5 px-3 font-bold text-white">{z.zone}</td>
+                                        <td className="py-2.5 px-3 text-slate-400">{z.rangePosition}</td>
+                                        <td className="py-2.5 px-3 font-semibold">{z.pricing}</td>
+                                        <td className={`py-2.5 px-3 font-bold ${
+                                          idx === 0 ? 'text-red-400' : idx === 1 ? 'text-amber-400' : 'text-emerald-400'
+                                        }`}>{z.action}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                              <p className="text-xs text-slate-400 font-mono mt-2">
+                                🎯 {currentSmcModule.optimalTradeEntry}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Points of Interest (POIs) & First Trouble Areas (FTAs) */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* POIs */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">03. Points of Interest (POIs)</span>
+                              <h4 className="text-lg font-bold text-white">{currentSmcModule.poisCriteria.title}</h4>
+                              <p className="text-xs text-slate-300">{currentSmcModule.poisCriteria.description}</p>
+                              <div className="space-y-1.5 mt-2">
+                                {currentSmcModule.poisCriteria.bestPoisFeatures.map((f, i) => (
+                                  <div key={i} className="flex items-center gap-2 text-xs text-slate-300 p-2 rounded bg-dark-950">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                    <span>{f}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="p-2.5 rounded bg-red-950/40 border border-red-800 text-red-300 text-xs font-mono">
+                                ⚠️ {currentSmcModule.poisCriteria.warning}
+                              </div>
+                            </div>
+
+                            {/* FTAs */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-3">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">04. First Trouble Areas (FTAs)</span>
+                              <h4 className="text-lg font-bold text-white">{currentSmcModule.ftaFramework.title}</h4>
+                              <p className="text-xs text-slate-300">{currentSmcModule.ftaFramework.definition}</p>
+                              <div className="p-3 rounded-xl bg-dark-950 border border-slate-800 text-xs space-y-2">
+                                <strong className="text-amber-400 block font-mono">How To Evaluate Your Trade Path:</strong>
+                                {currentSmcModule.ftaFramework.howToUse.map((u, i) => (
+                                  <div key={i} className="text-slate-300 text-[11px] flex items-start gap-1.5">
+                                    <span className="text-amber-400">•</span>
+                                    <span>{u}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Multi-Timeframe Syncing (HTF vs LTF) */}
+                          <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 space-y-6">
+                            <div>
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">06. Timeframe Alignment</span>
+                              <h4 className="text-xl font-bold text-white mt-1">
+                                {currentSmcModule.multiTimeframeSyncing.title}
+                              </h4>
+                              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs mt-2">
+                                🔑 Rule: {currentSmcModule.multiTimeframeSyncing.goldenRule}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {currentSmcModule.multiTimeframeSyncing.roles.map((r, i) => (
+                                <div key={i} className="p-4 rounded-xl bg-dark-950 border border-slate-800 space-y-1.5">
+                                  <span className="text-xs font-mono font-bold text-amber-400">{r.timeframe}</span>
+                                  <p className="text-xs text-slate-300">{r.purpose}</p>
+                                  <p className="text-[11px] font-mono text-slate-500">Examples: {r.examples}</p>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className="p-4 rounded-xl bg-dark-950 border border-slate-800 space-y-2">
+                              <h5 className="text-xs font-bold font-mono text-white">Execution Steps (Top-Down):</h5>
+                              {currentSmcModule.multiTimeframeSyncing.executionSteps.map((step, idx) => (
+                                <div key={idx} className="text-xs text-slate-300 font-mono flex items-start gap-2">
+                                  <span className="text-amber-400 font-bold">{idx + 1}.</span>
+                                  <span>{step}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              {currentSmcModule.multiTimeframeSyncing.stylesComparison.map((style, idx) => (
+                                <div key={idx} className="p-4 rounded-xl bg-dark-950 border border-slate-800 space-y-1 text-xs font-mono">
+                                  <span className="text-amber-400 font-bold text-sm">{style.style}</span>
+                                  <p className="text-slate-400">HTF (Bias): <strong className="text-white">{style.htf}</strong></p>
+                                  <p className="text-slate-400">LTF (Entry): <strong className="text-white">{style.ltf}</strong></p>
+                                  <p className="text-slate-400">Holding Time: <strong className="text-white">{style.holdingTime}</strong></p>
+                                  <p className="text-slate-400">Stops/Targets: <strong className="text-white">{style.stopsTargets}</strong></p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Memory Tricks */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {currentSmcModule.memoryTricks.map((trick, i) => (
+                              <div key={i} className="p-4 rounded-xl bg-dark-900 border border-amber-500/20 text-xs text-amber-300 font-mono font-semibold flex items-center gap-2">
+                                <span>🧠</span>
+                                <span>{trick}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ========================================================================= */}
+                      {/* MODULE 3: APPLYING SMART MONEY CONCEPT STRATEGY                           */}
+                      {/* ========================================================================= */}
+                      {smcActiveModuleId === 'applying-smc-strategy' && currentSmcModule.checklistTopDown && (
+                        <div className="space-y-8 animate-fade-in">
+                          {/* Interactive 10-Step Top-Down Checklist */}
+                          <div className="p-6 sm:p-8 rounded-3xl bg-dark-900 border border-slate-800 space-y-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div>
+                                <span className="text-xs font-mono font-bold text-amber-400 uppercase">Interactive Protocol</span>
+                                <h4 className="text-xl sm:text-2xl font-bold text-white mt-1">
+                                  10-Step Top-Down SMC Analysis Checklist
+                                </h4>
+                                <p className="text-xs text-slate-400 mt-1">
+                                  Click each step as you complete it during live chart analysis before risking capital.
+                                </p>
+                              </div>
+
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs font-mono text-amber-400 font-bold bg-amber-950 px-3 py-1.5 rounded-xl border border-amber-800">
+                                  {Object.values(checkedSmcSteps).filter(Boolean).length} / 10 Steps Complete
+                                </span>
+                                <button
+                                  onClick={() => setCheckedSmcSteps({})}
+                                  className="text-xs text-slate-400 hover:text-white underline font-mono"
+                                >
+                                  Reset
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {currentSmcModule.checklistTopDown.map((item) => {
+                                const isChecked = !!checkedSmcSteps[item.step];
+                                return (
+                                  <div
+                                    key={item.step}
+                                    onClick={() => handleToggleSmcStep(item.step)}
+                                    className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none ${
+                                      isChecked
+                                        ? 'bg-emerald-950/30 border-emerald-500/60 text-emerald-100 shadow-md shadow-emerald-950/20'
+                                        : 'bg-dark-950 border-slate-800 hover:border-slate-700 text-slate-300'
+                                    }`}
+                                  >
+                                    <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 border ${
+                                      isChecked
+                                        ? 'bg-emerald-500 border-emerald-400 text-dark-950'
+                                        : 'border-slate-700 bg-dark-900 text-transparent'
+                                    }`}>
+                                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                                    </div>
+
+                                    <div className="space-y-1 flex-1">
+                                      <div className="flex items-center justify-between">
+                                        <span className="font-bold text-xs text-white">
+                                          {item.step}. {item.name}
+                                        </span>
+                                      </div>
+                                      <p className="text-[11px] text-slate-400 leading-relaxed">
+                                        {item.description}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Confluence Stacking & Risk-Free Simulation */}
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Confluences */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-4">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">Confluence Stacking</span>
+                              <h4 className="text-lg font-bold text-white">{currentSmcModule.confluenceStacking.title}</h4>
+                              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs">
+                                ⚡ Rule: {currentSmcModule.confluenceStacking.rule}
+                              </div>
+                              <div className="space-y-2">
+                                {currentSmcModule.confluenceStacking.factors.map((factor, i) => (
+                                  <div key={i} className="flex items-center gap-2 text-xs text-slate-300 p-2.5 rounded-lg bg-dark-950 border border-slate-800/80">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                    <span>{factor}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Simulation & Real-World Errors */}
+                            <div className="p-6 rounded-2xl bg-dark-900 border border-slate-800 space-y-4">
+                              <span className="text-xs font-mono font-bold text-amber-400 uppercase">Execution Discipline</span>
+                              <h4 className="text-lg font-bold text-white">Simulate First, Risk Later</h4>
+                              <div className="space-y-2 text-xs text-slate-300">
+                                {currentSmcModule.simulatingWithoutRisk.principles.map((p, i) => (
+                                  <div key={i} className="flex items-start gap-2 p-2 rounded bg-dark-950">
+                                    <span className="text-amber-400 font-bold">•</span>
+                                    <span>{p}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="p-3 rounded-xl bg-red-950/30 border border-red-800/50 space-y-1">
+                                <strong className="text-red-400 text-xs font-mono block">Common Real-Chart Mistakes:</strong>
+                                <ul className="text-[11px] text-slate-400 space-y-1">
+                                  {currentSmcModule.commonMistakesInRealCharts.slice(0, 4).map((m, i) => (
+                                    <li key={i}>✕ {m}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Memory Tricks */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {currentSmcModule.memoryTricks.map((trick, i) => (
+                              <div key={i} className="p-4 rounded-xl bg-dark-900 border border-amber-500/20 text-xs text-amber-300 font-mono font-semibold flex items-center gap-2">
+                                <span>🧠</span>
+                                <span>{trick}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Supplementary Core Tenets Grid */}
+                      <div className="pt-6 border-t border-slate-800 space-y-4">
+                        <h4 className="text-sm font-bold font-mono text-slate-400 uppercase tracking-wider">
+                          Foundational Institutional Tenets
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {ecosystemData.forexAcademy.coreTenets.map((tenet, idx) => (
+                            <div key={idx} className="p-5 rounded-2xl bg-dark-950 border border-slate-800 flex flex-col justify-between">
+                              <div>
+                                <span className="text-xs font-mono font-bold text-amber-400">0{idx + 1}</span>
+                                <h5 className="text-sm font-bold text-white mt-1">{tenet.concept}</h5>
+                                <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">{tenet.description}</p>
+                              </div>
+                              <div className="mt-3 pt-2.5 border-t border-slate-800 text-[10px] font-mono text-amber-400/90">
+                                Rule: {tenet.rule}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
