@@ -12,7 +12,8 @@ import {
   ShieldAlert, 
   CheckCheck,
   TrendingUp,
-  Cpu
+  Cpu,
+  Zap
 } from 'lucide-react';
 import { ecosystemData } from '../data/ecosystemData';
 
