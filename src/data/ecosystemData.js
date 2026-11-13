@@ -206,19 +206,322 @@ export const ecosystemData = {
       ],
     },
 
-    // Detailed SMC Course Modules based on Course Objectives & Memory Notes
-    smcModules: [
+    // 8-CHAPTER SMART MONEY CONCEPTS (SMC) MASTER CURRICULUM
+    // Based on official Altrady SMC Course Syllabus & Institutional Order Flow Framework
+    smcChapters: [
       {
-        id: "sideways-markets",
+        chapterNumber: 1,
+        id: "chapter-1",
+        title: "What Are Smart Money Concepts",
+        subtitle: "Introduction to Institutional Order Flow & Central Bank Footprints",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/introduction-to-smart-money-concept",
+        badge: "Chapter 01",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 1 Unlisted Video",
+        overview: "Smart Money Concepts (SMC) is an institutional framework designed to explain how major market participants (central banks, sovereign funds, commercial banks, and tier-1 market makers) inject liquidity and execute orders. Rather than relying on lagging indicators, SMC focuses on pure order flow and the reality that price is engineered to target liquidity pools.",
+        subtitles: [
+          {
+            num: "1.1",
+            title: "The Institutional Paradigm: Smart Money vs. Retail Traders",
+            description: "Why central banks and hedge funds must trade differently than retail traders due to sheer position volume.",
+            keyPoints: [
+              "Institutions cannot press 'market buy' without experiencing devastating slippage.",
+              "They require vast counterpart liquidity (resting stop orders) to fill multi-hundred-million-dollar positions.",
+              "Price delivery is not random; it is guided by interbank liquidity algorithms (IPDA).",
+            ],
+          },
+          {
+            num: "1.2",
+            title: "Why Conventional Retail Chart Patterns Fail",
+            description: "How retail double tops, head & shoulders, and trendlines serve as bait for institutional stop-runs.",
+            keyPoints: [
+              "Obvious support and resistance lines concentrate predictable stop loss orders.",
+              "Smart Money pushes price just past these retail lines to trigger buy/sell stops before reversing.",
+              "Traders who understand SMC anticipate the sweep rather than buying the breakout.",
+            ],
+          },
+          {
+            num: "1.3",
+            title: "Core SMC Foundational Pillars",
+            description: "The four core elements that govern institutional price delivery.",
+            keyPoints: [
+              "Order Blocks (OB): Imprints where institutional volume entered the market.",
+              "Fair Value Gaps (FVG): Imbalance zones where price moved too fast in one direction.",
+              "Liquidity Sweeps: Sweeping retail orders to fuel the true expansion.",
+              "Market Structure: Higher highs, higher lows, BOS, and CHoCH.",
+            ],
+          },
+        ],
+        memoryTricks: [
+          "“Think like the bank, not the crowd.”",
+          "“Retail stops are institutional liquidity.”",
+          "“Follow the footprint, ignore the noise.”",
+        ],
+      },
+      {
+        chapterNumber: 2,
+        id: "chapter-2",
+        title: "How to Identify Structural Swing Points",
+        subtitle: "Fractal Highs & Lows, Defining Valid Dealing Ranges & SFP Invalidation",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/how-to-identify-structural-swing-points",
+        badge: "Chapter 02",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 2 Unlisted Video",
+        overview: "Before you can read market structure or calculate premium/discount pricing, you must be able to objectively define valid structural swing highs and lows. Eliminating subjectivity is the primary filter that keeps SMC traders from getting chopped in sub-candle noise.",
+        subtitles: [
+          {
+            num: "2.1",
+            title: "The Objective Fractal Definition of Swing Points",
+            description: "The strict mathematical candle formation required to confirm an authentic swing high or swing low.",
+            keyPoints: [
+              "Valid Swing High: A central candle high surrounded by lower highs on both immediate sides.",
+              "Valid Swing Low: A central candle low surrounded by higher lows on both immediate sides.",
+              "Eliminates subjective guesswork when drawing trendlines and Fibonacci ranges.",
+            ],
+          },
+          {
+            num: "2.2",
+            title: "Major vs. Minor Structural Points (External vs. Internal)",
+            description: "Separating the outer macro dealing range from internal pullback fluctuations.",
+            keyPoints: [
+              "External Swing Points: Define the primary dealing range and macro liquidity targets.",
+              "Internal Swing Points: The minor sub-structure that forms during retracements.",
+              "Rule: Never mistake internal pullback noise for a higher timeframe trend reversal.",
+            ],
+          },
+          {
+            num: "2.3",
+            title: "Swing Failure Patterns (SFP) & Structural Invalidation",
+            description: "Recognizing when price attempts to expand beyond a previous swing point but fails.",
+            keyPoints: [
+              "An SFP occurs when price wicks past a swing point to take liquidity, but the candle body closes back inside.",
+              "Signals aggressive absorption and immediate directional reversal.",
+              "SFPs provide high-probability entry triggers before a full market structure shift prints.",
+            ],
+          },
+        ],
+        memoryTricks: [
+          "“A fractal high must have lower neighbors.”",
+          "“External defines the field; internal plays the game.”",
+          "“SFP wick is the warning bell.”",
+        ],
+      },
+      {
+        chapterNumber: 3,
+        id: "chapter-3",
+        title: "How to Identify Market Structure",
+        subtitle: "BOS vs. CHoCH / MSB, Complex Pullbacks & Inducement (IDM)",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/how-to-identify-market-structure",
+        badge: "Chapter 03",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 3 Unlisted Video",
+        overview: "Market structure provides the narrative roadmap of price. By distinguishing between true Break of Structure (BOS) and Change of Character (CHoCH), and recognizing retail inducement traps, you will know exactly whether the institutional order flow is continuing or reversing.",
+        subtitles: [
+          {
+            num: "3.1",
+            title: "Break of Structure (BOS) vs. Change of Character (CHoCH)",
+            description: "The precise criteria separating trend continuation from early structural reversal.",
+            keyPoints: [
+              "Break of Structure (BOS): Candle body decisively closes beyond the previous swing high in an uptrend (or low in a downtrend). Confirms continuation.",
+              "Change of Character (CHoCH): Price breaks the opposing swing low in an uptrend, signaling the first institutional shift.",
+              "Candle body close is required for BOS; a wick-only break is classified as a liquidity sweep.",
+            ],
+          },
+          {
+            num: "3.2",
+            title: "Inducement (IDM) vs. Authentic Structural Turns",
+            description: "How Smart Money uses minor internal pullbacks to induce early retail positions.",
+            keyPoints: [
+              "Inducement is the first internal pullback level designed to tempt retail traders.",
+              "A structural swing point is only confirmed once price purges the inducement level.",
+              "Waiting for IDM to be cleared prevents entering during false breakouts.",
+            ],
+          },
+          {
+            num: "3.3",
+            title: "Top-Down Structural Mapping Workflow",
+            description: "Aligning Daily / 4H structural bias with 15M / 5M execution frames.",
+            keyPoints: [
+              "Map the HTF swing high and swing low to establish the active dealing range.",
+              "Check whether the current leg is an impulsive expansion or corrective pullback.",
+              "Trade only in the direction of HTF structure until a confirmed HTF CHoCH occurs.",
+            ],
+          },
+        ],
+        memoryTricks: [
+          "“BOS = Continuation. CHoCH = First shift.”",
+          "“Wick is a sweep; body close is structure.”",
+          "“Wait for inducement clearance before confirming the swing.”",
+        ],
+      },
+      {
+        chapterNumber: 4,
+        id: "chapter-4",
+        title: "Liquidity and How It Influences Price Movement",
+        subtitle: "BSL, SSL, Equal Highs/Lows, Session Killzones & Stop Hunts",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/liquidity-and-how-it-influences-price-movement",
+        badge: "Chapter 04",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 4 Unlisted Video",
+        overview: "Liquidity is the fuel that powers financial markets. Institutional algorithms move price toward concentrated pools of resting orders to fill their trades. Understanding where Buy-Side Liquidity (BSL) and Sell-Side Liquidity (SSL) reside allows you to anticipate sweeps rather than getting caught in them.",
+        subtitles: [
+          {
+            num: "4.1",
+            title: "The Two Primary Liquidity Reservoirs: BSL & SSL",
+            description: "Where global orders accumulate on the chart and why price acts like a magnet toward them.",
+            keyPoints: [
+              "Buy-Side Liquidity (BSL): Resting buy stops (short sellers' stop losses and breakout buyers) above swing highs.",
+              "Sell-Side Liquidity (SSL): Resting sell stops (buyers' stop losses and breakout short sellers) below swing lows.",
+              "Price expands from one liquidity pool to the opposing liquidity pool.",
+            ],
+          },
+          {
+            num: "4.2",
+            title: "Equal Highs (EQH) & Equal Lows (EQL): The Engineered Trap",
+            description: "Why clean double tops and double bottoms are the most vulnerable retail chart formations.",
+            keyPoints: [
+              "Retail traders view equal highs as 'heavy resistance' and place protective stop losses just above.",
+              "Smart Money views equal highs as an invitation to engineer a high-volume sweep.",
+              "Never short into equal highs or buy into equal lows until the raid has taken place.",
+            ],
+          },
+          {
+            num: "4.3",
+            title: "Session Timings & Forex Killzones",
+            description: "The time-of-day dynamics that drive liquidity sweeps in currency markets.",
+            keyPoints: [
+              "Asian Session (23:00 - 07:00 GMT): Establishes baseline range liquidity.",
+              "London Killzone (07:00 - 10:00 GMT): The institutional 'Judas Swing' that purges Asian highs/lows.",
+              "New York Open (12:00 - 15:00 GMT): High-liquidity continuation or morning reversal.",
+            ],
+          },
+        ],
+        memoryTricks: [
+          "“Price seeks liquidity like water seeks the lowest point.”",
+          "“Equal highs are not resistance — they are institutional targets.”",
+          "“London hunts Asian stops.”",
+        ],
+      },
+      {
+        chapterNumber: 5,
+        id: "chapter-5",
+        title: "POIs, Fibonacci & Smart Money Strategies",
+        subtitle: "Order Blocks, Fair Value Gaps, Breaker Blocks & Optimal Trade Entry (OTE)",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/pois-fibonacci-smart-money-strategies",
+        badge: "Chapter 05",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 5 Unlisted Video",
+        overview: "Points of Interest (POIs) provide the exact structural coordinates where institutional orders are waiting. Combining fresh Order Blocks (OBs) and Fair Value Gaps (FVGs) with the Optimal Trade Entry (OTE 0.618 to 0.79) Fibonacci retracement gives SMC traders high asymmetric risk-to-reward.",
+        subtitles: [
+          {
+            num: "5.1",
+            title: "Order Blocks (OB): The Footprint of Displacement",
+            description: "Identifying the decisive candles where institutions placed large pending block orders.",
+            keyPoints: [
+              "Bullish Order Block: The last down-close candle before an impulsive upward displacement that breaks structure.",
+              "Bearish Order Block: The last up-close candle before an aggressive downward displacement.",
+              "Valid Order Blocks must be accompanied by an imbalance (FVG) and a clean BOS.",
+            ],
+          },
+          {
+            num: "5.2",
+            title: "Fair Value Gaps (FVG) & Algorithmic Rebalancing",
+            description: "Understanding 3-candle imbalances and the Consequent Encroachment (50% midpoint).",
+            keyPoints: [
+              "An FVG is created when Candle 1 wick and Candle 3 wick fail to overlap Candle 2.",
+              "Price frequently retraces to the 50% midpoint (Consequent Encroachment) to rebalance liquidity.",
+              "Entering at an FVG inside an Order Block yields tight, protected stops.",
+            ],
+          },
+          {
+            num: "5.3",
+            title: "Breaker Blocks & Polarity Flips",
+            description: "How failed Order Blocks transform into institutional mitigation barriers.",
+            keyPoints: [
+              "A Breaker Block is an OB that failed after price made a higher high / lower low sweep.",
+              "Institutions trapped on the wrong side mitigate their losing orders at breakeven.",
+              "Breakers offer exceptional win rates during aggressive trend shifts.",
+            ],
+          },
+          {
+            num: "5.4",
+            title: "Optimal Trade Entry (OTE) with Fibonacci",
+            description: "Mapping the 0.618, 0.705, and 0.786 Fibonacci matrix for precision entries.",
+            keyPoints: [
+              "Anchor Fibonacci from dealing swing low to swing high.",
+              "The Golden OTE zone sits between 0.618 and 0.79 in Discount (for buys) or Premium (for sells).",
+              "Confluence: An unmitigated OB or FVG inside OTE provides the highest probability trade setup.",
+            ],
+          },
+        ],
+        memoryTricks: [
+          "“OB + FVG + OTE = Institutional Confluence.”",
+          "“50% of the gap is the magnetic midpoint.”",
+          "“Violated order blocks become powerful breaker blocks.”",
+        ],
+      },
+      {
+        chapterNumber: 6,
+        id: "chapter-6",
         title: "Trading Strategies in a Sideways Market",
         subtitle: "Ranges, Accumulation/Distribution, Deviations, Springs & Liquidity Traps",
-        badge: "SMC Module 01",
-        duration: "In-Depth Masterclass",
-        defaultVideoId: "Bl8oljJwgZ4",
-        defaultVideoUrl: "https://youtu.be/Bl8oljJwgZ4",
-        defaultEmbedUrl: "https://www.youtube.com/embed/Bl8oljJwgZ4",
-        youtubePlaceholderNotice: "Public YouTube Video Slot Active — Ready for your public YouTube lecture link.",
-        whyItMatters: "Choppy, sideways markets can ruin even good setups, but ranges are also massive opportunities if you read them correctly. Most of the damage in a range comes from fake breakouts and liquidity traps.",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/trading-strategies-in-a-sideways-market",
+        badge: "Chapter 06",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 6 Unlisted Video",
+        overview: "Choppy, sideways markets can ruin even good setups, but ranges are also massive opportunities if you read them correctly. Most of the damage in a range comes from fake breakouts and liquidity traps. In this chapter, you master deviations, springs, upthrusts, and the strike protocol.",
+        subtitles: [
+          {
+            num: "6.1",
+            title: "What is a Dealing Range? (Range High, Low & Equilibrium)",
+            description: "Mapping the sideways boundaries: Range High (BSL), Range Low (SSL), and Equilibrium (0.5).",
+            keyPoints: [
+              "Price moves sideways between a range high and range low with no clear HH/HL or LH/LL.",
+              "Range High = Buy-Side Liquidity (BSL) resting above it.",
+              "Range Low = Sell-Side Liquidity (SSL) resting below it.",
+              "Equilibrium (0.5) is the midpoint: Above is Premium (expensive); below is Discount (cheap).",
+            ],
+          },
+          {
+            num: "6.2",
+            title: "Institutional Cycle: Accumulation vs. Distribution",
+            description: "How Smart Money builds large positions inside sideways ranges before major markup/markdown moves.",
+            keyPoints: [
+              "Accumulation: Smart Money buys quietly after a downtrend -> Retail sells in fear -> Outcome: Markup.",
+              "Distribution: Smart Money sells quietly after an uptrend -> Retail buys in FOMO -> Outcome: Markdown.",
+              "Core Idea: Range = liquidity storage for institutions.",
+            ],
+          },
+          {
+            num: "6.3",
+            title: "Deviations (The Setup): Springs & Upthrusts",
+            description: "Price briefly breaks outside the range, takes retail stops, and quickly returns inside.",
+            keyPoints: [
+              "Spring: Break below range low and quick return inside = Bullish sweep of SSL.",
+              "Upthrust: Break above range high and quick return inside = Bearish sweep of BSL.",
+              "A deviation sets the trade because stops have just been taken and liquidity is secured.",
+            ],
+          },
+          {
+            num: "6.4",
+            title: "Spotting Fakeouts & Liquidity Traps",
+            description: "The golden filter: 'Wick = Warning, Close = Confirmation'.",
+            keyPoints: [
+              "Fakeout Signs: Only a wick breaks the level; price closes back inside; no impulse follow-through.",
+              "Real Breakout Signs: Candle body closes beyond range; strong impulse; retest holds as support/resistance.",
+              "Liquidity Traps: Equal highs/lows at edges attract breakout traders who get trapped on reversal.",
+            ],
+          },
+          {
+            num: "6.5",
+            title: "Range Trading Strategies: When to Strike vs. When to Stay Out",
+            description: "Precise execution checklist and discipline filters to avoid choppy drawdowns.",
+            keyPoints: [
+              "Strike: Mark high/low/eq -> Wait for sweep/deviation -> Wait for return inside + small BoS -> Enter at OB/FVG in Discount (buys) or Premium (sells) -> Target opposite side.",
+              "Stay Out: Price in middle (near equilibrium); tight choppy range; no sweep yet; against HTF trend; right before high-impact news.",
+            ],
+          },
+        ],
         whatIsARange: {
           definition: "Price moves sideways between a range high and a range low, with no clear higher highs (HH) / higher lows (HL) or lower highs (LH) / lower lows (LL).",
           rangeHigh: "Range High = Buy-Side Liquidity (BSL) resting above it (retail buy stops and breakout entries).",
@@ -226,26 +529,10 @@ export const ecosystemData = {
           equilibrium: "Equilibrium (0.5) = The exact midpoint. Above it is Premium (expensive); below it is Discount (cheap).",
         },
         accumulationVsDistribution: [
-          {
-            aspect: "What happens",
-            accumulation: "Smart Money buys quietly in a range",
-            distribution: "Smart Money sells quietly in a range",
-          },
-          {
-            aspect: "Where it forms",
-            accumulation: "Usually after an extended downtrend",
-            distribution: "Usually after an extended uptrend",
-          },
-          {
-            aspect: "Retail behavior",
-            accumulation: "Sells or shorts near the lows out of fear",
-            distribution: "Buys near the highs out of FOMO",
-          },
-          {
-            aspect: "Likely outcome",
-            accumulation: "Markup (Price expands aggressively upwards)",
-            distribution: "Markdown (Price drops aggressively downwards)",
-          },
+          { aspect: "What happens", accumulation: "Smart Money buys quietly in a range", distribution: "Smart Money sells quietly in a range" },
+          { aspect: "Where it forms", accumulation: "Usually after an extended downtrend", distribution: "Usually after an extended uptrend" },
+          { aspect: "Retail behavior", accumulation: "Sells or shorts near the lows out of fear", distribution: "Buys near the highs out of FOMO" },
+          { aspect: "Likely outcome", accumulation: "Markup (Price expands aggressively upwards)", distribution: "Markdown (Price drops aggressively downwards)" },
         ],
         institutionalCoreIdea: "The range is where institutions quietly build their position, using retail stops as liquidity, before the real expansion begins.",
         deviations: {
@@ -286,13 +573,6 @@ export const ecosystemData = {
             "Right before high-impact economic news releases (CPI, NFP, FOMC).",
           ],
         },
-        mistakesToAvoid: [
-          "Buying at the range high or selling at the range low (chasing breakouts).",
-          "Trading in the middle of the range where chops drain capital.",
-          "Entering on the very first touch with no deviation or structural confirmation.",
-          "Placing stops right at the obvious high/low where institutional sweeps occur.",
-          "Treating every break as a permanent trend change.",
-        ],
         memoryTricks: [
           "“Range = liquidity storage.” Smart Money builds positions inside it.",
           "“Sweep the edge, return inside, trade the other side.”",
@@ -301,37 +581,75 @@ export const ecosystemData = {
           "“Accumulation then markup, distribution then markdown.”",
         ],
       },
-
       {
-        id: "premium-discount-zones",
-        title: "Master Premium & Discount Zones",
+        chapterNumber: 7,
+        id: "chapter-7",
+        title: "Master Premium & Discount Zones!",
         subtitle: "Equilibrium (0.5), High-Probability POIs, First Trouble Areas (FTAs) & Multi-Timeframe Syncing",
-        badge: "SMC Module 02",
-        duration: "Institutional Framework",
-        defaultVideoId: "Bl8oljJwgZ4",
-        defaultVideoUrl: "https://youtu.be/Bl8oljJwgZ4",
-        defaultEmbedUrl: "https://www.youtube.com/embed/Bl8oljJwgZ4",
-        youtubePlaceholderNotice: "Public YouTube Video Slot Active — Ready for your public YouTube lecture link.",
-        whyItMatters: "Retail traders chase the market. Institutions plan their moves. The difference lies in knowing exactly where to enter and exit. Premium and Discount zones give you a mathematical framework to find high-probability areas and avoid chasing price.",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/master-premium-discount-zones",
+        badge: "Chapter 07",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 7 Unlisted Video",
+        overview: "Retail traders chase the market; institutions plan their moves. Premium and Discount zones give you a mathematical framework to find high-probability areas and avoid chasing price. In this chapter, you learn how to identify POIs in the right zone, check First Trouble Areas (FTAs), and synchronize timeframes.",
+        subtitles: [
+          {
+            num: "7.1",
+            title: "Premium & Discount Zones Matrix",
+            description: "Calculating Equilibrium (0.5) and knowing when price is statistically expensive vs. cheap.",
+            keyPoints: [
+              "Take the current dealing range (swing low to swing high of the trading leg).",
+              "Equilibrium (0.5) is fair price: zero edge. Skip the middle.",
+              "Premium (> 0.5): Expensive -> Look exclusively to SELL.",
+              "Discount (< 0.5): Cheap -> Look exclusively to BUY.",
+              "Rule: Buy low, sell high relative to the range. Never buy in premium or sell in discount without strong reason.",
+            ],
+          },
+          {
+            num: "7.2",
+            title: "Validating Points of Interest (POIs) by Zone",
+            description: "The 4 non-negotiable criteria for high-probability Order Blocks and FVGs.",
+            keyPoints: [
+              "Located strictly in the correct zone (Discount for buys, Premium for sells).",
+              "Created by a strong, energetic impulse with a clean Break of Structure (BoS).",
+              "Fresh and unmitigated (price has not touched the zone since formation).",
+              "Formed immediately following an institutional liquidity sweep.",
+            ],
+          },
+          {
+            num: "7.3",
+            title: "First Trouble Areas (FTAs) & Path Viability",
+            description: "The first obstacle between entry and target (opposing OB, FVG, or liquidity pool).",
+            keyPoints: [
+              "If the FTA is very close to your entry, the setup is weak. Skip it or plan to take profit at the FTA.",
+              "If the FTA is far away or already mitigated/cleared, the trade offers superior Risk-to-Reward.",
+              "Price often has to take out the FTA before continuing to the main macro target.",
+            ],
+          },
+          {
+            num: "7.4",
+            title: "Syncing Multiple Timeframes (HTF vs. LTF)",
+            description: "Golden Rule: 'Higher Timeframe gives the direction. Lower Timeframe gives the entry.'",
+            keyPoints: [
+              "HTF (Daily / 4H): Direction, bias, major POIs, and key liquidity pools.",
+              "LTF (15M / 5M / 1M): Precise entry, stop-loss minimization, sweep confirmation, and BoS/CHoCH.",
+              "HTF: Identify trend, range, and whether price is in premium or discount.",
+              "LTF: Wait for price to reach HTF POI, confirm with sweep + BoS, and enter with tight stop.",
+            ],
+          },
+          {
+            num: "7.5",
+            title: "Strategies by Style (Swing Trading vs. Intraday)",
+            description: "Calibrating holding times, stop losses, and target expectations.",
+            keyPoints: [
+              "Swing Trading: Weekly/Daily HTF, 4H/1H LTF, holding days to weeks, wider stops/macro targets.",
+              "Intraday: 4H/1H HTF, 15M/5M LTF, holding minutes to hours, tighter stops/rapid intraday targets.",
+            ],
+          },
+        ],
         zonesTable: [
-          {
-            zone: "Premium Zone",
-            rangePosition: "Above 0.5 Equilibrium",
-            pricing: "Expensive",
-            action: "Look exclusively to SELL",
-          },
-          {
-            zone: "Equilibrium",
-            rangePosition: "At exact 0.5 Midpoint",
-            pricing: "Fair Value",
-            action: "No edge — Stay out, skip the middle",
-          },
-          {
-            zone: "Discount Zone",
-            rangePosition: "Below 0.5 Equilibrium",
-            pricing: "Cheap",
-            action: "Look exclusively to BUY",
-          },
+          { zone: "Premium Zone", rangePosition: "Above 0.5 Equilibrium", pricing: "Expensive", action: "Look exclusively to SELL" },
+          { zone: "Equilibrium", rangePosition: "At exact 0.5 Midpoint", pricing: "Fair Value", action: "No edge — Stay out, skip the middle" },
+          { zone: "Discount Zone", rangePosition: "Below 0.5 Equilibrium", pricing: "Cheap", action: "Look exclusively to BUY" },
         ],
         goldenRule: "Buy low, sell high, relative to the range. Never buy in premium or sell in discount without an overwhelming institutional reason.",
         optimalTradeEntry: "The highest probability buys sit deep in discount (below 0.5, ideally in the Optimal Trade Entry / OTE zone between 0.618 and 0.79). The best sells sit deep in premium.",
@@ -362,16 +680,8 @@ export const ecosystemData = {
           title: "Syncing Multiple Timeframes (HTF vs LTF)",
           goldenRule: "Higher Timeframe (HTF) gives the direction. Lower Timeframe (LTF) gives the entry.",
           roles: [
-            {
-              timeframe: "Higher Timeframe (HTF)",
-              purpose: "Market direction, macro bias, major POIs, and key liquidity pools.",
-              examples: "Daily, 4-Hour (4H)",
-            },
-            {
-              timeframe: "Lower Timeframe (LTF)",
-              purpose: "Precise entry, stop-loss minimization, sweep confirmation, and BoS/CHoCH.",
-              examples: "15-Min (15M), 5-Min (5M), 1-Min (1M)",
-            },
+            { timeframe: "Higher Timeframe (HTF)", purpose: "Market direction, macro bias, major POIs, and key liquidity pools.", examples: "Daily, 4-Hour (4H)" },
+            { timeframe: "Lower Timeframe (LTF)", purpose: "Precise entry, stop-loss minimization, sweep confirmation, and BoS/CHoCH.", examples: "15-Min (15M), 5-Min (5M), 1-Min (1M)" },
           ],
           executionSteps: [
             "HTF: Identify the overall trend, the active trading range, and whether current price is in premium or discount.",
@@ -381,38 +691,8 @@ export const ecosystemData = {
             "Enter on the LTF with the stop loss safely beyond the swing extreme and the target at HTF liquidity.",
           ],
           stylesComparison: [
-            {
-              style: "Swing Trading",
-              htf: "Weekly / Daily",
-              ltf: "4-Hour / 1-Hour",
-              holdingTime: "Days to weeks",
-              stopsTargets: "Wider stop loss, larger macro targets",
-            },
-            {
-              style: "Intraday (Day Trading)",
-              htf: "4-Hour / 1-Hour",
-              ltf: "15-Min / 5-Min",
-              holdingTime: "Minutes to hours",
-              stopsTargets: "Tighter stop loss, rapid intraday targets",
-            },
-          ],
-        },
-        riskPlanningAndMistakes: {
-          planningRules: [
-            "Pre-define entry, stop loss, and target before pulling the trigger.",
-            "Aim for at least 1:2 or 1:3 risk-to-reward ratio.",
-            "Check the FTA so the trade has sufficient room to breathe.",
-            "Place stop loss beyond the swing or POI extreme, never at obvious retail levels.",
-            "Risk only a small, fixed percentage (1%) of account equity per trade.",
-            "If the setup isn't crystal clear, skip the trade.",
-          ],
-          mistakesToAvoid: [
-            "Buying in premium or selling in discount.",
-            "Ignoring the First Trouble Area (FTA).",
-            "Trading without higher timeframe context.",
-            "Entering without a liquidity sweep or BoS confirmation.",
-            "Using the wrong swing points to define the range.",
-            "Overleveraging and risking too much per trade.",
+            { style: "Swing Trading", htf: "Weekly / Daily", ltf: "4-Hour / 1-Hour", holdingTime: "Days to weeks", stopsTargets: "Wider stop loss, larger macro targets" },
+            { style: "Intraday (Day Trading)", htf: "4-Hour / 1-Hour", ltf: "15-Min / 5-Min", holdingTime: "Minutes to hours", stopsTargets: "Tighter stop loss, rapid intraday targets" },
           ],
         },
         memoryTricks: [
@@ -423,18 +703,74 @@ export const ecosystemData = {
           "“Plan the trade, then trade the plan.”",
         ],
       },
-
       {
-        id: "applying-smc-strategy",
+        chapterNumber: 8,
+        id: "chapter-8",
         title: "Applying Smart Money Concept Strategy",
         subtitle: "10-Step Top-Down Execution Checklist, Confluence Stacking & Live Chart Simulation",
-        badge: "SMC Module 03",
-        duration: "Live Execution Playbook",
-        defaultVideoId: "Bl8oljJwgZ4",
-        defaultVideoUrl: "https://youtu.be/Bl8oljJwgZ4",
-        defaultEmbedUrl: "https://www.youtube.com/embed/Bl8oljJwgZ4",
-        youtubePlaceholderNotice: "Public YouTube Video Slot Active — Ready for your public YouTube lecture link.",
-        whyItMatters: "Theory only helps if you can apply it on a real chart. This lesson combines everything: structure, liquidity, POIs, premium/discount zones, and multi-timeframe analysis. Live charts aren't cherry-picked, so you practice with messy, real-world market conditions.",
+        referenceUrl: "https://www.altrady.com/academy/smart-money-concept/applying-smart-money-concept-strategy",
+        badge: "Chapter 08",
+        defaultVideoUrl: "",
+        videoStatus: "Ready for Chapter 8 Unlisted Video",
+        overview: "Theory only helps if you can apply it on a real chart. In this hands-on chapter, we drop into real market conditions (no cherry-picked setups) using the complete 10-step top-down analysis checklist, stacking confluences, and simulating trades with a disciplined journal.",
+        subtitles: [
+          {
+            num: "8.1",
+            title: "The Top-Down SMC Analysis Protocol",
+            description: "Executing top-down analysis from HTF bias to LTF confirmation.",
+            keyPoints: [
+              "HTF Bias -> Mark Range (0.5) -> Mark Liquidity -> Mark POIs -> Wait for Tap.",
+              "LTF Confirmation -> Liquidity sweep + BoS/CHoCH -> Entry at OB/FVG inside OTE.",
+              "Check FTA -> Stop beyond swing extreme -> Target opposing liquidity.",
+            ],
+          },
+          {
+            num: "8.2",
+            title: "Interactive 10-Step Execution Checklist",
+            description: "The complete repeatable checklist to execute on live charts.",
+            keyPoints: [
+              "01 HTF Directional Bias | 02 Dealing Range & Midpoint (0.5)",
+              "03 Map Liquidity Pools | 04 High-Probability POIs",
+              "05 Institutional Patience (Wait for tap) | 06 LTF Confirmation Trigger",
+              "07 Precision OTE Entry | 08 Check First Trouble Area (FTA)",
+              "09 Invalidation Stop Loss | 10 Macro Liquidity Target (1:3+ R:R)",
+            ],
+          },
+          {
+            num: "8.3",
+            title: "Confluence Stacking (Spotting A+ Setups)",
+            description: "Why stacking confluences is the difference between guessing and high probability.",
+            keyPoints: [
+              "HTF bias agrees with trade direction.",
+              "Price is strictly in the correct zone (Discount for buy, Premium for sell).",
+              "Liquidity sweep just happened + BoS follows with strong impulse.",
+              "Fresh POI sits inside OTE zone + FTA is far enough away.",
+            ],
+          },
+          {
+            num: "8.4",
+            title: "Simulating Trades Without Risk & Building Confidence",
+            description: "Structured practice protocol before risking real capital.",
+            keyPoints: [
+              "Use demo/paper trading or scroll back on TradingView to backtest.",
+              "For every trade, log: bias, entry, stop, target, R:R, confluences, and outcome.",
+              "Focus 100% on process over outcome. Even A+ setups take losses.",
+              "Move to small real risk only after verified consistency in simulation.",
+            ],
+          },
+          {
+            num: "8.5",
+            title: "Common Real-Chart Mistakes to Avoid",
+            description: "The seven pitfalls that trap developing SMC traders.",
+            keyPoints: [
+              "Marking too many zones -> Analysis paralysis.",
+              "Ignoring HTF bias and trading only lower timeframe noise.",
+              "Entering on first touch with no sweep or BoS confirmation.",
+              "Buying in premium or selling in discount without justification.",
+              "Forgetting to check the FTA before executing.",
+            ],
+          },
+        ],
         checklistTopDown: [
           { step: "01", name: "HTF Directional Bias", description: "Identify the prevailing trend (Higher Highs / Higher Lows or Lower Highs / Lower Lows) or range on the Daily / 4H." },
           { step: "02", name: "Mark the Range & Midpoint", description: "Draw the swing low to swing high of the current dealing leg. Locate Equilibrium (0.5). Confirm whether price is in Premium or Discount." },
@@ -470,13 +806,6 @@ export const ecosystemData = {
             "Practice dozens of setups before risking live capital. Analyze both winning and losing trades objectively.",
           ],
         },
-        buildingConfidence: [
-          "Follow the exact same 10-step checklist on every trade to eliminate emotional decision-making.",
-          "Focus 100% on execution process rather than the outcome of an individual trade — even A+ setups can take a loss.",
-          "Skip unclear setups without hesitation. Choosing not to trade is an active and profitable trading decision.",
-          "Review your trading journal weekly to identify behavioral leaks and recurring mistakes.",
-          "Transition to small live capital risk only after demonstrating verified profitability in simulation.",
-        ],
         commonMistakesInRealCharts: [
           "Marking too many zones on the chart, creating visual clutter and analysis paralysis.",
           "Ignoring the higher timeframe bias and trading exclusively off lower timeframe noise.",
@@ -495,6 +824,11 @@ export const ecosystemData = {
         ],
       },
     ],
+
+    // Alias for backwards compatibility
+    get smcModules() {
+      return this.smcChapters;
+    },
 
     coreTenets: [
       {
