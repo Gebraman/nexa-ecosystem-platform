@@ -55,3 +55,35 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* Print Styles for W3Schools Academy Textbooks & Books */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+  header, nav, aside, footer, button, .no-print {
+    display: none !important;
+  }
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #0f172a !important;
+  }
+  article {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .bg-dark-900, .bg-dark-950 {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  .text-white {
+    color: #0f172a !important;
+  }
+  .text-slate-300, .text-slate-400 {
+    color: #334155 !important;
+  }
+}
