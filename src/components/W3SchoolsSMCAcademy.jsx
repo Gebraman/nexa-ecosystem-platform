@@ -35,9 +35,10 @@ import InstitutionalContentRenderer from './InstitutionalContentRenderer';
 import InstitutionalChartViewer from './InstitutionalChartViewer';
 import OrderBookDepthSimulator from './OrderBookDepthSimulator';
 import BarReplaySimulator from './BarReplaySimulator';
+import SMCPuzzleGame from './SMCPuzzleGame';
 
 export default function W3SchoolsSMCAcademy({ 
-  initialChapterId = 'chapter-2',
+  initialChapterId = 'chapter-1',
   onBackToOverview
 }) {
   const [activeChapterId, setActiveChapterId] = useState(initialChapterId);
@@ -48,8 +49,6 @@ export default function W3SchoolsSMCAcademy({
 
   // Chapter 1 Interactive State
   const [ch1StructureTab, setCh1StructureTab] = useState('bullish');
-  const [ch1FvgTab, setCh1FvgTab] = useState('bullish');
-  const [ch1CheckedSteps, setCh1CheckedSteps] = useState({ '01': true, '02': true });
   const [ch1VocabFilter, setCh1VocabFilter] = useState('');
 
   // Chapter 2 "Try It Yourself" Simulator State
@@ -66,7 +65,7 @@ export default function W3SchoolsSMCAcademy({
   };
 
   const courseChapters = [
-    { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 27 },
+    { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 15 },
     { id: 'chapter-2', num: '02', title: '2. How to Identify Structural Swing Points', isReady: true, subCount: 14 },
     { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: false, subCount: 12 },
     { id: 'chapter-4', num: '04', title: '4. Liquidity & Price Movement', isReady: false, subCount: 10 },
@@ -76,62 +75,298 @@ export default function W3SchoolsSMCAcademy({
     { id: 'chapter-8', num: '08', title: '8. Applying SMC Strategy in Live Markets', isReady: false, subCount: 10 }
   ];
 
-  const currentChapter = chaptersMap[activeChapterId] || smcChapter2FullData;
+  const currentChapter = chaptersMap[activeChapterId] || smcChapter1FullData;
   const currentChapterIndex = courseChapters.findIndex(c => c.id === activeChapterId);
   const prevChapterItem = currentChapterIndex > 0 ? courseChapters[currentChapterIndex - 1] : null;
   const nextChapterItem = currentChapterIndex < courseChapters.length - 1 ? courseChapters[currentChapterIndex + 1] : null;
 
-  // Handle Export to Professional Word (.doc) Dossier
+  // Converts markdown-flavored text to clean HTML elements for Word export
+  const convertMdToBookHtml = (mdText) => {
+    if (!mdText) return '';
+    const lines = mdText.split('\n');
+    const out = [];
+    let inList = false;
+    let inTable = false;
+    let tableRows = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Markdown Table
+      if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+        if (!inTable) inTable = true;
+        if (trimmed.includes('---')) continue;
+        const cells = trimmed.split('|').slice(1, -1).map(c => c.trim());
+        tableRows.push(cells);
+        continue;
+      } else if (inTable) {
+        if (tableRows.length > 0) {
+          out.push('<table style="border-collapse: collapse; width: 100%; margin: 20px 0; font-family: Segoe UI, sans-serif; font-size: 10pt;">');
+          out.push('<thead><tr style="background-color: #0f172a; color: #ffffff;">');
+          tableRows[0].forEach(cell => {
+            out.push(`<th style="border: 1px solid #334155; padding: 10px 14px; text-align: left; font-weight: bold;">${cell}</th>`);
+          });
+          out.push('</tr></thead><tbody>');
+          for (let r = 1; r < tableRows.length; r++) {
+            const bg = r % 2 === 0 ? '#f8fafc' : '#ffffff';
+            out.push(`<tr style="background-color: ${bg};">`);
+            tableRows[r].forEach((cell, cIdx) => {
+              const strong = cIdx === 0 ? 'font-weight: bold; color: #0f172a;' : 'color: #334155;';
+              out.push(`<td style="border: 1px solid #cbd5e1; padding: 9px 12px; ${strong}">${cell}</td>`);
+            });
+            out.push('</tr>');
+          }
+          out.push('</tbody></table>');
+        }
+        tableRows = [];
+        inTable = false;
+      }
+
+      // Unordered List
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        if (!inList) {
+          out.push('<ul style="margin: 14px 0 14px 24px; padding: 0; color: #334155; line-height: 1.8;">');
+          inList = true;
+        }
+        const item = trimmed.substring(2)
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>');
+        out.push(`<li style="margin-bottom: 6px;">${item}</li>`);
+        continue;
+      } else if (inList) {
+        out.push('</ul>');
+        inList = false;
+      }
+
+      // Headings & Quotes
+      if (trimmed.startsWith('### ')) {
+        out.push(`<h4 style="color: #b45309; font-family: Georgia, serif; font-size: 13pt; margin-top: 22px; margin-bottom: 8px;">${trimmed.substring(4)}</h4>`);
+      } else if (trimmed.startsWith('## ')) {
+        out.push(`<h3 style="color: #0f172a; font-family: Georgia, serif; font-size: 15pt; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">${trimmed.substring(3)}</h3>`);
+      } else if (trimmed.startsWith('# ')) {
+        out.push(`<h2 style="color: #0f172a; font-family: Georgia, serif; font-size: 18pt; margin-top: 34px; margin-bottom: 12px;">${trimmed.substring(2)}</h2>`);
+      } else if (trimmed.startsWith('> ')) {
+        const quoteText = trimmed.substring(2)
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>');
+        out.push(`<blockquote style="border-left: 4px solid #f59e0b; background-color: #fffbeb; padding: 14px 20px; margin: 18px 0; color: #78350f; font-style: italic; border-radius: 0 8px 8px 0;">${quoteText}</blockquote>`);
+      } else if (trimmed.length > 0) {
+        const paragraph = trimmed
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/`([^`]+)`/g, '<code style="background-color: #0f172a; color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; font-size: 9.5pt;">$1</code>');
+        out.push(`<p style="margin: 12px 0; font-size: 11pt; color: #334155; line-height: 1.85; text-align: justify;">${paragraph}</p>`);
+      }
+    }
+
+    if (inList) out.push('</ul>');
+    if (inTable && tableRows.length > 0) {
+      out.push('<table style="border-collapse: collapse; width: 100%; margin: 20px 0; font-family: Segoe UI, sans-serif; font-size: 10pt;"><thead><tr style="background-color: #0f172a; color: #ffffff;">');
+      tableRows[0].forEach(cell => out.push(`<th style="border: 1px solid #334155; padding: 10px 14px; text-align: left;">${cell}</th>`));
+      out.push('</tr></thead><tbody>');
+      for (let r = 1; r < tableRows.length; r++) {
+        out.push('<tr>');
+        tableRows[r].forEach(cell => out.push(`<td style="border: 1px solid #cbd5e1; padding: 9px 12px;">${cell}</td>`));
+        out.push('</tr>');
+      }
+      out.push('</tbody></table>');
+    }
+
+    return out.join('\n');
+  };
+
+  // Handle Export to Luxury Canva-Style Master Book (.doc)
   const handleExportWord = () => {
-    const rawText = currentChapter.fullTextRaw || '';
+    const sections = currentChapter.sections || [];
+    
+    // Build Table of Contents HTML
+    const tocRows = sections.map((sec) => `
+      <div style="margin: 10px 0; font-size: 11pt; border-bottom: 1px dotted #cbd5e1; padding-bottom: 4px;">
+        <span style="font-weight: bold; color: #b45309; font-family: Consolas, monospace; margin-right: 12px;">SECTION ${sec.num}</span>
+        <span style="font-weight: 600; color: #0f172a;">${sec.title}</span>
+      </div>
+    `).join('\n');
+
+    // Build Section Bodies HTML
+    const sectionsHtml = sections.map((sec, idx) => {
+      const convertedContent = convertMdToBookHtml(sec.content);
+      const isFirst = idx === 0;
+      return `
+        <div style="margin-top: 40px; ${isFirst ? '' : 'page-break-before: always;'}">
+          <div style="display: inline-block; background-color: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-family: Consolas, monospace; font-size: 9.5pt; font-weight: bold; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px;">
+            Chapter ${currentChapter.badge.replace(/\D/g, '') || '01'} &bull; Section ${sec.num}
+          </div>
+          <h2 style="font-family: Georgia, 'Times New Roman', serif; font-size: 20pt; color: #0f172a; margin: 4px 0 16px 0; border-bottom: 2px solid #0f172a; padding-bottom: 8px; font-weight: 800;">
+            ${sec.title}
+          </h2>
+          ${sec.summary ? `
+            <div style="background-color: #f0fdf4; border-left: 4px solid #10b981; padding: 12px 18px; margin: 16px 0 24px 0; font-size: 10pt; color: #065f46; font-style: italic;">
+              <strong>Executive Summary:</strong> ${sec.summary}
+            </div>
+          ` : ''}
+          <div class="section-content">
+            ${convertedContent}
+          </div>
+        </div>
+      `;
+    }).join('\n');
+
     const formattedHtml = `
-      <!DOCTYPE html>
-      <html>
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
       <head>
         <meta charset="utf-8">
-        <title>${currentChapter.title} - Institutional SMC Dossier</title>
+        <title>${currentChapter.title} &mdash; Nexa Institutional Master Textbook</title>
         <style>
-          body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; line-height: 1.7; color: #0f172a; padding: 48px; background: #ffffff; }
-          .cover { text-align: center; border-bottom: 4px solid #f59e0b; padding-bottom: 32px; margin-bottom: 36px; }
-          .crest { font-size: 14pt; font-weight: bold; color: #b45309; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-          h1 { color: #0f172a; font-size: 28pt; margin: 12px 0; font-weight: 800; }
-          .subtitle { font-size: 14pt; color: #475569; max-width: 650px; margin: 0 auto; font-style: italic; }
-          .meta-bar { margin-top: 18px; font-size: 10.5pt; color: #64748b; font-family: Consolas, monospace; }
-          h2 { color: #1e293b; margin-top: 36px; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 6px; font-size: 18pt; }
-          h3 { color: #b45309; margin-top: 22px; font-size: 13pt; text-transform: uppercase; letter-spacing: 0.5px; }
-          p { margin: 12px 0; font-size: 11pt; color: #334155; }
-          table { border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 10pt; }
-          th, td { border: 1px solid #cbd5e1; padding: 10px 14px; text-align: left; }
-          th { background-color: #f8fafc; font-weight: bold; color: #0f172a; border-bottom: 2px solid #94a3b8; }
-          blockquote { border-left: 4px solid #f59e0b; padding-left: 16px; color: #1e293b; font-style: italic; background: #fffbeb; padding: 14px 18px; margin: 20px 0; border-radius: 0 8px 8px 0; }
-          pre { background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 14px; font-family: Consolas, monospace; font-size: 9.5pt; border-radius: 6px; overflow-x: auto; }
-          .footer { margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 16px; text-align: center; font-size: 9pt; color: #94a3b8; }
+          @page {
+            size: 8.5in 11in;
+            margin: 1in;
+            mso-page-orientation: portrait;
+          }
+          body { 
+            font-family: 'Georgia', 'Garamond', 'Palatino Linotype', serif; 
+            line-height: 1.85; 
+            color: #1e293b; 
+            background: #ffffff; 
+            margin: 0;
+            padding: 0;
+          }
+          .canva-book-cover {
+            background-color: #090d16;
+            color: #ffffff;
+            padding: 70px 45px;
+            text-align: center;
+            border: 6px double #f59e0b;
+            border-radius: 6px;
+            margin-bottom: 60px;
+            min-height: 720px;
+            page-break-after: always;
+          }
+          .crest { 
+            font-size: 13pt; 
+            font-weight: bold; 
+            color: #f59e0b; 
+            letter-spacing: 5px; 
+            text-transform: uppercase; 
+            margin-top: 30px;
+            margin-bottom: 15px; 
+          }
+          .series-tag {
+            font-size: 9.5pt;
+            letter-spacing: 3px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+            font-family: Segoe UI, sans-serif;
+          }
+          .book-title { 
+            color: #ffffff; 
+            font-size: 32pt; 
+            margin: 25px 0 15px 0; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1.25;
+            font-family: Georgia, serif;
+          }
+          .book-subtitle { 
+            font-size: 14pt; 
+            color: #fbbf24; 
+            max-width: 650px; 
+            margin: 0 auto 40px auto; 
+            font-style: italic; 
+            line-height: 1.5;
+          }
+          .gold-rule {
+            width: 140px;
+            height: 3px;
+            background-color: #f59e0b;
+            margin: 30px auto;
+          }
+          .meta-box { 
+            margin-top: 55px; 
+            padding-top: 25px; 
+            border-top: 1px solid rgba(245, 158, 11, 0.4); 
+            font-size: 10.5pt; 
+            color: #cbd5e1; 
+            font-family: Consolas, monospace; 
+          }
+          .seal-badge {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 8px 22px;
+            border: 1.5px solid #f59e0b;
+            color: #f59e0b;
+            font-size: 9pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-radius: 20px;
+            font-family: Segoe UI, sans-serif;
+          }
+          .toc-section {
+            padding: 20px 0;
+            page-break-after: always;
+          }
+          .toc-heading {
+            font-family: Georgia, serif;
+            font-size: 22pt;
+            color: #0f172a;
+            border-bottom: 2px solid #f59e0b;
+            padding-bottom: 8px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+          }
+          .footer-note { 
+            margin-top: 60px; 
+            border-top: 1.5px solid #e2e8f0; 
+            padding-top: 20px; 
+            text-align: center; 
+            font-size: 9pt; 
+            color: #64748b; 
+            font-family: Segoe UI, sans-serif;
+          }
         </style>
       </head>
       <body>
-        <div class="cover">
-          <div class="crest">NEXA INSTITUTIONAL ACADEMY • PROVENANCE DOSSIER</div>
-          <h1>${currentChapter.title}</h1>
-          <div class="subtitle">${currentChapter.subtitle}</div>
-          <div class="meta-bar">
-            <strong>CURRICULUM:</strong> ${currentChapter.badge} | 
-            <strong>AUTHOR:</strong> ${currentChapter.author} | 
-            <strong>DATE:</strong> ${currentChapter.date} | 
-            <strong>VERIFIED:</strong> INSTITUTIONAL SYLLABUS
+        <!-- 1. CANVA LUXURY BOOK COVER -->
+        <div class="canva-book-cover">
+          <div class="crest">&Psi; NEXA INSTITUTIONAL ACADEMY &Psi;</div>
+          <div class="series-tag">INTERBANK ORDER FLOW &bull; WALL STREET CURRICULUM SERIES</div>
+          <div class="gold-rule"></div>
+          <h1 class="book-title">${currentChapter.title}</h1>
+          <div class="book-subtitle">${currentChapter.subtitle}</div>
+          <div class="gold-rule"></div>
+          
+          <div class="meta-box">
+            <div><strong>AUTHOR:</strong> ${currentChapter.author} &bull; <strong>DATE:</strong> ${currentChapter.date}</div>
+            <div style="margin-top: 6px;"><strong>CURRICULUM:</strong> ${currentChapter.badge} &bull; <strong>LEVEL:</strong> INSTITUTIONAL MASTERCLASS</div>
+          </div>
+
+          <div>
+            <span class="seal-badge">&star; CERTIFIED HIGH-CONVICTION STUDY DOSSIER &star;</span>
           </div>
         </div>
-        <div>
-          ${rawText
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/# (.*?)\n/g, '<h2>$1</h2>')
-            .replace(/## (.*?)\n/g, '<h3>$1</h3>')
-            .replace(/### (.*?)\n/g, '<h4>$1</h4>')
-            .replace(/> (.*?)\n/g, '<blockquote>$1</blockquote>')
-            .replace(/```text([\s\S]*?)```/g, '<pre>$1</pre>')
-          }
+
+        <!-- 2. TABLE OF CONTENTS -->
+        <div class="toc-section">
+          <h2 class="toc-heading">Table of Contents</h2>
+          <div style="max-width: 680px; margin: 0 auto;">
+            ${tocRows}
+          </div>
         </div>
-        <div class="footer">
-          Nexa Ecosystem Institutional Forex & SMC Master Academy • Strict Academic Distribution Only
+
+        <!-- 3. BOOK CHAPTER BODY (ALL SECTIONS COMPLETE) -->
+        <div class="book-body">
+          ${sectionsHtml}
+        </div>
+
+        <!-- 4. OFFICIAL VERIFICATION & PROVENANCE STAMP -->
+        <div class="footer-note">
+          <p><strong>Nexa Ecosystem Institutional Forex & SMC Master Academy</strong> &bull; Strict Academic & Educational Distribution</p>
+          <p style="font-size: 8.5pt; color: #94a3b8;">Original Transcript & Syllabus Verified by Roman & Nexa Institutional Trading Desk &bull; All Rights Reserved 2026</p>
         </div>
       </body>
       </html>
@@ -141,7 +376,7 @@ export default function W3SchoolsSMCAcademy({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `NEXA_SMC_${currentChapter.id.toUpperCase()}_EXECUTIVE_DOSSIER.doc`;
+    a.download = `NEXA_SMC_${currentChapter.id.toUpperCase()}_MASTER_BOOK.doc`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -184,18 +419,18 @@ export default function W3SchoolsSMCAcademy({
         break;
       case 'validated-high':
         setSimResult({
-          status: 'VALIDATED STRUCTURAL SWING HIGH',
+          status: 'CONFIRMED STRUCTURAL SWING HIGH',
           color: 'emerald',
-          badge: '✅ Structural High Confirmed',
-          explanation: 'A candle has closed with its BODY below the red line (the lowest point of the swing candle). The swing high is officially confirmed! You now establish this level as Buy-Side Liquidity (BSL).'
+          badge: '✅ Structural Validation Complete',
+          explanation: 'Candle 4 closed below the red line (the low of Candle 3). The swing high is now fully locked in. You may draw your horizontal level and trade the newly established range.'
         });
         break;
       case 'sweep':
         setSimResult({
-          status: 'LIQUIDITY SWEEP (NOT A BREAK)',
+          status: 'LIQUIDITY SWEEP (FAKE BREAKOUT)',
           color: 'purple',
-          badge: '🧲 Stop Hunt Raid',
-          explanation: 'Price spiked past the support/low with a sharp wick, but the candle closed back INSIDE the range. Retail stop losses were triggered and absorbed by Smart Money. This is NOT a break of structure—expect a sharp reversal.'
+          badge: '🎯 Institutional Stop Hunt',
+          explanation: 'Price pierced above the swing high with a long wick, triggering buy-side liquidity (BSL), but immediately closed back inside the range. Smart Money used retail breakout buy orders to fill their short positions.'
         });
         break;
       case 'break':
@@ -331,11 +566,11 @@ export default function W3SchoolsSMCAcademy({
           
           <button
             onClick={handleExportWord}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white border border-blue-400 text-xs font-bold transition-all shadow-md hover:scale-105"
-            title="Download complete publication-grade study dossier as Microsoft Word (.doc)"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-dark-950 border border-amber-400 text-xs font-bold transition-all shadow-md hover:scale-105"
+            title="Download complete publication-grade Canva book template as Microsoft Word (.doc)"
           >
-            <FileDown className="w-3.5 h-3.5 text-white" />
-            <span className="hidden sm:inline">Executive Word Dossier</span>
+            <FileDown className="w-3.5 h-3.5 text-dark-950" />
+            <span className="hidden sm:inline">Canva Master Book (.doc)</span>
           </button>
 
           <button
@@ -500,44 +735,45 @@ export default function W3SchoolsSMCAcademy({
               </div>
             </div>
 
-            {/* Altrady Reference Link */}
-            <div className="pt-2 border-t border-[#2a2e39]">
-              <a
-                href={currentChapter.referenceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-2.5 rounded-xl bg-[#131722] hover:bg-slate-800 border border-[#2a2e39] text-[11px] text-slate-300 transition-all group"
+            {/* Document Export Box */}
+            <div className="pt-3 border-t border-[#2a2e39] space-y-2">
+              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 font-bold block">
+                Academic Artifacts
+              </span>
+              <button
+                onClick={handleExportWord}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-transparent hover:from-amber-500/30 border border-amber-500/30 text-amber-300 text-xs font-semibold transition-all"
               >
-                <span>Original Syllabus Reference</span>
-                <ExternalLink className="w-3.5 h-3.5 text-amber-400 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+                <div className="flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Download Canva Master Book</span>
+                </div>
+                <Download className="w-3 h-3 text-amber-400" />
+              </button>
             </div>
+
           </aside>
         )}
 
-        {/* MAIN TEXTBOOK READING COLUMN */}
-        <main className={`flex-1 p-6 sm:p-10 space-y-12 max-w-5xl mx-auto ${getFontSizeClass()}`}>
+        {/* MAIN TEXTBOOK READER CONTAINER */}
+        <main className={`flex-1 p-6 sm:p-10 max-w-5xl mx-auto space-y-12 ${getFontSizeClass()}`}>
           
-          {/* CHAPTER HEADER & METADATA BANNER */}
+          {/* CHAPTER HEADER HERO */}
           <section className="space-y-4 pb-8 border-b border-[#2a2e39]">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-md bg-amber-500 text-dark-950 font-mono text-xs font-black uppercase tracking-wider">
-                  {currentChapter.badge}
-                </span>
-                <span className="text-xs font-mono text-slate-400">
-                  {currentChapter.readTime} • Verified Course Text
-                </span>
-              </div>
-              <div className="text-xs font-mono text-slate-400">
-                Author: <span className="text-amber-400 font-semibold">{currentChapter.author}</span>
-              </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold tracking-wider uppercase">
+                {currentChapter.badge} &bull; Master Textbook
+              </span>
+              <span className="text-xs font-mono text-slate-500">
+                Author: {currentChapter.author} &bull; {currentChapter.date}
+              </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
               {currentChapter.title}
             </h1>
-            <p className="text-base sm:text-lg text-slate-400 leading-relaxed font-normal">
+
+            <p className="text-base sm:text-lg text-slate-300 max-w-3xl leading-relaxed">
               {currentChapter.subtitle}
             </p>
 
@@ -545,10 +781,10 @@ export default function W3SchoolsSMCAcademy({
             <div className="pt-2 flex flex-wrap items-center gap-3">
               <button
                 onClick={handleExportWord}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-lg shadow-blue-600/20"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-dark-950 text-xs font-bold transition-all shadow-lg shadow-amber-500/20"
               >
-                <Download className="w-4 h-4" />
-                <span>Download Executive Word Dossier</span>
+                <Download className="w-4 h-4 text-dark-950" />
+                <span>Download Canva Master Book (.doc)</span>
               </button>
               <button
                 onClick={handlePrintPdf}
@@ -561,7 +797,7 @@ export default function W3SchoolsSMCAcademy({
           </section>
 
           {/* ============================================================== */}
-          {/* CHAPTER 1 SPECIALIZED SECTION ENGINE (ALL 27 SECTIONS COMPLETE) */}
+          {/* CHAPTER 1 SPECIALIZED SECTION ENGINE (ALL 15 SECTIONS VERBATIM) */}
           {/* ============================================================== */}
           {activeChapterId === 'chapter-1' && (
             <div className="space-y-12">
@@ -603,13 +839,15 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* SECTION 1: INTERACTIVE ORDER BOOK DEPTH SIMULATOR */}
-                  {sec.id === 'ch1-sec1' && (
-                    <OrderBookDepthSimulator />
+                  {/* SECTION 3: INTERACTIVE ORDER BOOK DEPTH SIMULATOR */}
+                  {sec.id === 'ch1-sec3' && (
+                    <div className="my-6 space-y-3">
+                      <OrderBookDepthSimulator />
+                    </div>
                   )}
 
-                  {/* SECTIONS 7 & 8: INTERACTIVE MARKET STRUCTURE EXPLORER */}
-                  {(sec.id === 'ch1-sec7' || sec.id === 'ch1-sec8') && (
+                  {/* SECTION 5: INTERACTIVE MARKET STRUCTURE EXPLORER */}
+                  {sec.id === 'ch1-sec5' && (
                     <div className="my-6 p-6 rounded-2xl bg-[#090d16] border border-[#2a2e39] space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-mono text-amber-400 font-bold uppercase">Market Structure Microstructure</span>
@@ -657,16 +895,38 @@ export default function W3SchoolsSMCAcademy({
                     </div>
                   )}
 
-                  {/* SECTIONS 16 & 17: FAIR VALUE GAP (FVG) HIGH PRECISION VECTOR VIEWER */}
-                  {(sec.id === 'ch1-sec16' || sec.id === 'ch1-sec17') && (
-                    <InstitutionalChartViewer 
-                      type="fvg" 
-                      title="Fair Value Gap (FVG) Microstructure & 50% CE Rebalance" 
-                    />
+                  {/* SECTION 7: LIQUIDITY SWEEP & FAKE BREAKOUT ANATOMY */}
+                  {sec.id === 'ch1-sec7' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="sweep-break" 
+                        title="Figure 1. Liquidity Grab & False Breakout vs Break of Structure" 
+                      />
+                    </div>
                   )}
 
-                  {/* SECTION 25: SEARCHABLE INSTITUTIONAL GLOSSARY */}
-                  {sec.id === 'ch1-sec25' && (
+                  {/* SECTION 12: FAIR VALUE GAP (FVG) HIGH PRECISION VECTOR VIEWER */}
+                  {sec.id === 'ch1-sec12' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fvg" 
+                        title="Figure 2. Fair Value Gap (FVG) Microstructure & 50% CE Rebalance" 
+                      />
+                    </div>
+                  )}
+
+                  {/* SECTION 13: MULTI-TIMEFRAME INTERBANK ALIGNMENT */}
+                  {sec.id === 'ch1-sec13' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="topdown" 
+                        title="Figure 3. Interbank Top-Down Multi-Timeframe Alignment (Daily -> 4H -> 15m)" 
+                      />
+                    </div>
+                  )}
+
+                  {/* SECTION 15: SEARCHABLE INSTITUTIONAL GLOSSARY */}
+                  {sec.id === 'ch1-sec15' && (
                     <div className="my-6 p-6 rounded-2xl bg-[#090d16] border border-[#2a2e39] space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <span className="text-xs font-mono text-amber-400 font-bold uppercase">SMC Glossary Search</span>
@@ -781,6 +1041,9 @@ export default function W3SchoolsSMCAcademy({
                   })}
                 </div>
               </div>
+
+              {/* CHAPTER 1 INTERACTIVE BACKTESTING PUZZLE GAME */}
+              <SMCPuzzleGame chapterId="chapter-1" />
 
             </div>
           )}
@@ -1085,6 +1348,9 @@ export default function W3SchoolsSMCAcademy({
                   })}
                 </div>
               </div>
+
+              {/* CHAPTER 2 INTERACTIVE BACKTESTING PUZZLE GAME */}
+              <SMCPuzzleGame chapterId="chapter-2" />
 
             </div>
           )}
