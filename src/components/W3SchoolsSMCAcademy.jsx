@@ -141,11 +141,11 @@ export default function W3SchoolsSMCAcademy({
 
       // Headings & Quotes
       if (trimmed.startsWith('### ')) {
-        out.push(`<h4 style="color: #b45309; font-family: Georgia, serif; font-size: 13pt; margin-top: 22px; margin-bottom: 8px;">${trimmed.substring(4)}</h4>`);
+        out.push(`<h4 style="color: #b45309; font-family: Georgia, serif; font-size: 13pt; margin-top: 22px; margin-bottom: 8px; font-weight: bold;">${trimmed.substring(4)}</h4>`);
       } else if (trimmed.startsWith('## ')) {
-        out.push(`<h3 style="color: #0f172a; font-family: Georgia, serif; font-size: 15pt; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">${trimmed.substring(3)}</h3>`);
+        out.push(`<h3 style="color: #0f172a; font-family: Georgia, serif; font-size: 15pt; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; font-weight: bold;">${trimmed.substring(3)}</h3>`);
       } else if (trimmed.startsWith('# ')) {
-        out.push(`<h2 style="color: #0f172a; font-family: Georgia, serif; font-size: 18pt; margin-top: 34px; margin-bottom: 12px;">${trimmed.substring(2)}</h2>`);
+        out.push(`<h2 style="color: #0f172a; font-family: Georgia, serif; font-size: 18pt; margin-top: 34px; margin-bottom: 12px; font-weight: bold;">${trimmed.substring(2)}</h2>`);
       } else if (trimmed.startsWith('> ')) {
         const quoteText = trimmed.substring(2)
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -176,24 +176,117 @@ export default function W3SchoolsSMCAcademy({
     return out.join('\n');
   };
 
-  // Handle Export to Luxury Canva-Style Master Book (.doc)
+  // Handle Export to Luxury Canva-Style Master Book (.doc) - 100% Complete & Unabridged
   const handleExportWord = () => {
     const sections = currentChapter.sections || [];
     
     // Build Table of Contents HTML
     const tocRows = sections.map((sec) => `
-      <div style="margin: 10px 0; font-size: 11pt; border-bottom: 1px dotted #cbd5e1; padding-bottom: 4px;">
+      <div style="margin: 10px 0; font-size: 11pt; border-bottom: 1px dotted #cbd5e1; padding-bottom: 5px;">
         <span style="font-weight: bold; color: #b45309; font-family: Consolas, monospace; margin-right: 12px;">SECTION ${sec.num}</span>
         <span style="font-weight: 600; color: #0f172a;">${sec.title}</span>
+        ${sec.subsections && sec.subsections.length > 0 ? `
+          <div style="margin-left: 28px; margin-top: 4px; font-size: 9pt; color: #64748b;">
+            ${sec.subsections.map(sub => `&bull; ${sub.title}`).join(' &nbsp;|&nbsp; ')}
+          </div>
+        ` : ''}
       </div>
     `).join('\n');
 
-    // Build Section Bodies HTML
+    // Build Section Bodies HTML - Including FULL content, tables, and ALL subsections!
     const sectionsHtml = sections.map((sec, idx) => {
-      const convertedContent = convertMdToBookHtml(sec.content);
-      const isFirst = idx === 0;
+      const convertedContent = convertMdToBookHtml(sec.content || '');
+      
+      // Main section table if present
+      let sectionTableHtml = '';
+      if (sec.table && sec.table.headers && sec.table.rows) {
+        sectionTableHtml = `
+          <div style="margin: 20px 0;">
+            <table style="border-collapse: collapse; width: 100%; margin: 15px 0; font-family: Segoe UI, sans-serif; font-size: 10pt;">
+              <thead>
+                <tr style="background-color: #0f172a; color: #ffffff;">
+                  ${sec.table.headers.map(h => `<th style="border: 1px solid #334155; padding: 10px 14px; text-align: left; font-weight: bold;">${h}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${sec.table.rows.map((row, rIdx) => `
+                  <tr style="background-color: ${rIdx % 2 === 0 ? '#f8fafc' : '#ffffff'};">
+                    ${row.map((cell, cIdx) => `<td style="border: 1px solid #cbd5e1; padding: 9px 12px; ${cIdx === 0 ? 'font-weight: bold; color: #0f172a;' : 'color: #334155;'}">${cell}</td>`).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // Subsections HTML (rendered if content is not already in sec.content)
+      let subsectionsHtml = '';
+      if (sec.subsections && sec.subsections.length > 0) {
+        subsectionsHtml = sec.subsections.map((sub) => {
+          const subTextSnippet = (sub.content || '').substring(0, 35);
+          const isAlreadyInMain = subTextSnippet && sec.content && sec.content.includes(subTextSnippet);
+          
+          let subContentHtml = '';
+          if (!isAlreadyInMain) {
+            subContentHtml = convertMdToBookHtml(sub.content || '');
+          }
+
+          let subTableHtml = '';
+          if (sub.table && sub.table.headers && sub.table.rows) {
+            subTableHtml = `
+              <div style="margin: 15px 0;">
+                <table style="border-collapse: collapse; width: 100%; margin: 12px 0; font-family: Segoe UI, sans-serif; font-size: 9.5pt;">
+                  <thead>
+                    <tr style="background-color: #1e293b; color: #f59e0b;">
+                      ${sub.table.headers.map(h => `<th style="border: 1px solid #334155; padding: 9px 12px; text-align: left;">${h}</th>`).join('')}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${sub.table.rows.map((r, ri) => `
+                      <tr style="background-color: ${ri % 2 === 0 ? '#f8fafc' : '#ffffff'};">
+                        ${r.map(c => `<td style="border: 1px solid #cbd5e1; padding: 8px 10px; color: #334155;">${c}</td>`).join('')}
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+
+          let subChecklistHtml = '';
+          if (sub.checklist && sub.checklist.length > 0) {
+            subChecklistHtml = `
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px 18px; margin: 14px 0;">
+                <div style="font-weight: bold; color: #059669; font-size: 10pt; margin-bottom: 8px;">Institutional Checklist:</div>
+                ${sub.checklist.map(item => `
+                  <div style="margin: 6px 0; font-size: 10pt; color: #1e293b;">
+                    &#9745; ${item}
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
+
+          if (isAlreadyInMain && !subTableHtml && !subChecklistHtml) {
+            return '';
+          }
+
+          return `
+            <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1;">
+              <h3 style="font-family: Georgia, serif; font-size: 14pt; color: #b45309; margin: 0 0 10px 0; font-weight: 700;">
+                ${sub.title}
+              </h3>
+              ${subContentHtml}
+              ${subTableHtml}
+              ${subChecklistHtml}
+            </div>
+          `;
+        }).join('\n');
+      }
+
       return `
-        <div style="margin-top: 40px; ${isFirst ? '' : 'page-break-before: always;'}">
+        <div style="margin-top: 40px; page-break-before: always;">
           <div style="display: inline-block; background-color: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-family: Consolas, monospace; font-size: 9.5pt; font-weight: bold; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px;">
             Chapter ${currentChapter.badge.replace(/\D/g, '') || '01'} &bull; Section ${sec.num}
           </div>
@@ -201,16 +294,64 @@ export default function W3SchoolsSMCAcademy({
             ${sec.title}
           </h2>
           ${sec.summary ? `
-            <div style="background-color: #f0fdf4; border-left: 4px solid #10b981; padding: 12px 18px; margin: 16px 0 24px 0; font-size: 10pt; color: #065f46; font-style: italic;">
+            <div style="background-color: #f0fdf4; border-left: 4px solid #10b981; padding: 12px 18px; margin: 16px 0 24px 0; font-size: 10.5pt; color: #065f46; font-style: italic;">
               <strong>Executive Summary:</strong> ${sec.summary}
             </div>
           ` : ''}
           <div class="section-content">
             ${convertedContent}
+            ${sectionTableHtml}
+            ${subsectionsHtml}
           </div>
         </div>
       `;
     }).join('\n');
+
+    // Build Quiz & Assessment Appendix HTML
+    const quizHtml = `
+      <div style="margin-top: 50px; page-break-before: always; border-top: 3px solid #f59e0b; padding-top: 30px;">
+        <h2 style="font-family: Georgia, serif; font-size: 22pt; color: #0f172a; text-transform: uppercase; font-weight: bold;">
+          Appendix A &bull; Institutional Knowledge Examination
+        </h2>
+        <p style="font-style: italic; color: #64748b; margin-bottom: 25px;">Verified assessment criteria from the institutional syllabus.</p>
+        ${(currentChapter.quiz || []).map((q, qIdx) => `
+          <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 16px 20px; margin: 16px 0;">
+            <div style="font-weight: bold; color: #0f172a; font-size: 11pt; margin-bottom: 10px;">
+              Question ${qIdx + 1}: ${q.question}
+            </div>
+            <ul style="margin: 0 0 12px 20px; padding: 0; color: #334155; font-size: 10pt;">
+              ${q.options.map((opt, oIdx) => `
+                <li style="margin-bottom: 4px; ${oIdx === q.correctIndex ? 'font-weight: bold; color: #047857;' : ''}">
+                  ${String.fromCharCode(65 + oIdx)}) ${opt} ${oIdx === q.correctIndex ? '<strong>(Correct Institutional Answer)</strong>' : ''}
+                </li>
+              `).join('')}
+            </ul>
+            <div style="background-color: #ecfdf5; border-left: 3px solid #10b981; padding: 10px 14px; font-size: 9.5pt; color: #065f46;">
+              <strong>Institutional Rationale:</strong> ${q.explanation}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    // Build Backtesting & Memory Rhymes Appendix HTML
+    const puzzlesHtml = `
+      <div style="margin-top: 40px; page-break-before: always;">
+        <h2 style="font-family: Georgia, serif; font-size: 22pt; color: #0f172a; text-transform: uppercase; font-weight: bold;">
+          Appendix B &bull; Backtesting Framework & Memory Rhymes
+        </h2>
+        <div style="background-color: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 6px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: #b45309; margin-top: 0; font-family: Georgia, serif; font-size: 14pt;">Institutional Memory Tricks & Trading Axioms:</h3>
+          <ul style="line-height: 2; font-size: 11pt; color: #78350f;">
+            <li><strong>The Liquidity Law:</strong> <em>"Your stop is their entry."</em></li>
+            <li><strong>The Validation Axiom:</strong> <em>"Wick is a sweep, close is a break &mdash; wait for the body for safety's sake."</em></li>
+            <li><strong>The Fair Value Gap (FVG):</strong> <em>"Candle 1 and Candle 3 don't meet &mdash; Smart Money fills the empty street."</em></li>
+            <li><strong>The Red Line Rule:</strong> <em>"No close below the red line base means don't you mark a swing in haste."</em></li>
+            <li><strong>Capital Preservation:</strong> <em>"Protect your capital first and last &mdash; let retail traders blow their cash."</em></li>
+          </ul>
+        </div>
+      </div>
+    `;
 
     const formattedHtml = `
       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -342,11 +483,11 @@ export default function W3SchoolsSMCAcademy({
           
           <div class="meta-box">
             <div><strong>AUTHOR:</strong> ${currentChapter.author} &bull; <strong>DATE:</strong> ${currentChapter.date}</div>
-            <div style="margin-top: 6px;"><strong>CURRICULUM:</strong> ${currentChapter.badge} &bull; <strong>LEVEL:</strong> INSTITUTIONAL MASTERCLASS</div>
+            <div style="margin-top: 6px;"><strong>CURRICULUM:</strong> ${currentChapter.badge} &bull; <strong>LEVEL:</strong> INSTITUTIONAL MASTERCLASS &bull; <strong>TOTAL SECTIONS:</strong> ${sections.length}</div>
           </div>
 
           <div>
-            <span class="seal-badge">&star; CERTIFIED HIGH-CONVICTION STUDY DOSSIER &star;</span>
+            <span class="seal-badge">&star; CERTIFIED HIGH-CONVICTION STUDY DOSSIER &bull; UNABRIDGED &star;</span>
           </div>
         </div>
 
@@ -363,7 +504,13 @@ export default function W3SchoolsSMCAcademy({
           ${sectionsHtml}
         </div>
 
-        <!-- 4. OFFICIAL VERIFICATION & PROVENANCE STAMP -->
+        <!-- 4. APPENDIX A: KNOWLEDGE EVALUATION EXAMINATION -->
+        ${quizHtml}
+
+        <!-- 5. APPENDIX B: BACKTESTING PUZZLES & MEMORY RHYMES -->
+        ${puzzlesHtml}
+
+        <!-- 6. OFFICIAL VERIFICATION & PROVENANCE STAMP -->
         <div class="footer-note">
           <p><strong>Nexa Ecosystem Institutional Forex & SMC Master Academy</strong> &bull; Strict Academic & Educational Distribution</p>
           <p style="font-size: 8.5pt; color: #94a3b8;">Original Transcript & Syllabus Verified by Roman & Nexa Institutional Trading Desk &bull; All Rights Reserved 2026</p>
@@ -838,6 +985,32 @@ export default function W3SchoolsSMCAcademy({
 
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
+
+                  {/* Structured Table (if present) */}
+                  {sec.table && (
+                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                            {sec.table.headers.map((h, i) => (
+                              <th key={i} className="p-3">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#2a2e39]/60">
+                          {sec.table.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
 
                   {/* SECTION 3: INTERACTIVE ORDER BOOK DEPTH SIMULATOR */}
                   {sec.id === 'ch1-sec3' && (
