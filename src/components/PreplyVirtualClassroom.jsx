@@ -175,10 +175,12 @@ Assigned Practice:
     const ctx = canvas.getContext('2d');
 
     const updateCanvasSize = () => {
+      if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
+      const targetWidth = Math.max(Math.floor(rect.width), 480);
+      const targetHeight = Math.max(Math.floor(rect.height), 420);
       
-      if (canvas.width !== rect.width || canvas.height !== rect.height) {
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
         let imgData = null;
         try {
           if (canvas.width > 0 && canvas.height > 0) {
@@ -187,8 +189,8 @@ Assigned Practice:
         } catch (e) {
           // Ignore read error on empty canvas
         }
-        canvas.width = rect.width;
-        canvas.height = rect.height;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         if (imgData) {
@@ -198,9 +200,13 @@ Assigned Practice:
     };
 
     updateCanvasSize();
+    const timer = setTimeout(updateCanvasSize, 120);
     window.addEventListener('resize', updateCanvasSize);
-    return () => window.removeEventListener('resize', updateCanvasSize);
-  }, [activeLayout]);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateCanvasSize);
+    };
+  }, [activeLayout, boardTheme]);
 
   // Keep screen stream attached to video element if active
   useEffect(() => {
@@ -540,10 +546,10 @@ Assigned Practice:
       </div>
 
       {/* 2. MAIN INTERACTIVE STAGE & COLLABORATIVE WORKSPACE */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+      <div className="flex-1 min-h-[600px] grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
         
         {/* LEFT / CENTER: ACTIVE STAGE (Blackboard, Chrome Screen Share, or Dual Studio) */}
-        <div className="lg:col-span-8 xl:col-span-9 flex flex-col h-full bg-[#050814] border-r border-[#1e293b] relative overflow-hidden">
+        <div className="lg:col-span-8 xl:col-span-9 flex flex-col h-full min-h-[580px] bg-[#050814] border-r border-[#1e293b] relative overflow-hidden">
           
           {/* Top Academic Toolbar: Blackboard Instruments */}
           <div className="px-3 sm:px-5 py-2 bg-[#090f20] border-b border-[#1e293b] flex flex-wrap items-center justify-between gap-2 z-10 text-xs font-mono">
@@ -705,11 +711,11 @@ Assigned Practice:
           </div>
 
           {/* Active Work Area: Supports Split Studio, Full Blackboard, or Full Screen Share */}
-          <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col md:flex-row">
+          <div className="relative flex-1 min-h-[500px] w-full h-full overflow-hidden flex flex-col md:flex-row">
             
             {/* STAGE PANE A: CHROME SCREEN SHARE & ACADEMIC SLIDES (Visible in 'screenshare' or 'split') */}
             {(activeLayout === 'screenshare' || activeLayout === 'split') && (
-              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full flex flex-col bg-[#050914] overflow-hidden`}>
+              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full min-h-[460px] flex flex-col bg-[#050914] overflow-hidden`}>
                 
                 {/* Screen Share Stage Navigation Header */}
                 <div className="px-3 py-2 bg-[#0a1124] border-b border-[#1e293b] flex items-center justify-between text-xs font-mono">
@@ -922,13 +928,13 @@ Assigned Practice:
 
             {/* STAGE PANE B: DIGITAL BLACKBOARD (Visible in 'blackboard' or 'split') */}
             {(activeLayout === 'blackboard' || activeLayout === 'split') && (
-              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2' : 'w-full'} h-full relative flex items-center justify-center overflow-hidden`}>
+              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2' : 'w-full'} h-full min-h-[460px] relative flex items-center justify-center overflow-hidden`}>
                 
                 {/* Chalkboard Outer Wooden Frame Trim with Walnut Gradient */}
-                <div className="w-full h-full p-2 sm:p-3 bg-gradient-to-br from-[#2a1708] via-[#1b1007] to-[#0d0703] flex items-center justify-center">
+                <div className="w-full h-full min-h-[440px] p-2 sm:p-3 bg-gradient-to-br from-[#2a1708] via-[#1b1007] to-[#0d0703] flex items-center justify-center">
                   
                   {/* Chalkboard Slate Canvas Frame */}
-                  <div className={`w-full h-full rounded-2xl relative overflow-hidden border-[3px] border-[#3d2311] shadow-[inset_0_4px_12px_rgba(0,0,0,0.8)] ${
+                  <div className={`w-full h-full min-h-[400px] rounded-2xl relative overflow-hidden border-[3px] border-[#3d2311] shadow-[inset_0_4px_12px_rgba(0,0,0,0.8)] ${
                     boardTheme === 'chalkboard-green' 
                       ? 'bg-[#091b15]' 
                       : boardTheme === 'grid'
@@ -945,7 +951,7 @@ Assigned Practice:
                       onTouchStart={startDrawing}
                       onTouchMove={draw}
                       onTouchEnd={stopDrawing}
-                      className="w-full h-full cursor-crosshair touch-none"
+                      className="w-full h-full min-h-[400px] cursor-crosshair touch-none"
                     />
 
                     {/* Classic Collegiate Slate Watermark */}
