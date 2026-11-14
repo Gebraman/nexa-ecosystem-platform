@@ -27,12 +27,21 @@ import {
   Square,
   Circle,
   Minus,
-  Palette
+  Palette,
+  Columns,
+  Layers,
+  GraduationCap,
+  Award,
+  BookOpen,
+  ChevronRight,
+  TrendingUp,
+  Cpu
 } from 'lucide-react';
 
 export default function PreplyVirtualClassroom({ 
   mentorName = 'Ermias Tadesse', 
-  mentorRole = 'B.Sc. Electrical & Computer Engineering (Honors), AAU',
+  mentorRole = 'B.Sc. Electrical & Computer Engineering (Honors Graduate)',
+  mentorBadge = 'Nexa Senior Academic Fellow',
   subject = 'Mathematics & Advanced Calculus', 
   gradeLevel = 'Grades 9–12 (High School & Prep)',
   onCloseClassroom 
@@ -43,45 +52,102 @@ export default function PreplyVirtualClassroom({
   const [tool, setTool] = useState('pen'); // 'pen', 'highlighter', 'line', 'rectangle', 'circle', 'eraser'
   const [color, setColor] = useState('#ffffff');
   const [lineWidth, setLineWidth] = useState(3);
-  const [boardTheme, setBoardTheme] = useState('chalkboard'); // 'chalkboard', 'grid', 'dots', 'clean'
+  const [boardTheme, setBoardTheme] = useState('chalkboard-green'); // 'chalkboard-green', 'chalkboard-slate', 'grid'
   const [history, setHistory] = useState([]);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
-  // Media Call State
+  // Media & Screen Sharing State
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [screenStream, setScreenStream] = useState(null);
   const screenVideoRef = useRef(null);
-  const [activeLayout, setActiveLayout] = useState('blackboard'); // 'blackboard', 'screenshare', 'dual'
+  const [activeLayout, setActiveLayout] = useState('split'); // 'blackboard', 'screenshare', 'split'
+  const [screenShareSourceType, setScreenShareSourceType] = useState('chrome-window'); // 'chrome-window', 'slides', 'grapher'
+  const [selectedSlideIndex, setSelectedSlideIndex] = useState(0);
 
-  // Timer State (50 min session)
+  // Grapher Simulation Parameters
+  const [graphA, setGraphA] = useState(1);
+  const [graphB, setGraphB] = useState(-4);
+  const [graphC, setGraphC] = useState(3);
+
+  // Timer State (50 min academic period)
   const [timeLeft, setTimeLeft] = useState(3000); // 50 mins = 3000 sec
   const [isTimerRunning, setIsTimerRunning] = useState(true);
 
-  // Chat State
+  // Chat & Notes State
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
       sender: 'mentor',
       name: mentorName,
       time: 'Just now',
-      text: `Hello and welcome! I have set up our interactive blackboard for ${subject}. Let's write out the problem steps together!`
+      text: `Welcome to your Nexa 1-on-1 Academic Session for ${subject}! I have prepared our interactive blackboard and problem curriculum sheet. Let's begin!`
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
-  const [activeSidebarTab, setActiveSidebarTab] = useState('chat'); // 'chat', 'notes', 'problems'
+  const [activeSidebarTab, setActiveSidebarTab] = useState('chat'); // 'chat', 'notes', 'theorems'
   const [sharedNotes, setSharedNotes] = useState(
-`### 1-on-1 Lesson Notes & Formulas
-- Topic: ${subject} (${gradeLevel})
-- Key Takeaways:
-  1. Derivative Power Rule: d/dx [x^n] = n * x^(n-1)
-  2. Product Rule: d/dx [u*v] = u'*v + u*v'
-  3. Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)
-- Homework Problem: Differentiate f(x) = (3x^2 + 2x)^4 for next Thursday.`
+`### Nexa Academic 1-on-1 Lesson Notes
+- Student: Nexa Scholar
+- Mentor: ${mentorName} (${mentorBadge})
+- Course: ${subject} (${gradeLevel})
+
+Key Mathematical Principles:
+1. Differential Power Rule: d/dx [x^n] = n * x^(n-1)
+2. Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)
+3. Critical Points: Set f'(x) = 0 and solve for x.
+4. Second Derivative Concavity Test: f''(x) > 0 => Local Minimum; f''(x) < 0 => Local Maximum.
+
+Assigned Practice:
+- Differentiate f(x) = (2x^3 - 5x)^4 and verify local extrema on [0, 5].`
   );
 
-  // Math Stamps
+  // Academic STEM Slides Bank
+  const academicSlides = [
+    {
+      id: 'calc-opt',
+      title: 'Calculus: Area Optimization & Tangents',
+      badge: 'High School & Prep Unit 3',
+      question: 'A rectangular pasture is bounded on one side by a straight river and by 2,400 feet of fencing on the other three sides. What dimensions enclose maximum area?',
+      formula: 'Area A(x) = x(2400 - 2x) = 2400x - 2x²',
+      derivative: "A'(x) = 2400 - 4x = 0  =>  x = 600 ft, Length = 1200 ft",
+      maxArea: 'Maximum Area = 600 × 1200 = 720,000 sq ft',
+      highlight: 'Notice how setting the first derivative to zero directly pinpointed the global maximum.'
+    },
+    {
+      id: 'physics-kin',
+      title: 'Physics Mechanics: Uniform Acceleration & Vectors',
+      badge: 'STEM Physical Sciences',
+      question: 'A vehicle accelerates uniformly from rest at 4.0 m/s² for 8 seconds. Determine final velocity and displacement.',
+      formula: 'Kinematics: v = u + at  and  s = ut + ½at²',
+      derivative: 'v = 0 + (4.0)(8) = 32 m/s',
+      maxArea: 'Displacement s = 0 + 0.5(4.0)(8²) = 128 meters',
+      highlight: 'Displacement is the definite integral of velocity over the time interval [0, 8].'
+    },
+    {
+      id: 'chem-stoich',
+      title: 'General Chemistry: Stoichiometry & Combustion',
+      badge: 'Chemical Sciences',
+      question: 'Calculate grams of carbon dioxide produced when 44g of propane (C3H8) undergoes complete combustion.',
+      formula: 'Balanced Reaction: C3H8 + 5O2 -> 3CO2 + 4H2O',
+      derivative: 'Molar Mass C3H8 = 44.1 g/mol  =>  44g ≈ 1.00 mol',
+      maxArea: '1 mol C3H8 yields 3 mol CO2 => 3 × 44.01g = 132g CO2',
+      highlight: 'Molar conservation guarantees mass balance across reactants and products.'
+    },
+    {
+      id: 'sat-algebra',
+      title: 'SAT Advanced Math: Parabola Vertex & Discriminant',
+      badge: 'SAT & College Prep',
+      question: 'Find the vertex and number of real roots for f(x) = 2x² - 8x + 6.',
+      formula: 'Discriminant Δ = b² - 4ac = (-8)² - 4(2)(6) = 64 - 48 = 16 > 0 (2 Real Roots)',
+      derivative: 'Vertex x-coordinate: h = -b / (2a) = 8 / 4 = 2',
+      maxArea: 'Vertex Coordinates: (2, f(2)) = (2, -2)',
+      highlight: 'Since a > 0, the vertex is an absolute minimum at (2, -2).'
+    }
+  ];
+
+  // STEM Math Stamps
   const mathStamps = [
     { label: 'dy/dx', symbol: 'dy/dx' },
     { label: '∫ f(x)dx', symbol: '∫ f(x)dx' },
@@ -93,24 +159,39 @@ export default function PreplyVirtualClassroom({
     { label: 'y = mx + b', symbol: 'y = mx + b' }
   ];
 
+  // Chalk Colors (Academic Palette)
+  const chalkPalette = [
+    { label: 'Chalk White', hex: '#ffffff' },
+    { label: 'Academic Gold', hex: '#fbbf24' },
+    { label: 'Cambridge Cyan', hex: '#67e8f9' },
+    { label: 'Ivy Emerald', hex: '#86efac' },
+    { label: 'Coral Rose', hex: '#fda4af' }
+  ];
+
   // Initialize Canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // Set canvas dimensions
     const updateCanvasSize = () => {
       const rect = canvas.getBoundingClientRect();
-      // Only resize if different to avoid clearing
+      if (rect.width === 0 || rect.height === 0) return;
+      
       if (canvas.width !== rect.width || canvas.height !== rect.height) {
-        // Save current contents
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let imgData = null;
+        try {
+          if (canvas.width > 0 && canvas.height > 0) {
+            imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          }
+        } catch (e) {
+          // Ignore read error on empty canvas
+        }
         canvas.width = rect.width;
         canvas.height = rect.height;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        if (imgData.width > 0) {
+        if (imgData) {
           ctx.putImageData(imgData, 0, 0);
         }
       }
@@ -119,7 +200,14 @@ export default function PreplyVirtualClassroom({
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
     return () => window.removeEventListener('resize', updateCanvasSize);
-  }, []);
+  }, [activeLayout]);
+
+  // Keep screen stream attached to video element if active
+  useEffect(() => {
+    if (screenVideoRef.current && screenStream) {
+      screenVideoRef.current.srcObject = screenStream;
+    }
+  }, [screenStream, isScreenSharing, activeLayout, screenShareSourceType]);
 
   // Timer countdown
   useEffect(() => {
@@ -141,6 +229,7 @@ export default function PreplyVirtualClassroom({
   // Drawing Handlers
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     if (e.touches && e.touches[0]) {
       return {
@@ -160,6 +249,7 @@ export default function PreplyVirtualClassroom({
     setStartPos({ x, y });
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
     // Save state for undo
@@ -174,11 +264,15 @@ export default function PreplyVirtualClassroom({
   const draw = (e) => {
     if (!isDrawing) return;
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const { x, y } = getCoordinates(e);
 
+    const isGreenBoard = boardTheme === 'chalkboard-green';
+    const bgEraserColor = isGreenBoard ? '#091b15' : '#0a1020';
+
     ctx.lineWidth = tool === 'eraser' ? lineWidth * 4 : tool === 'highlighter' ? lineWidth * 3 : lineWidth;
-    ctx.strokeStyle = tool === 'eraser' ? '#090d16' : color;
+    ctx.strokeStyle = tool === 'eraser' ? bgEraserColor : color;
     ctx.globalAlpha = tool === 'highlighter' ? 0.35 : 1.0;
 
     if (tool === 'pen' || tool === 'highlighter' || tool === 'eraser') {
@@ -190,6 +284,7 @@ export default function PreplyVirtualClassroom({
   const stopDrawing = (e) => {
     if (!isDrawing) return;
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const { x, y } = getCoordinates(e);
 
@@ -216,6 +311,7 @@ export default function PreplyVirtualClassroom({
 
   const clearBoard = () => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
@@ -226,6 +322,7 @@ export default function PreplyVirtualClassroom({
     setHistory(prev => prev.slice(0, -1));
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const img = new Image();
     img.src = previousState;
@@ -237,53 +334,70 @@ export default function PreplyVirtualClassroom({
 
   const stampMathSymbol = (symbol) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.font = 'bold 20px "Courier New", monospace';
+    ctx.font = 'bold 22px "Times New Roman", serif';
     ctx.fillStyle = color;
-    ctx.fillText(symbol, 80 + Math.random() * 200, 100 + Math.random() * 200);
+    ctx.fillText(symbol, 60 + Math.random() * 150, 80 + Math.random() * 150);
   };
 
   const downloadBoardImage = () => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const link = document.createElement('a');
-    link.download = `AAU_Mentorship_Blackboard_${subject.replace(/\s+/g, '_')}.png`;
+    link.download = `Nexa_Academic_Blackboard_${subject.replace(/\s+/g, '_')}.png`;
     link.href = canvas.toDataURL();
     link.click();
   };
 
-  // Screen Sharing Toggle
+  // Real Chrome Screen Sharing Handler
   const toggleScreenShare = async () => {
-    if (isScreenSharing) {
-      if (screenStream) {
-        screenStream.getTracks().forEach(track => track.stop());
-      }
+    if (isScreenSharing && screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
       setScreenStream(null);
       setIsScreenSharing(false);
-      setActiveLayout('blackboard');
+      setScreenShareSourceType('slides');
     } else {
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
-          const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+              cursor: 'always',
+              displaySurface: 'browser'
+            },
+            audio: false
+          });
+
           setScreenStream(stream);
           setIsScreenSharing(true);
-          setActiveLayout('screenshare');
+          setScreenShareSourceType('chrome-window');
+          if (activeLayout === 'blackboard') {
+            setActiveLayout('split');
+          }
+
           if (screenVideoRef.current) {
             screenVideoRef.current.srcObject = stream;
           }
-          stream.getVideoTracks()[0].onended = () => {
-            setIsScreenSharing(false);
-            setScreenStream(null);
-            setActiveLayout('blackboard');
-          };
+
+          const videoTrack = stream.getVideoTracks()[0];
+          if (videoTrack) {
+            videoTrack.onended = () => {
+              setIsScreenSharing(false);
+              setScreenStream(null);
+              setScreenShareSourceType('slides');
+            };
+          }
         } else {
-          // Fallback to simulated presentation mode
+          // Fallback to integrated academic slide deck
           setIsScreenSharing(true);
-          setActiveLayout('screenshare');
+          setScreenShareSourceType('slides');
+          if (activeLayout === 'blackboard') setActiveLayout('split');
         }
       } catch (err) {
-        console.warn('Screen share cancelled or unsupported, using presentation slide view:', err);
+        console.warn('Chrome screen sharing dialog dismissed or permission not granted. Showing interactive STEM slide deck:', err);
         setIsScreenSharing(true);
-        setActiveLayout('screenshare');
+        setScreenShareSourceType('slides');
+        if (activeLayout === 'blackboard') setActiveLayout('split');
       }
     }
   };
@@ -295,14 +409,14 @@ export default function PreplyVirtualClassroom({
     const newMsg = {
       id: Date.now(),
       sender: 'student',
-      name: 'You (Student)',
+      name: 'You (Nexa Scholar)',
       time: 'Just now',
       text: inputMessage
     };
     setChatMessages(prev => [...prev, newMsg]);
     setInputMessage('');
 
-    // Simulated mentor automated reply
+    // Simulated mentor automated pedagogical reply
     setTimeout(() => {
       setChatMessages(prev => [
         ...prev,
@@ -311,357 +425,585 @@ export default function PreplyVirtualClassroom({
           sender: 'mentor',
           name: mentorName,
           time: 'Just now',
-          text: `Got it! Let's examine step 2 on the blackboard together.`
+          text: `Insightful question! Look at how we set up the derivative on the blackboard. When we compute f'(x) = 0, notice that the slope of the tangent line becomes strictly horizontal.`
         }
       ]);
-    }, 1500);
+    }, 1400);
   };
 
   return (
-    <div className="rounded-3xl bg-[#070a12] border border-[#2a2e39] overflow-hidden shadow-2xl flex flex-col h-[820px] max-h-[90vh]">
+    <div className="rounded-3xl bg-[#060a16] border border-[#1e293b] overflow-hidden shadow-2xl flex flex-col h-[850px] max-h-[92vh]">
       
-      {/* 1. TOP PREPLY-STYLE SESSION HEADER */}
-      <div className="px-4 py-3 sm:px-6 bg-[#0e131f] border-b border-[#2a2e39] flex flex-wrap items-center justify-between gap-3">
-        {/* Left: Mentor Info & Subject */}
+      {/* 1. TOP PRESTIGIOUS ACADEMIC SESSION HEADER */}
+      <div className="px-4 py-3 sm:px-6 bg-[#0a1128] border-b border-[#1e293b] flex flex-wrap items-center justify-between gap-3">
+        {/* Left: Nexa Faculty Info & Subject */}
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white font-black text-sm">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-300 flex items-center justify-center text-[#0a1128] font-serif font-black text-base shadow-md shadow-amber-900/30">
               {mentorName.split(' ').map(n => n[0]).join('')}
             </div>
-            <span className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#0e131f] absolute -bottom-0.5 -right-0.5" />
+            <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0a1128] absolute -bottom-1 -right-1" />
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-sm sm:text-base font-bold text-white leading-none">
+              <h4 className="text-sm sm:text-base font-serif font-bold text-white leading-none tracking-wide">
                 {mentorName}
               </h4>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 uppercase font-bold hidden sm:inline">
-                AAU Honors
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-800/80 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Award className="w-3 h-3 text-amber-400" />
+                {mentorBadge}
               </span>
             </div>
-            <p className="text-xs text-indigo-400 font-mono mt-0.5 truncate max-w-xs">
-              {subject} • {gradeLevel}
+            <p className="text-xs text-amber-200/80 font-mono mt-1 truncate max-w-sm">
+              {subject} • <span className="text-slate-400">{gradeLevel}</span>
             </p>
           </div>
         </div>
 
-        {/* Center: Live Timer & Mode Pills */}
+        {/* Center: Live Collegiate Timer & Stage Layout Switcher */}
         <div className="flex items-center gap-2">
           {/* Active 50-Min Session Countdown */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#141b2d] border border-[#2a2e39] text-xs font-mono">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0f172a] border border-amber-900/30 text-xs font-mono shadow-inner">
             <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-slate-400 hidden sm:inline">Session Time:</span>
-            <span className="text-white font-bold">{formatTime(timeLeft)}</span>
+            <span className="text-slate-400 hidden sm:inline">Collegiate Period:</span>
+            <span className="text-amber-300 font-bold tracking-widest">{formatTime(timeLeft)}</span>
             <button
               onClick={() => setIsTimerRunning(!isTimerRunning)}
-              className="text-[10px] font-mono text-slate-500 hover:text-white ml-1"
+              className="text-[10px] font-mono text-slate-500 hover:text-white ml-1 underline"
             >
               {isTimerRunning ? 'Pause' : 'Resume'}
             </button>
           </div>
 
-          {/* Layout Mode Selector */}
-          <div className="hidden md:flex bg-[#0a0d16] p-0.5 rounded-xl border border-[#2a2e39] text-xs font-mono">
+          {/* Layout Mode Selector (Blackboard / Split Dual / Screen Share) */}
+          <div className="hidden md:flex items-center bg-[#0d1527] border border-[#1e293b] rounded-xl p-0.5 text-xs font-mono">
             <button
               onClick={() => setActiveLayout('blackboard')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeLayout === 'blackboard' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                activeLayout === 'blackboard'
+                  ? 'bg-amber-500/20 text-amber-300 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
-              Blackboard
+              <PenTool className="w-3 h-3" />
+              <span>Chalkboard</span>
             </button>
+
+            <button
+              onClick={() => setActiveLayout('split')}
+              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                activeLayout === 'split'
+                  ? 'bg-amber-500/20 text-amber-300 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Columns className="w-3 h-3" />
+              <span>Dual Studio</span>
+            </button>
+
             <button
               onClick={() => setActiveLayout('screenshare')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeLayout === 'screenshare' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
+              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                activeLayout === 'screenshare'
+                  ? 'bg-cyan-500/20 text-cyan-300 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
-              Screen Share
-            </button>
-            <button
-              onClick={() => setActiveLayout('dual')}
-              className={`px-2.5 py-1 rounded-lg transition-all ${
-                activeLayout === 'dual' ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Dual Stage
+              <Monitor className="w-3 h-3" />
+              <span>Screen / Slides</span>
             </button>
           </div>
         </div>
 
-        {/* Right: Close / Leave Classroom */}
+        {/* Right: Quick Action Controls & Close */}
         <div className="flex items-center gap-2">
           <button
             onClick={downloadBoardImage}
-            title="Download Blackboard as PNG Image"
-            className="p-2 rounded-xl bg-[#141b2d] border border-[#2a2e39] text-slate-300 hover:text-white transition-colors"
+            title="Download high-resolution blackboard drawing as PNG"
+            className="p-2 rounded-xl bg-[#0f172a] border border-[#1e293b] text-slate-300 hover:text-amber-400 hover:border-amber-500/50 transition-all text-xs flex items-center gap-1"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 text-amber-400" />
+            <span className="hidden xl:inline text-xs font-mono">Save Board</span>
           </button>
 
           {onCloseClassroom && (
             <button
               onClick={onCloseClassroom}
-              className="px-3.5 py-1.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 text-xs font-bold border border-rose-500/30 flex items-center gap-1.5 transition-colors"
+              className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold"
+              title="Leave Virtual Classroom"
             >
-              <X className="w-3.5 h-3.5" />
-              <span>Leave Classroom</span>
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
       </div>
 
-      {/* 2. MAIN VIRTUAL CLASSROOM WORKSPACE */}
+      {/* 2. MAIN INTERACTIVE STAGE & COLLABORATIVE WORKSPACE */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
         
-        {/* LEFT / CENTER: INTERACTIVE BLACKBOARD & SCREEN SHARE STAGE (8 or 9 Cols) */}
-        <div className="lg:col-span-8 xl:col-span-9 flex flex-col border-r border-[#2a2e39] relative bg-[#090d16]">
+        {/* LEFT / CENTER: ACTIVE STAGE (Blackboard, Chrome Screen Share, or Dual Studio) */}
+        <div className="lg:col-span-8 xl:col-span-9 flex flex-col h-full bg-[#050814] border-r border-[#1e293b] relative overflow-hidden">
           
-          {/* Blackboard Toolbar */}
-          <div className="p-2.5 bg-[#0d121e] border-b border-[#2a2e39] flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+          {/* Top Academic Toolbar: Blackboard Instruments */}
+          <div className="px-3 sm:px-5 py-2 bg-[#090f20] border-b border-[#1e293b] flex flex-wrap items-center justify-between gap-2 z-10 text-xs font-mono">
+            
             {/* Drawing Tools */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[10px] font-bold text-amber-400/90 uppercase tracking-wider mr-1 hidden sm:inline">
+                Chalk:
+              </span>
+
               <button
                 onClick={() => setTool('pen')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'pen' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
+                  tool === 'pen'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Pen"
+                title="White/Colored Chalk Pen"
               >
-                <PenTool className="w-4 h-4" />
+                <PenTool className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Pen</span>
               </button>
+
               <button
                 onClick={() => setTool('highlighter')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'highlighter' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
+                  tool === 'highlighter'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Highlighter"
+                title="Luminous STEM Highlighter"
               >
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden md:inline">Highlight</span>
               </button>
+
               <button
                 onClick={() => setTool('line')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'line' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
+                  tool === 'line'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Straight Line"
+                title="Draw Straight Axis / Vector"
               >
-                <Minus className="w-4 h-4" />
+                <Minus className="w-3.5 h-3.5" />
               </button>
+
               <button
                 onClick={() => setTool('rectangle')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'rectangle' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
+                  tool === 'rectangle'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Rectangle"
+                title="Draw Box / Optimization Boundary"
               >
-                <Square className="w-4 h-4" />
+                <Square className="w-3.5 h-3.5" />
               </button>
+
               <button
                 onClick={() => setTool('circle')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'circle' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
+                  tool === 'circle'
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Circle"
+                title="Draw Circle / Orbit / Atom"
               >
-                <Circle className="w-4 h-4" />
+                <Circle className="w-3.5 h-3.5" />
               </button>
+
               <button
                 onClick={() => setTool('eraser')}
-                className={`p-2 rounded-lg transition-colors ${
-                  tool === 'eraser' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white hover:bg-[#151c2c]'
+                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
+                  tool === 'eraser'
+                    ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold'
+                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
                 }`}
-                title="Eraser"
+                title="Chalk Duster Eraser"
               >
-                <Eraser className="w-4 h-4" />
+                <Eraser className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Eraser</span>
               </button>
+
+              {/* Chalk Palette Swatches */}
+              <div className="flex items-center gap-1 pl-1 ml-1 border-l border-[#1e293b]">
+                {chalkPalette.map((cp) => (
+                  <button
+                    key={cp.hex}
+                    onClick={() => setColor(cp.hex)}
+                    style={{ backgroundColor: cp.hex }}
+                    title={cp.label}
+                    className={`w-4 h-4 rounded-full transition-transform ${
+                      color === cp.hex ? 'scale-125 ring-2 ring-amber-400 ring-offset-1 ring-offset-[#090f20]' : 'hover:scale-110'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Color Palette */}
-            <div className="flex items-center gap-1.5 px-2 py-1 bg-[#131929] rounded-lg border border-[#2a2e39]">
-              {['#ffffff', '#38bdf8', '#fbbf24', '#34d399', '#fb7185', '#c084fc'].map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setColor(c)}
-                  className={`w-5 h-5 rounded-full border transition-transform ${
-                    color === c ? 'scale-125 border-white shadow' : 'border-transparent hover:scale-110'
-                  }`}
-                  style={{ backgroundColor: c }}
-                  title={`Select Color ${c}`}
-                />
-              ))}
-            </div>
-
-            {/* Brush Size */}
-            <div className="hidden sm:flex items-center gap-1.5">
-              <span className="text-[10px] text-slate-500">Width:</span>
-              {[2, 5, 10].map(w => (
-                <button
-                  key={w}
-                  onClick={() => setLineWidth(w)}
-                  className={`px-2 py-0.5 rounded text-[11px] ${
-                    lineWidth === w ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {w}px
-                </button>
-              ))}
-            </div>
-
-            {/* Board Background Grid Toggle */}
-            <div className="flex items-center gap-1">
+            {/* Board Background Texture Selector & Clear */}
+            <div className="flex items-center gap-1.5">
               <button
-                onClick={() => setBoardTheme(boardTheme === 'grid' ? 'chalkboard' : 'grid')}
-                className={`p-1.5 rounded-lg border transition-colors flex items-center gap-1 text-[11px] ${
-                  boardTheme === 'grid' ? 'bg-indigo-600 border-indigo-500 text-white' : 'border-[#2a2e39] text-slate-400 hover:text-white'
-                }`}
-                title="Toggle Math Graph Paper Grid"
+                onClick={() => setBoardTheme(boardTheme === 'chalkboard-green' ? 'chalkboard-slate' : 'chalkboard-green')}
+                className="px-2 py-1 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[11px] text-slate-300 hover:text-amber-300 flex items-center gap-1"
+                title="Toggle Oxford Slate Green vs Cambridge Midnight Slate"
               >
-                <Grid className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Math Grid</span>
+                <div 
+                  className={`w-2.5 h-2.5 rounded-full ${boardTheme === 'chalkboard-green' ? 'bg-emerald-600' : 'bg-slate-700'}`} 
+                />
+                <span className="hidden sm:inline">
+                  {boardTheme === 'chalkboard-green' ? 'Oxford Green' : 'Midnight Slate'}
+                </span>
               </button>
+
               <button
                 onClick={undoLast}
-                className="p-1.5 rounded-lg border border-[#2a2e39] text-slate-400 hover:text-white transition-colors"
-                title="Undo Stroke"
+                disabled={history.length === 0}
+                className={`p-1 sm:px-2 sm:py-1 rounded-lg border text-[11px] flex items-center gap-1 ${
+                  history.length > 0
+                    ? 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
+                    : 'opacity-40 border-[#1e293b] text-slate-600 cursor-not-allowed'
+                }`}
+                title="Undo last chalk stroke"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3 h-3" />
+                <span className="hidden sm:inline">Undo</span>
               </button>
+
               <button
                 onClick={clearBoard}
-                className="p-1.5 rounded-lg border border-[#2a2e39] text-rose-400 hover:bg-rose-950/40 transition-colors"
-                title="Clear Entire Blackboard"
+                className="p-1 sm:px-2 sm:py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 text-[11px] flex items-center gap-1"
+                title="Clear entire blackboard"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3 h-3 text-rose-400" />
+                <span className="hidden sm:inline">Clear</span>
               </button>
             </div>
+
           </div>
 
-          {/* Quick Math / STEM Stamps Bar */}
-          <div className="px-3 py-1.5 bg-[#0a0e17] border-b border-[#2a2e39] flex items-center gap-2 overflow-x-auto text-[11px] font-mono scrollbar-thin">
-            <span className="text-slate-500 text-[10px] uppercase shrink-0">STEM Stamps:</span>
-            {mathStamps.map((st, i) => (
+          {/* Quick Mathematical & STEM Stamp Bar */}
+          <div className="px-3 sm:px-5 py-1.5 bg-[#070b18] border-b border-[#1e293b] flex items-center gap-1.5 overflow-x-auto scrollbar-none z-10 text-[11px] font-serif">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+              <GraduationCap className="w-3 h-3 text-amber-400" />
+              Formula Stamps:
+            </span>
+            {mathStamps.map((st) => (
               <button
-                key={i}
+                key={st.label}
                 onClick={() => stampMathSymbol(st.symbol)}
-                className="px-2 py-0.5 rounded-md bg-[#131929] hover:bg-indigo-950 border border-[#2a2e39] hover:border-indigo-500/40 text-indigo-300 hover:text-white shrink-0 transition-colors"
+                className="px-2 py-0.5 rounded-md bg-[#0f172a] border border-[#1e293b] text-slate-300 hover:text-amber-300 hover:border-amber-500/40 shrink-0 transition-colors"
+                title={`Stamp ${st.symbol} onto board`}
               >
                 {st.label}
               </button>
             ))}
           </div>
 
-          {/* The Active Stage Canvas / Screen Share Area */}
-          <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center">
+          {/* Active Work Area: Supports Split Studio, Full Blackboard, or Full Screen Share */}
+          <div className="relative flex-1 w-full h-full overflow-hidden flex flex-col md:flex-row">
             
-            {/* View 1: Blackboard Canvas */}
-            <div className={`w-full h-full relative ${activeLayout === 'screenshare' ? 'hidden' : 'block'}`}>
-              <canvas
-                ref={canvasRef}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={startDrawing}
-                onTouchMove={draw}
-                onTouchEnd={stopDrawing}
-                className={`w-full h-full cursor-crosshair ${
-                  boardTheme === 'grid'
-                    ? 'bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] bg-[#090d16]'
-                    : 'bg-[#090d16]'
-                }`}
-              />
+            {/* STAGE PANE A: CHROME SCREEN SHARE & ACADEMIC SLIDES (Visible in 'screenshare' or 'split') */}
+            {(activeLayout === 'screenshare' || activeLayout === 'split') && (
+              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full flex flex-col bg-[#050914] overflow-hidden`}>
+                
+                {/* Screen Share Stage Navigation Header */}
+                <div className="px-3 py-2 bg-[#0a1124] border-b border-[#1e293b] flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    {/* Live streaming status pill */}
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800/80 text-cyan-300 font-bold text-[10px]">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                      <span>{isScreenSharing && screenStream ? 'LIVE CHROME TAB STREAM' : 'ACADEMIC SLIDE DECK'}</span>
+                    </div>
 
-              {/* Watermark Label */}
-              <div className="absolute bottom-4 left-4 pointer-events-none select-none text-[10px] font-mono text-slate-700">
-                AAU HONORS DIGITAL BLACKBOARD • LIVE SYNC ACTIVE
-              </div>
-            </div>
-
-            {/* View 2: Live Screen Share Stage */}
-            {activeLayout === 'screenshare' && (
-              <div className="w-full h-full bg-[#050810] p-4 flex flex-col items-center justify-center space-y-4">
-                <div className="w-full max-w-4xl h-[420px] rounded-2xl bg-[#0b101d] border border-[#2a2e39] flex flex-col overflow-hidden shadow-2xl relative">
-                  
-                  {/* Screen Share Chrome Bar */}
-                  <div className="px-4 py-2 bg-[#12192c] border-b border-[#2a2e39] flex items-center justify-between text-xs font-mono">
-                    <span className="text-cyan-400 font-bold flex items-center gap-1.5">
-                      <ScreenShare className="w-4 h-4" />
-                      <span>{mentorName} is sharing curriculum slide deck</span>
-                    </span>
-                    <span className="text-emerald-400 text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      LIVE 1080p
-                    </span>
+                    {isScreenSharing && screenStream && (
+                      <span className="text-[9px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800">
+                        1080p 60fps
+                      </span>
+                    )}
                   </div>
 
-                  {/* Screen Share Content (Slide / Problem Mockup) */}
-                  <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-gradient-to-b from-[#0b101d] to-[#070a13]">
-                    <div className="p-5 rounded-2xl bg-[#131b2e] border border-indigo-500/30 space-y-3">
-                      <span className="text-xs font-mono text-indigo-400 font-bold uppercase">
-                        High School Advanced Calculus Problem Sheet • Unit 3
-                      </span>
-                      <h4 className="text-lg font-bold text-white">
-                        Optimization & Tangent Lines: Finding Maximum Area
-                      </h4>
-                      <p className="text-xs text-slate-300 leading-relaxed">
-                        A farmer has 2,400 feet of fencing and wants to fence off a rectangular field that borders a straight river. He needs no fence along the river. What are the dimensions of the field that has the largest area?
-                      </p>
-                      <div className="p-3 rounded-xl bg-[#0a0e19] border border-[#2a2e39] text-xs font-mono text-cyan-300">
-                        Primary Formula: Area A(x) = x * (2400 - 2x) = 2400x - 2x²<br />
-                        Derivative: A'(x) = 2400 - 4x = 0  =&gt;  x = 600 ft
+                  {/* Sub-view switcher tabs for the presentation area */}
+                  <div className="flex items-center gap-1 text-[10px]">
+                    <button
+                      onClick={() => setScreenShareSourceType('slides')}
+                      className={`px-2 py-0.5 rounded transition-all ${
+                        screenShareSourceType === 'slides'
+                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      Problem Slides
+                    </button>
+                    <button
+                      onClick={() => setScreenShareSourceType('grapher')}
+                      className={`px-2 py-0.5 rounded transition-all ${
+                        screenShareSourceType === 'grapher'
+                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      STEM Grapher
+                    </button>
+                    {screenStream && (
+                      <button
+                        onClick={() => setScreenShareSourceType('chrome-window')}
+                        className={`px-2 py-0.5 rounded transition-all ${
+                          screenShareSourceType === 'chrome-window'
+                            ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Chrome Window
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Sub-View 1: Real Chrome Screen Feed Video */}
+                {screenShareSourceType === 'chrome-window' && screenStream ? (
+                  <div className="flex-1 w-full h-full bg-black flex flex-col items-center justify-center relative p-2">
+                    <video
+                      ref={screenVideoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-contain rounded-xl border border-slate-800 shadow-2xl"
+                    />
+                    <div className="absolute top-4 left-4 bg-[#0a1124]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300 flex items-center gap-2">
+                      <ScreenShare className="w-3.5 h-3.5" />
+                      <span>Streaming Chrome Window • Click "Chalkboard" to annotate</span>
+                    </div>
+                  </div>
+                ) : screenShareSourceType === 'grapher' ? (
+                  /* Sub-View 2: Interactive Dynamic STEM Function Plotter */
+                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#060b18]">
+                    <div className="p-4 rounded-2xl bg-[#0a1124] border border-cyan-500/30 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono text-cyan-400 font-bold uppercase flex items-center gap-1.5">
+                          <TrendingUp className="w-4 h-4" />
+                          Interactive Parabolic Plotter: f(x) = ax² + bx + c
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400">Vertex: ({-graphB / (2 * graphA || 1)}, {graphC - (graphB * graphB) / (4 * graphA || 1)})</span>
+                      </div>
+
+                      {/* Dynamic SVG Plot */}
+                      <div className="w-full h-44 rounded-xl bg-[#040711] border border-slate-800 relative flex items-center justify-center overflow-hidden">
+                        <svg className="w-full h-full" viewBox="-10 -10 20 20">
+                          {/* Grid Lines */}
+                          <line x1="-10" y1="0" x2="10" y2="0" stroke="#1e293b" strokeWidth="0.3" />
+                          <line x1="0" y1="-10" x2="0" y2="10" stroke="#1e293b" strokeWidth="0.3" />
+                          
+                          {/* Parabola Curve Points */}
+                          <path
+                            d={(() => {
+                              const points = [];
+                              for (let x = -5; x <= 5; x += 0.2) {
+                                const y = -(graphA * x * x + graphB * x + graphC); // inverted for SVG coordinate space
+                                points.push(`${x === -5 ? 'M' : 'L'} ${x * 1.8} ${y * 0.8}`);
+                              }
+                              return points.join(' ');
+                            })()}
+                            fill="none"
+                            stroke="#38bdf8"
+                            strokeWidth="0.6"
+                          />
+                        </svg>
+                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-500">
+                          Formula: f(x) = {graphA}x² {graphB >= 0 ? `+ ${graphB}x` : `${graphB}x`} {graphC >= 0 ? `+ ${graphC}` : `${graphC}`}
+                        </div>
+                      </div>
+
+                      {/* Interactive Sliders */}
+                      <div className="grid grid-cols-3 gap-3 text-xs font-mono">
+                        <div>
+                          <label className="text-slate-400 text-[10px] block">Coefficient a: {graphA}</label>
+                          <input
+                            type="range"
+                            min="-3"
+                            max="3"
+                            step="0.5"
+                            value={graphA}
+                            onChange={(e) => setGraphA(parseFloat(e.target.value) || 1)}
+                            className="w-full accent-cyan-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-slate-400 text-[10px] block">Coefficient b: {graphB}</label>
+                          <input
+                            type="range"
+                            min="-8"
+                            max="8"
+                            step="1"
+                            value={graphB}
+                            onChange={(e) => setGraphB(parseFloat(e.target.value) || 0)}
+                            className="w-full accent-cyan-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-slate-400 text-[10px] block">Constant c: {graphC}</label>
+                          <input
+                            type="range"
+                            min="-10"
+                            max="10"
+                            step="1"
+                            value={graphC}
+                            onChange={(e) => setGraphC(parseFloat(e.target.value) || 0)}
+                            className="w-full accent-cyan-500"
+                          />
+                        </div>
                       </div>
                     </div>
-
-                    <div className="p-4 rounded-xl bg-[#0f1524] border border-[#2a2e39] text-xs font-mono text-slate-400 flex items-center justify-between">
-                      <span>Screen share active. Switch back to "Blackboard" tab to solve step-by-step.</span>
-                      <button
-                        onClick={() => setActiveLayout('blackboard')}
-                        className="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold text-xs"
-                      >
-                        Open Chalkboard &rarr;
-                      </button>
-                    </div>
                   </div>
+                ) : (
+                  /* Sub-View 3: Curated Academic Problem Slides Bank */
+                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#050914] scrollbar-thin">
+                    {/* Slide Selector Buttons */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+                      {academicSlides.map((sl, idx) => (
+                        <button
+                          key={sl.id}
+                          onClick={() => setSelectedSlideIndex(idx)}
+                          className={`px-2.5 py-1 rounded-xl text-xs font-mono whitespace-nowrap transition-all border ${
+                            selectedSlideIndex === idx
+                              ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-bold shadow'
+                              : 'bg-[#0d1424] border-[#1e293b] text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Slide {idx + 1}: {sl.title.split(':')[0]}
+                        </button>
+                      ))}
+                    </div>
 
-                </div>
+                    {/* Active Slide Card */}
+                    {(() => {
+                      const slide = academicSlides[selectedSlideIndex];
+                      return (
+                        <div className="p-5 rounded-2xl bg-gradient-to-b from-[#0c1428] to-[#070c1b] border border-amber-900/40 space-y-3.5 shadow-xl">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 font-bold">
+                              {slide.badge}
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-400">
+                              Slide {selectedSlideIndex + 1} of {academicSlides.length}
+                            </span>
+                          </div>
+
+                          <h3 className="text-base sm:text-lg font-serif font-bold text-white leading-snug">
+                            {slide.title}
+                          </h3>
+
+                          <div className="p-3.5 rounded-xl bg-[#080d1e] border border-[#1e293b] text-xs text-slate-300 leading-relaxed font-sans">
+                            <span className="font-bold text-amber-300 block mb-1">Problem Statement:</span>
+                            {slide.question}
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-[#050814] border border-cyan-900/30 text-xs font-mono space-y-1">
+                            <div className="text-cyan-400 font-bold">{slide.formula}</div>
+                            <div className="text-slate-300 text-[11px]">{slide.derivative}</div>
+                            <div className="text-emerald-400 font-bold text-[11px] pt-1 border-t border-slate-800">{slide.maxArea}</div>
+                          </div>
+
+                          <p className="text-[11px] text-amber-200/70 italic font-serif">
+                            ★ Nexa Mentor Tip: {slide.highlight}
+                          </p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
               </div>
             )}
 
-            {/* Picture-in-Picture Webcam Feeds Overlay (Bottom Right) */}
+            {/* STAGE PANE B: DIGITAL BLACKBOARD (Visible in 'blackboard' or 'split') */}
+            {(activeLayout === 'blackboard' || activeLayout === 'split') && (
+              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2' : 'w-full'} h-full relative flex items-center justify-center overflow-hidden`}>
+                
+                {/* Chalkboard Outer Wooden Frame Trim with Walnut Gradient */}
+                <div className="w-full h-full p-2 sm:p-3 bg-gradient-to-br from-[#2a1708] via-[#1b1007] to-[#0d0703] flex items-center justify-center">
+                  
+                  {/* Chalkboard Slate Canvas Frame */}
+                  <div className={`w-full h-full rounded-2xl relative overflow-hidden border-[3px] border-[#3d2311] shadow-[inset_0_4px_12px_rgba(0,0,0,0.8)] ${
+                    boardTheme === 'chalkboard-green' 
+                      ? 'bg-[#091b15]' 
+                      : boardTheme === 'grid'
+                      ? 'bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] bg-[#070d18]'
+                      : 'bg-[#0a1020]'
+                  }`}>
+                    
+                    <canvas
+                      ref={canvasRef}
+                      onMouseDown={startDrawing}
+                      onMouseMove={draw}
+                      onMouseUp={stopDrawing}
+                      onMouseLeave={stopDrawing}
+                      onTouchStart={startDrawing}
+                      onTouchMove={draw}
+                      onTouchEnd={stopDrawing}
+                      className="w-full h-full cursor-crosshair touch-none"
+                    />
+
+                    {/* Classic Collegiate Slate Watermark */}
+                    <div className="absolute bottom-3 left-4 pointer-events-none select-none text-[10px] font-serif text-slate-400/40 tracking-wider">
+                      NEXA ACADEMIC NETWORK • LIVE COLLABORATIVE CLASSROOM
+                    </div>
+
+                    {/* Quick Expand Toggle for Split View */}
+                    {activeLayout === 'split' && (
+                      <button
+                        onClick={() => setActiveLayout('blackboard')}
+                        className="absolute top-3 right-3 p-1.5 rounded-lg bg-black/60 hover:bg-black text-slate-400 hover:text-white transition-all text-[10px] font-mono border border-slate-700/60"
+                        title="Maximize Blackboard to Full Width"
+                      >
+                        <Maximize2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* Picture-in-Picture Floating Webcam Feeds (Teacher & Student) */}
             <div className="absolute bottom-4 right-4 flex flex-col sm:flex-row gap-2.5 z-20 pointer-events-auto">
               
-              {/* Mentor Video Feed */}
-              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-xl bg-[#0f1526] border border-indigo-500/40 overflow-hidden shadow-xl relative flex flex-col justify-between p-2">
+              {/* Nexa Faculty Mentor Video Feed */}
+              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-2xl bg-[#0a1224] border border-amber-500/40 overflow-hidden shadow-2xl relative flex flex-col justify-between p-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-indigo-300 font-bold px-1.5 py-0.5 rounded bg-indigo-950/80">
-                    AAU Mentor
+                  <span className="text-[9px] font-mono text-amber-300 font-bold px-1.5 py-0.5 rounded bg-amber-950/90 border border-amber-800">
+                    Nexa Mentor
                   </span>
                   <div className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[9px] font-mono text-emerald-400">Live</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[9px] font-mono text-emerald-300 font-bold">Live</span>
                   </div>
                 </div>
 
                 {/* Animated Voice Waveform */}
                 <div className="flex items-center justify-center gap-1 my-auto">
-                  <div className="w-1 h-4 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                  <div className="w-1 h-6 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                  <div className="w-1 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-                  <div className="w-1 h-5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                  <span className="text-[10px] text-slate-300 font-mono ml-1 font-bold">Speaking...</span>
+                  <div className="w-1 h-3.5 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                  <div className="w-1 h-6 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  <div className="w-1 h-3 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
+                  <div className="w-1 h-5 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
+                  <span className="text-[10px] text-amber-200 font-mono ml-1 font-bold">Speaking</span>
                 </div>
 
-                <div className="text-[10px] font-mono text-white font-bold truncate">
+                <div className="text-[10px] font-serif text-white font-bold truncate">
                   {mentorName}
                 </div>
               </div>
 
               {/* Student Self Feed */}
-              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-xl bg-[#0f1526] border border-[#2a2e39] overflow-hidden shadow-xl relative flex flex-col justify-between p-2">
+              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-2xl bg-[#090f20] border border-[#1e293b] overflow-hidden shadow-xl relative flex flex-col justify-between p-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-slate-400 font-bold px-1.5 py-0.5 rounded bg-[#182033]">
-                    You (Student)
+                  <span className="text-[9px] font-mono text-slate-300 font-bold px-1.5 py-0.5 rounded bg-[#131b2e]">
+                    You (Scholar)
                   </span>
                   <div className="flex items-center gap-1">
                     {isMicOn ? <Mic className="w-3 h-3 text-emerald-400" /> : <MicOff className="w-3 h-3 text-rose-400" />}
@@ -669,17 +1011,17 @@ export default function PreplyVirtualClassroom({
                   </div>
                 </div>
 
-                {/* Video On/Off state */}
+                {/* Video Avatar */}
                 <div className="flex flex-col items-center justify-center my-auto text-slate-500">
                   {isVideoOn ? (
-                    <User className="w-6 h-6 text-slate-400" />
+                    <User className="w-6 h-6 text-slate-300" />
                   ) : (
-                    <span className="text-[10px] font-mono text-slate-500">Camera Off</span>
+                    <span className="text-[10px] font-mono text-slate-500">Video Paused</span>
                   )}
                 </div>
 
-                <div className="text-[10px] font-mono text-slate-300 truncate">
-                  Grade Level: {gradeLevel.split(' ')[0]}
+                <div className="text-[10px] font-mono text-slate-400 truncate">
+                  {gradeLevel.split(' ')[0]} Active
                 </div>
               </div>
 
@@ -687,14 +1029,14 @@ export default function PreplyVirtualClassroom({
 
           </div>
 
-          {/* Bottom Preply Call Controls Dock */}
-          <div className="p-3 bg-[#0d121e] border-t border-[#2a2e39] flex items-center justify-center gap-3">
+          {/* Bottom Call Controls Dock */}
+          <div className="p-2.5 sm:p-3 bg-[#080e1e] border-t border-[#1e293b] flex items-center justify-center gap-2.5 flex-wrap z-10">
             <button
               onClick={() => setIsMicOn(!isMicOn)}
-              className={`p-3 rounded-2xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
+              className={`px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
                 isMicOn
-                  ? 'bg-[#141b2d] border-[#2a2e39] text-white hover:border-slate-500'
-                  : 'bg-rose-500/20 border-rose-500 text-rose-400'
+                  ? 'bg-[#0f172a] border-[#1e293b] text-white hover:border-slate-500'
+                  : 'bg-rose-500/20 border-rose-500 text-rose-300'
               }`}
             >
               {isMicOn ? <Mic className="w-4 h-4 text-emerald-400" /> : <MicOff className="w-4 h-4 text-rose-400" />}
@@ -703,65 +1045,78 @@ export default function PreplyVirtualClassroom({
 
             <button
               onClick={() => setIsVideoOn(!isVideoOn)}
-              className={`p-3 rounded-2xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
+              className={`px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
                 isVideoOn
-                  ? 'bg-[#141b2d] border-[#2a2e39] text-white hover:border-slate-500'
-                  : 'bg-rose-500/20 border-rose-500 text-rose-400'
+                  ? 'bg-[#0f172a] border-[#1e293b] text-white hover:border-slate-500'
+                  : 'bg-rose-500/20 border-rose-500 text-rose-300'
               }`}
             >
               {isVideoOn ? <Video className="w-4 h-4 text-emerald-400" /> : <VideoOff className="w-4 h-4 text-rose-400" />}
-              <span className="hidden sm:inline">{isVideoOn ? 'Stop Video' : 'Start Video'}</span>
+              <span className="hidden sm:inline">{isVideoOn ? 'Stop Camera' : 'Start Camera'}</span>
             </button>
 
             <button
               onClick={toggleScreenShare}
-              className={`p-3 rounded-2xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
+              className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
                 isScreenSharing
                   ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/10'
-                  : 'bg-[#141b2d] border-[#2a2e39] text-white hover:border-cyan-500/40'
+                  : 'bg-[#0f172a] border-[#1e293b] text-white hover:border-cyan-500/50'
               }`}
             >
               <ScreenShare className="w-4 h-4 text-cyan-400" />
-              <span>{isScreenSharing ? 'Stop Screen Share' : 'Share Screen'}</span>
+              <span>{isScreenSharing ? 'Stop Screen Share' : 'Share Chrome Screen'}</span>
             </button>
 
             <button
-              onClick={() => setActiveLayout(activeLayout === 'blackboard' ? 'screenshare' : 'blackboard')}
-              className="p-3 rounded-2xl bg-[#141b2d] border border-[#2a2e39] text-indigo-400 hover:text-white transition-all text-xs font-mono font-bold flex items-center gap-1.5"
+              onClick={() => setActiveLayout(activeLayout === 'split' ? 'blackboard' : 'split')}
+              className="px-3.5 py-2 rounded-xl bg-[#0f172a] border border-amber-900/40 text-amber-300 hover:text-white transition-all text-xs font-mono font-bold flex items-center gap-1.5"
             >
-              <PenTool className="w-4 h-4" />
-              <span className="hidden sm:inline">Chalkboard / Slides</span>
+              <Columns className="w-4 h-4 text-amber-400" />
+              <span className="hidden sm:inline">{activeLayout === 'split' ? 'Full Blackboard' : 'Dual Studio'}</span>
             </button>
           </div>
 
         </div>
 
-        {/* RIGHT: PREPLY-STYLE SIDEBAR (Chat, Notes, Shared Problems) (3 or 4 Cols) */}
-        <div className="lg:col-span-4 xl:col-span-3 bg-[#0a0d16] flex flex-col h-full border-t lg:border-t-0">
+        {/* RIGHT: PREPLY-STYLE COLLABORATIVE SIDEBAR (Chat, Lesson Notes, Quick Reference) */}
+        <div className="lg:col-span-4 xl:col-span-3 bg-[#070c1a] flex flex-col h-full border-t lg:border-t-0">
           
           {/* Sidebar Tabs */}
-          <div className="flex border-b border-[#2a2e39] bg-[#0d121f]">
+          <div className="flex border-b border-[#1e293b] bg-[#0a1124]">
             <button
               onClick={() => setActiveSidebarTab('chat')}
               className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
                 activeSidebarTab === 'chat'
-                  ? 'border-indigo-500 text-indigo-300 bg-[#141c2e]'
+                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
                   : 'border-transparent text-slate-400 hover:text-white'
               }`}
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>In-Call Chat</span>
             </button>
+
             <button
               onClick={() => setActiveSidebarTab('notes')}
               className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
                 activeSidebarTab === 'notes'
-                  ? 'border-indigo-500 text-indigo-300 bg-[#141c2e]'
+                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
                   : 'border-transparent text-slate-400 hover:text-white'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Lesson Notes</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSidebarTab('theorems')}
+              className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
+                activeSidebarTab === 'theorems'
+                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
+                  : 'border-transparent text-slate-400 hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Theorems</span>
             </button>
           </div>
 
@@ -774,33 +1129,33 @@ export default function PreplyVirtualClassroom({
                     key={msg.id}
                     className={`p-3 rounded-2xl text-xs space-y-1 ${
                       msg.sender === 'mentor'
-                        ? 'bg-[#131b2e] border border-indigo-500/30 text-slate-200'
-                        : 'bg-[#162138] border border-cyan-500/30 text-white ml-4'
+                        ? 'bg-[#0d162d] border border-amber-900/40 text-slate-200'
+                        : 'bg-[#101e38] border border-cyan-800/40 text-white ml-4'
                     }`}
                   >
                     <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span className={msg.sender === 'mentor' ? 'text-indigo-400 font-bold' : 'text-cyan-400 font-bold'}>
+                      <span className={msg.sender === 'mentor' ? 'text-amber-400 font-bold' : 'text-cyan-400 font-bold'}>
                         {msg.name}
                       </span>
                       <span className="text-slate-500">{msg.time}</span>
                     </div>
-                    <p className="leading-relaxed">{msg.text}</p>
+                    <p className="leading-relaxed font-sans">{msg.text}</p>
                   </div>
                 ))}
               </div>
 
               {/* Message Input Form */}
-              <form onSubmit={handleSendMessage} className="mt-3 pt-2 border-t border-[#2a2e39] flex gap-2">
+              <form onSubmit={handleSendMessage} className="mt-3 pt-2 border-t border-[#1e293b] flex gap-2">
                 <input
                   type="text"
-                  placeholder="Ask mentor a formula or question..."
+                  placeholder="Ask mentor a formula or theorem question..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  className="flex-1 bg-[#131929] border border-[#2a2e39] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                  className="flex-1 bg-[#0a1122] border border-[#1e293b] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
                 />
                 <button
                   type="submit"
-                  className="p-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                  className="p-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white transition-colors"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -813,14 +1168,50 @@ export default function PreplyVirtualClassroom({
             <div className="flex-1 p-3.5 flex flex-col overflow-hidden space-y-2">
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
                 <span>Shared Homework & Notes Pad</span>
-                <span className="text-emerald-400">Auto-Saved</span>
+                <span className="text-emerald-400 flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" /> Auto-Saved
+                </span>
               </div>
               <textarea
                 value={sharedNotes}
                 onChange={(e) => setSharedNotes(e.target.value)}
-                className="flex-1 w-full bg-[#111624] border border-[#2a2e39] rounded-2xl p-3 text-xs font-mono text-slate-200 resize-none focus:outline-none focus:border-indigo-500 leading-relaxed"
+                className="flex-1 w-full bg-[#0a1122] border border-[#1e293b] rounded-2xl p-3 text-xs font-mono text-slate-200 resize-none focus:outline-none focus:border-amber-500 leading-relaxed"
                 spellCheck="false"
               />
+            </div>
+          )}
+
+          {/* Tab 3: Quick Theorem & Formula Bank */}
+          {activeSidebarTab === 'theorems' && (
+            <div className="flex-1 p-3.5 overflow-y-auto space-y-3 scrollbar-thin">
+              <div className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wide">
+                Quick Formula & Theorem Card
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
+                <div className="text-amber-300 font-bold">1. Derivative Power Rule</div>
+                <div className="text-slate-300 text-[11px]">d/dx [xⁿ] = n · xⁿ⁻¹</div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
+                <div className="text-amber-300 font-bold">2. Fundamental Theorem of Calculus</div>
+                <div className="text-slate-300 text-[11px]">∫ₐᵇ f(x)dx = F(b) - F(a)</div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
+                <div className="text-amber-300 font-bold">3. Quadratic Equation Roots</div>
+                <div className="text-slate-300 text-[11px]">x = (-b ± √(b² - 4ac)) / 2a</div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
+                <div className="text-amber-300 font-bold">4. Kinematic Motion Under Gravity</div>
+                <div className="text-slate-300 text-[11px]">v² = u² + 2as  |  s = ut + ½at²</div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
+                <div className="text-amber-300 font-bold">5. Ideal Gas Equation</div>
+                <div className="text-slate-300 text-[11px]">P · V = n · R · T (R = 8.314 J/(mol·K))</div>
+              </div>
             </div>
           )}
 

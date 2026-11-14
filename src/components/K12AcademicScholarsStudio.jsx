@@ -37,32 +37,32 @@ export default function K12AcademicScholarsStudio() {
     {
       id: 'm1',
       name: 'Ermias Tadesse',
-      credentials: 'B.Sc. Electrical & Computer Engineering (Honors), AAU',
+      credentials: 'B.Sc. Electrical & Computer Engineering (Honors Graduate)',
       specialty: 'High School Calculus, Physics & SAT Math Prep',
       rating: '4.95',
       sessions: '140+ Hours',
       languages: 'English & Amharic',
-      badge: 'AAU Top 1% Scholar'
+      badge: 'Nexa Senior Fellow'
     },
     {
       id: 'm2',
       name: 'Dr. Bethlehem Wolde',
-      credentials: 'MD Candidate, AAU School of Medicine',
+      credentials: 'MD Candidate & Medical Science Scholar',
       specialty: 'Biology, Chemistry & Middle School Sciences',
       rating: '4.98',
       sessions: '180+ Hours',
       languages: 'English & Amharic',
-      badge: 'Academic Medalist'
+      badge: 'Nexa Medical Science Fellow'
     },
     {
       id: 'm3',
       name: 'Natnael Mesfin',
-      credentials: 'B.Sc. Computer Science & Software Engineering, AAU',
+      credentials: 'B.Sc. Computer Science & Software Engineering',
       specialty: 'Middle & High School Pre-Algebra, Geometry & Python Coding',
       rating: '4.90',
       sessions: '95+ Hours',
       languages: 'English & Amharic',
-      badge: 'STEM Youth Lead'
+      badge: 'Nexa STEM Lead'
     }
   ];
 
@@ -266,7 +266,7 @@ export default function K12AcademicScholarsStudio() {
               <div className="pt-3 border-t border-[#2a2e39] text-xs space-y-1">
                 <div className="text-white font-bold font-mono">Included in Roadmap:</div>
                 <div className="text-slate-400 text-[11px] leading-relaxed">
-                  • 1-on-1 Dedicated AAU Honors Mentor<br />
+                  • 1-on-1 Dedicated Nexa Honors Teacher<br />
                   • Weekly Written Diagnostic Progress Report<br />
                   • Homework Assistance + Competition Math Prep
                 </div>
@@ -277,14 +277,14 @@ export default function K12AcademicScholarsStudio() {
         </div>
       </div>
 
-      {/* 2. AAU HONORS SCHOLAR MENTOR DIRECTORY */}
+      {/* 2. NEXA CERTIFIED TEACHERS & SCHOLAR MENTOR DIRECTORY */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="text-xl font-bold text-white flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-indigo-400" />
-            Verified Addis Ababa University Honors Mentors
+          <h4 className="text-xl font-serif font-bold text-white flex items-center gap-2">
+            <GraduationCap className="w-5 h-5 text-amber-400" />
+            Verified Nexa Teachers & Academic Scholar Mentors
           </h4>
-          <span className="text-xs font-mono text-indigo-400 hidden sm:inline">100% Background-Checked Academic Leaders</span>
+          <span className="text-xs font-mono text-amber-400 hidden sm:inline">100% Background-Checked Academic Leaders</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -413,7 +413,7 @@ export default function K12AcademicScholarsStudio() {
           </h4>
         </div>
         <p className="text-xs text-slate-400 max-w-2xl">
-          See how AAU Scholar Mentors break down complex curriculum problems into intuitive, step-by-step principles.
+          See how Nexa Scholar Teachers break down complex curriculum problems into intuitive, step-by-step principles.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

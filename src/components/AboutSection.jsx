@@ -17,7 +17,7 @@ export default function AboutSection() {
             About Nexa Ecosystem
           </h2>
           <p className="text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
-            Founded by honors scholars from Addis Ababa University & Bahir Dar University, combining software architecture, financial market mastery, and personalized academic mentorship into one cohesive innovation hub.
+            Founded by university honors scholars and software engineers, Nexa Ecosystem combines high-performance full-stack web architecture, institutional SMC financial mastery, and personalized academic tutoring into one unified platform.
           </p>
         </div>
 

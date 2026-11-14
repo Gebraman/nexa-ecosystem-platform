@@ -54,7 +54,7 @@ export const ecosystemData = {
       tag: "Academic Tutoring",
       badge: "Grades 1 to 12",
       bgImage: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80",
-      shortDescription: "Personalized online tutoring in Mathematics, Pre-Calculus, Calculus, Physics, Chemistry, and English. Taught 1-on-1 using interactive digital whiteboards by Addis Ababa University honors scholars.",
+      shortDescription: "Personalized online tutoring in Mathematics, Pre-Calculus, Calculus, Physics, Chemistry, and English. Taught 1-on-1 using interactive digital whiteboards by Nexa certified academic teachers & scholar mentors.",
       highlights: [
         "Elementary (Grades 1–5): Foundational Math & Phonics",
         "Middle School (Grades 6–8): Pre-Algebra & Sciences",
@@ -1122,8 +1122,8 @@ export const ecosystemData = {
     ],
     tutorHighlights: [
       {
-        name: "AAU Honors Mentors",
-        role: "University Scholars (Addis Ababa University & Bahir Dar)",
+        name: "Nexa Scholar Mentors & Faculty",
+        role: "Nexa Certified Academic Fellows & University Scholars",
         bio: "Top academic performers in Engineering, Accounting, Finance, and Applied Sciences with extensive teaching experience.",
       },
       {
