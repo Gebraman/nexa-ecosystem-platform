@@ -31,14 +31,16 @@ import {
 } from 'lucide-react';
 import { smcChapter1FullData } from '../data/smcChapter1FullData';
 import { smcChapter2FullData } from '../data/smcChapter2FullData';
+import { smcChapter3FullData } from '../data/smcChapter3FullData';
 import InstitutionalContentRenderer from './InstitutionalContentRenderer';
 import InstitutionalChartViewer from './InstitutionalChartViewer';
 import OrderBookDepthSimulator from './OrderBookDepthSimulator';
 import BarReplaySimulator from './BarReplaySimulator';
 import SMCPuzzleGame from './SMCPuzzleGame';
+import SMCChapter3BacktestingGame from './SMCChapter3BacktestingGame';
 
 export default function W3SchoolsSMCAcademy({ 
-  initialChapterId = 'chapter-1',
+  initialChapterId = 'chapter-3',
   onBackToOverview
 }) {
   const [activeChapterId, setActiveChapterId] = useState(initialChapterId);
@@ -55,19 +57,20 @@ export default function W3SchoolsSMCAcademy({
   const [simScenario, setSimScenario] = useState('potential-high');
   const [simResult, setSimResult] = useState(null);
 
-  // Quiz States for Chapters 1 and 2
+  // Quiz States for Chapters 1, 2, and 3
   const [selectedQuizAnswers, setSelectedQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState({});
 
   const chaptersMap = {
     'chapter-1': smcChapter1FullData,
-    'chapter-2': smcChapter2FullData
+    'chapter-2': smcChapter2FullData,
+    'chapter-3': smcChapter3FullData
   };
 
   const courseChapters = [
     { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 15 },
     { id: 'chapter-2', num: '02', title: '2. How to Identify Structural Swing Points', isReady: true, subCount: 14 },
-    { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: false, subCount: 12 },
+    { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: true, subCount: 16 },
     { id: 'chapter-4', num: '04', title: '4. Liquidity & Price Movement', isReady: false, subCount: 10 },
     { id: 'chapter-5', num: '05', title: '5. POIs, Fibonacci & SMC Strategy', isReady: false, subCount: 11 },
     { id: 'chapter-6', num: '06', title: '6. Strategies in a Sideways Market', isReady: false, subCount: 9 },
@@ -806,12 +809,12 @@ export default function W3SchoolsSMCAcademy({
             <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-amber-400 font-bold">Curriculum Roadmap</span>
-                <span className="text-slate-400">2 / 8 Active</span>
+                <span className="text-slate-400">3 / 8 Active</span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-[#131722] overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-1/4 rounded-full" />
+                <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-3/8 rounded-full" />
               </div>
-              <p className="text-[10px] text-slate-400">Chapters 01 & 02 are completely unlocked with full visual interactive textbooks.</p>
+              <p className="text-[10px] text-slate-400">Chapters 01, 02 & 03 are completely unlocked with full visual interactive textbooks.</p>
             </div>
 
             {/* Chapter Selector Accordion */}
@@ -1524,6 +1527,219 @@ export default function W3SchoolsSMCAcademy({
 
               {/* CHAPTER 2 INTERACTIVE BACKTESTING PUZZLE GAME */}
               <SMCPuzzleGame chapterId="chapter-2" />
+
+            </div>
+          )}
+
+          {/* ============================================================== */}
+          {/* CHAPTER 3 SPECIALIZED SECTION ENGINE (ALL 16 SECTIONS COMPLETE) */}
+          {/* ============================================================== */}
+          {activeChapterId === 'chapter-3' && (
+            <div className="space-y-12">
+              
+              {/* Chapter 3 Core Highlight Box */}
+              <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#0d1117] to-[#0d1117] border-l-4 border-amber-500 space-y-3 shadow-xl">
+                <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4" /> Market Structure Axiom
+                </span>
+                <blockquote className="text-2xl sm:text-3xl font-black text-white italic">
+                  “Market structure is the skeleton of price. If you get the structure wrong, everything built on top of it is wrong too.”
+                </blockquote>
+                <p className="text-slate-300 leading-relaxed">
+                  In Chapter 2 you learned to find swing highs and swing lows (the dots on the chart). Chapter 3 joins the dots and teaches you to read what the line between them is saying: Break of Structure (BOS), Change of Character (CHoCH), Range Boundaries, and Optimal Trade Entry (OTE).
+                </p>
+                <div className="p-4 rounded-xl bg-[#090d16] border border-amber-500/30 text-amber-300 font-mono text-sm font-semibold">
+                  “Say in one second whether a chart is bullish, bearish, or in a range — and never search for structure inside consolidation noise.”
+                </div>
+              </div>
+
+              {/* Render Every Section of Chapter 3 */}
+              {filteredSections.map((sec) => (
+                <article key={sec.id} id={sec.id} className="scroll-mt-24 space-y-5 pt-6 border-t border-[#2a2e39]/60">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      Section {sec.num}
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                      {sec.title}
+                    </h2>
+                  </div>
+
+                  {sec.summary && (
+                    <p className="text-xs sm:text-sm font-mono text-slate-400 bg-[#090d16] p-3 rounded-xl border border-[#2a2e39]">
+                      <strong>Executive Summary:</strong> {sec.summary}
+                    </p>
+                  )}
+
+                  {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
+                  <InstitutionalContentRenderer content={sec.content} />
+
+                  {/* Structured Table (if present) */}
+                  {sec.table && (
+                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                            {sec.table.headers.map((h, i) => (
+                              <th key={i} className="p-3">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#2a2e39]/60">
+                          {sec.table.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* FIGURE 2: THREE STATES & BREAK OF STRUCTURE (BOS) */}
+                  {sec.figureId === 'fig-ch3-2' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-2" 
+                        title="Figure 2. Break of Structure (BOS): Bullish vs Bearish Trend Confirmation" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 3: THE RANGE: NOISE VS CLEAN BREAKOUT */}
+                  {sec.figureId === 'fig-ch3-3' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-3" 
+                        title="Figure 3. The Range: Internal Noise Trap vs Clean Breakout Box" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 4: CHANGE OF CHARACTER (CHoCH) TWO-BEAT REVERSAL */}
+                  {sec.figureId === 'fig-ch3-4' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-4" 
+                        title="Figure 4. Change of Character (CHoCH): Two Beats (Warning & Second Break Confirmation)" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 5: FAKE CHANGE OF CHARACTER */}
+                  {sec.figureId === 'fig-ch3-5' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-5" 
+                        title="Figure 5. Fake Change of Character: Old Trend Remains Active" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 6: WICK SWEEP VS CANDLE BODY BOS */}
+                  {sec.figureId === 'fig-ch3-6' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-6" 
+                        title="Figure 6. Liquidity Sweep (Wick Only) vs Break of Structure (Body Close)" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 7: PREMIUM / DISCOUNT ZONES & OPTIMAL TRADE ENTRY (OTE) */}
+                  {sec.figureId === 'fig-ch3-7' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-7" 
+                        title="Figure 7. Premium & Discount Zones with 0.62–0.79 Optimal Trade Entry (OTE)" 
+                      />
+                    </div>
+                  )}
+
+                  {/* FIGURE 13: BALANCE PRICE RANGE (BPR) & BAR-CLOSE ALERT */}
+                  {sec.figureId === 'fig-ch3-13' && (
+                    <div className="my-6 space-y-3">
+                      <InstitutionalChartViewer 
+                        type="fig-ch3-13" 
+                        title="Figure 13. Balance Price Range (BPR Overlap) & Touch vs Bar-Close Alerts" 
+                      />
+                    </div>
+                  )}
+
+                </article>
+              ))}
+
+              {/* CHAPTER 3 KNOWLEDGE QUIZ */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#090d16] border border-[#2a2e39] space-y-6">
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5 text-amber-400" />
+                  <h3 className="text-xl sm:text-2xl font-black text-white">Chapter 3 Knowledge Evaluation</h3>
+                </div>
+                <p className="text-xs sm:text-sm text-slate-400">
+                  Confirm your mastery of Break of Structure, Change of Character confirmation beats, Range box boundaries, and OTE execution before advancing.
+                </p>
+
+                <div className="space-y-6">
+                  {currentChapter.quiz.map((q, qIndex) => {
+                    const isSubmitted = quizSubmitted[`ch3-${qIndex}`];
+                    const selected = selectedQuizAnswers[`ch3-${qIndex}`];
+                    return (
+                      <div key={qIndex} className="p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
+                        <p className="text-sm font-bold text-white">
+                          <span className="text-amber-400 mr-2">Q{qIndex + 1}:</span> {q.question}
+                        </p>
+                        <div className="space-y-2">
+                          {q.options.map((opt, optIdx) => {
+                            let optionClass = "bg-[#090d16] border-[#2a2e39] text-slate-300 hover:border-slate-700";
+                            if (selected === optIdx) {
+                              optionClass = "bg-amber-500/20 border-amber-500 text-amber-300 font-semibold";
+                            }
+                            if (isSubmitted) {
+                              if (optIdx === q.correctIndex) {
+                                optionClass = "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold";
+                              } else if (selected === optIdx && optIdx !== q.correctIndex) {
+                                optionClass = "bg-red-500/20 border-red-500 text-red-300";
+                              }
+                            }
+                            return (
+                              <button
+                                key={optIdx}
+                                disabled={isSubmitted}
+                                onClick={() => setSelectedQuizAnswers(prev => ({ ...prev, [`ch3-${qIndex}`]: optIdx }))}
+                                className={`w-full p-3 rounded-xl border text-left text-xs transition-all ${optionClass}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {!isSubmitted ? (
+                          <button
+                            onClick={() => setQuizSubmitted(prev => ({ ...prev, [`ch3-${qIndex}`]: true }))}
+                            disabled={selected === undefined}
+                            className="mt-2 px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 disabled:opacity-40 disabled:hover:bg-amber-500 text-dark-950 text-xs font-bold transition-all"
+                          >
+                            Verify Institutional Rationale
+                          </button>
+                        ) : (
+                          <div className="p-3 rounded-xl bg-[#090d16] border border-[#2a2e39] text-xs space-y-1">
+                            <span className="text-emerald-400 font-bold font-mono">Institutional Rationale:</span>
+                            <p className="text-slate-300">{q.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* CHAPTER 3 PLAY/PAUSE INTERACTIVE BACKTESTING PREDICTION GAME */}
+              <SMCChapter3BacktestingGame />
 
             </div>
           )}
