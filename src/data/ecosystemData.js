@@ -210,6 +210,23 @@ export const ecosystemData = {
     // Based on official Altrady SMC Course Syllabus & Institutional Order Flow Framework
     smcChapters: [
       {
+        chapterNumber: 0,
+        id: "chapter-0",
+        title: "0. Institutional Orientation & Video Hub",
+        subtitle: "Full-Stack Zoom Recordings, Roman Live Stream Archives & SMC 8-Chapter Roadmap",
+        referenceUrl: "https://www.youtube.com/watch?v=NDLCZ_r58MY",
+        badge: "Chapter 00",
+        mode: "orientation-hub",
+        mainIdea: "Ground-up institutional orientation combining Zoom masterclasses, Roman live streams, and complete curriculum roadmap.",
+        overview: "Orientation master hub integrating HTML/CSS full-stack Zoom recordings (Parts 1 & 2), CSS properties masterclasses (3+ hrs), Roman live streams, and sideways range mechanics before Chapter 1.",
+        subtitles: [
+          "Full-Stack HTML/CSS Zoom Archives (6+ Hours)",
+          "Roman Live Stream YouTube Sessions",
+          "Sideways Range & Consolidation Liquidity Traps",
+          "The 8-Chapter SMC Master Curriculum Roadmap"
+        ]
+      },
+      {
         chapterNumber: 1,
         id: "chapter-1",
         title: "What Are Smart Money Concepts",

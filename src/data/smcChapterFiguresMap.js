@@ -12,13 +12,22 @@ export const chapterFiguresMap = {
         rule: 'Never trade against macro liquidity flow. Identify where the stops sit before entering.'
       }
     ],
-    'ch1-sec3': [
+    'ch1-sec2': [
       {
         figNum: '2',
         src: '/assets/smc/ch1/image2.png',
         title: 'Smart Money vs Retail: The $10 Billion Order Problem',
         caption: 'Large institutions cannot simply click "Market Buy" without pushing price 40% against themselves. They MUST engineer retail stop-loss sells to absorb their massive volume.',
         rule: 'Our goal as retail traders: get in where they get in, so we ride the wave with them.'
+      }
+    ],
+    'ch1-sec3': [
+      {
+        figNum: '2',
+        src: '/assets/smc/ch1/image2.png',
+        title: 'Institutional Order Flow Absorption Mechanism',
+        caption: 'How algorithms push price down to create panic selling, absorbing retail supply before the real markup move.',
+        rule: 'Price is engineered to create counter-party volume.'
       }
     ],
     'ch1-sec4': [
@@ -62,285 +71,325 @@ export const chapterFiguresMap = {
         figNum: '7',
         src: '/assets/smc/ch1/image7.png',
         title: 'Richard Wyckoff\'s Foundation: Accumulation Schematic',
-        caption: '100-year-old market psychology: The range is where institutions accumulate positions quietly, using the Spring (liquidity sweep) to trigger retail panic before the real markup move.',
-        rule: 'Everything in the market is psychology designed to generate liquidity.'
+        caption: '100-year-old market psychology: The range is where institutions quietly build their position using retail panic as liquidity before marking up price.',
+        rule: 'The spring is a liquidity sweep of the range low. It creates the springboard for the markup.'
       }
     ],
     'ch1-sec9': [
       {
         figNum: '8',
         src: '/assets/smc/ch1/image8.png',
-        title: 'Worked Real Chart Example: 1:6.5 Risk-to-Reward Execution',
-        caption: 'Daily POI arrival -> 1-Hour Liquidity Sweep -> Market Structure Shift (MSS) -> Limit Order entry on retest. Target opposite BSL.',
-        rule: 'High time frame for direction, low time frame for entry.'
+        title: 'Roman\'s 4-Step Master Sequence: Sweep, Shift, Retest, Entry',
+        caption: 'Live chart sequence: 1. Higher timeframe liquidity swept -> 2. Lower timeframe structure shifts -> 3. Price pulls back to POI/FVG -> 4. Disciplined entry.',
+        rule: 'Wait for the alert, confirm the shift, and let price return to discount.'
       }
     ],
     'ch1-sec10': [
       {
         figNum: '9',
         src: '/assets/smc/ch1/image9.png',
-        title: 'The 5 Mandatory Entry Rules & Alert Architecture',
-        caption: 'Do not place orders beforehand. Set Alert 1 at POI. When alerted, drop to LTF. Wait for sweep and shift. Set limit on retest.',
-        rule: 'Wait for the alert, then look.'
+        title: 'Institutional Risk Rules: Why No DCA on Futures',
+        caption: 'On leveraged futures contracts, Dollar-Cost Averaging into a losing trade leads to catastrophic margin liquidation. SMC requires strict stop losses and defined invalidation.',
+        rule: 'Never average down on leverage. Accept the loss, collect statistics, and preserve capital.'
+      }
+    ],
+    'ch1-sec11': [
+      {
+        figNum: '11',
+        src: '/assets/smc/ch1/image11.png',
+        title: 'Asymmetric Expectancy: The 1 to 3 Risk-to-Reward Math',
+        caption: 'With 1:3 RR, a trader losing 55 out of 100 trades still generates +$8,000 net profit. Trade math, not ego.',
+        rule: 'Aim for at least 1:3 RR on every setup. Never enter if target cannot deliver 3R.'
       }
     ],
     'ch1-sec12': [
       {
         figNum: '10',
         src: '/assets/smc/ch1/image10.png',
-        title: 'Points of Interest: Fair Value Gap (FVG) & Order Block (OB)',
-        caption: 'Left: 3-candle FVG gap with 50% Consequent Encroachment (CE). Right: Order Block (last opposing candle before aggressive move).',
-        rule: 'FVG and liquidity are the easiest and most reliable POIs to trade.'
+        title: 'Points of Interest: Order Blocks & Fair Value Gaps',
+        caption: 'An Order Block is the last opposite candle before an aggressive expansion that broke structure. A Fair Value Gap is the 3-candle imbalance left behind.',
+        rule: 'The 50% Consequent Encroachment (C.E.) of a Fair Value Gap is a prime entry trigger.'
+      },
+      {
+        figNum: '12',
+        src: '/assets/smc/ch1/image12.png',
+        title: 'Fair Value Gap 3-Candle Imbalance Anatomy',
+        caption: 'Clear gap between Candle 1 High and Candle 3 Low, representing algorithmic price inefficiency.',
+        rule: 'Algorithms return to rebalance inefficient price delivery.'
+      }
+    ],
+    'ch1-sec13': [
+      {
+        figNum: '13',
+        src: '/assets/smc/ch1/image13.png',
+        title: 'Top-Down Multi-Timeframe Alignment Matrix',
+        caption: 'Matching HTF trend with LTF entry execution (Daily + 1H, 4H + 15m, 1H + 5m).',
+        rule: 'High timeframe for direction, low timeframe for execution.'
+      }
+    ],
+    'ch1-sec15': [
+      {
+        figNum: '14',
+        src: '/assets/smc/ch1/image14.png',
+        title: 'Institutional Pre-Trade Execution Checklist',
+        caption: 'All 6 conditions must be satisfied before risking capital: HTF Structure, Key POI, Liquidity Sweep, LTF Shift, Retest, and RR >= 1:3.',
+        rule: 'If all 6 criteria are not met, there is no trade. Discipline equals survival.'
       }
     ]
   },
-
   'chapter-2': {
-    'ch2-sec2': [
+    'ch2-sec1': [
       {
         figNum: '1',
         src: '/assets/smc/ch2/image1.png',
-        title: 'The Top-Down Method in Five Steps',
-        caption: 'Figure 1. 1) HTF structure -> 2) HTF POI -> 3) Price enters POI -> 4) Switch to LTF -> 5) LTF reversal pattern and entry.',
-        rule: 'Real charts are messier than teaching schematics; top-down discipline keeps you safe.'
-      },
+        title: 'Swing High & Swing Low Core Structure Definition',
+        caption: 'Official Textbook Drawing 1: A Swing High requires a higher high flanked by two lower highs. A Swing Low requires a lower low flanked by two higher lows.',
+        rule: 'Never mark a single candle high as a swing point without the left and right candle confirmation.'
+      }
+    ],
+    'ch2-sec2': [
       {
         figNum: '2',
         src: '/assets/smc/ch2/image2.png',
-        title: 'A Bearish Fair Value Gap (FVG)',
-        caption: 'Figure 2. Three candles: lowest point of Candle 1 and highest point of Candle 3 leave an untraded gap. Wait for price to fill past the 50% midline.',
-        rule: 'Wait for price to fill past the middle line of the FVG for higher confidence.'
-      },
-      {
-        figNum: '3',
-        src: '/assets/smc/ch2/image3.png',
-        title: 'Entering on Lower Timeframe: Smaller Stop Gives Bigger RR',
-        caption: 'Figure 3. On the 15m chart, stop loss sits beyond the tight sweep high. Same price move produces 5.5:1 or 10:1 RR instead of 2:1 on 4H.',
-        rule: 'Lower timeframe gives higher reward but requires accepting the risk of over-swings.'
+        title: 'The Minimum 3-Candle Swing Formation Rule',
+        caption: 'Official Textbook Drawing 2: The exact 3-candle rule for Swing Low and Swing High. Candle 2 forms the extreme point.',
+        rule: 'Candle 2 must have its high strictly higher (or low strictly lower) than both Candle 1 and Candle 3.'
       }
     ],
     'ch2-sec3': [
       {
-        figNum: '4',
-        src: '/assets/smc/ch2/image4.png',
-        title: 'Structural Swing Points vs Internal Swings',
-        caption: 'Figure 4. Circled swings are structural; crossed swings are internal movements. The big high is structural; small ones inside the leg are noise.',
-        rule: 'Marking internal swings as reversals is the classic beginner trap.'
+        figNum: '3',
+        src: '/assets/smc/ch2/image3.png',
+        title: 'Validating Structural Swings vs Internal Noise',
+        caption: 'Official Textbook Drawing 3: Distinguishing major structural boundaries from minor noise within the swing legs.',
+        rule: 'Ignore sub-structure swings that develop inside the parent swing leg range.'
       }
     ],
     'ch2-sec4': [
       {
-        figNum: '5',
-        src: '/assets/smc/ch2/image5.png',
-        title: 'The Three-Candle Structural Formation',
-        caption: 'Figure 5. A and B are valid swings because the middle candle has the true extreme point. C and D are not swings.',
-        rule: 'Only the extreme wick tip of the middle candle counts; open and close do not matter for swing geometry.'
+        figNum: '4',
+        src: '/assets/smc/ch2/image4.png',
+        title: 'The Red Line Test: Verifying Swing Low Viability',
+        caption: 'Official Textbook Drawing 4: Drawing a horizontal reference line at the candle close to test for valid structural integrity.',
+        rule: 'If candle body closes beyond the red line, the swing point is confirmed.'
       }
     ],
     'ch2-sec5': [
       {
+        figNum: '5',
+        src: '/assets/smc/ch2/image5.png',
+        title: 'The Red Line Test: Verifying Swing High Viability',
+        caption: 'Official Textbook Drawing 5: Upward swing high red line test confirming buyer exhaustion and seller displacement.',
+        rule: 'A valid swing high must displace lower with follow-through volume.'
+      }
+    ],
+    'ch2-sec6': [
+      {
         figNum: '6',
         src: '/assets/smc/ch2/image6.png',
-        title: 'The No-Overlap Rule',
-        caption: 'Figure 6. Structural swing points cannot overlap: the 3 candles of a swing high and the 3 candles of a swing low must be separate sets.',
-        rule: 'Swings with distance between them are stronger and more reliable.'
+        title: 'Equal Highs (EQH) and Equal Lows (EQL) Liquidity Magnets',
+        caption: 'Official Textbook Drawing 6: Double tops and double bottoms represent engineered liquidity targets for institutional sweeps.',
+        rule: 'Equal highs and lows are not support/resistance to trade from; they are targets to trade TOWARD.'
       }
     ],
     'ch2-sec7': [
       {
         figNum: '7',
         src: '/assets/smc/ch2/image7.png',
-        title: 'Liquidity Sits Beyond Swing Levels & Sweep Takes It',
-        caption: 'Figure 7. BSL sits above swing highs; SSL sits below swing lows. A quick move below support is a liquidity sweep, not a breakdown.',
-        rule: 'Structural swings mark where liquidity pools exist.'
+        title: 'Multi-Candle Complex Swing Formations',
+        caption: 'Official Textbook Drawing 7: Multi-candle rounded tops and bottoms with nested structural swings.',
+        rule: 'Complex consolidations resolve into single HTF swing points when zoomed out.'
       }
     ],
     'ch2-sec8': [
       {
         figNum: '8',
         src: '/assets/smc/ch2/image8.png',
-        title: 'Potential Swing vs Validated Swing (Red Line Rule)',
-        caption: 'Figure 8. Draw the Red Line at the lowest point of the swing candle. The swing is ONLY potential until a subsequent candle closes below that red line.',
-        rule: 'No close below the red line base means don\'t mark a swing in haste.'
+        title: 'Live Chart Analysis: Identifying Swings on BTC/USD',
+        caption: 'Official Textbook Drawing 8: Real-market structural swing mapping on Bitcoin 1-Hour chart.',
+        rule: 'Always begin swing point mapping on the daily or 4-hour before executing on the 15-minute.'
+      }
+    ],
+    'ch2-sec9': [
+      {
+        figNum: '9',
+        src: '/assets/smc/ch2/image9.png',
+        title: 'Break of Structure (BOS): Wick Sweep vs Candle Body Close',
+        caption: 'Official Textbook Drawing 9: Clean illustration comparing a false wick break against a confirmed candle body close.',
+        rule: 'No candle body close = no valid Break of Structure.'
       }
     ],
     'ch2-sec10': [
       {
-        figNum: '9',
-        src: '/assets/smc/ch2/image9.png',
-        title: 'Work Inside the Range: Wait for Price to Break Out',
-        caption: 'Figure 9. Between the latest structural high and low, mark nothing. Wait for price to break out before establishing new swings.',
-        rule: 'Inside the range, mark nothing.'
+        figNum: '10',
+        src: '/assets/smc/ch2/image10.png',
+        title: 'Change of Character (CHoCH): Early Trend Reversal Signal',
+        caption: 'Official Textbook Drawing 10: First break of opposite swing structure signaling early trend shift.',
+        rule: 'CHoCH is an early warning. Wait for a retest before committing capital.'
       }
     ],
     'ch2-sec11': [
       {
-        figNum: '10',
-        src: '/assets/smc/ch2/image10.png',
-        title: 'Wick vs Body Close: Sweep or Break?',
-        caption: 'Figure 10. A wick beyond a swing high is a liquidity sweep. A full candle body close beyond it is a genuine Break of Structure.',
-        rule: 'Body decides the break; wick takes the liquidity.'
-      },
-      {
         figNum: '11',
         src: '/assets/smc/ch2/image11.png',
-        title: 'The Extreme Point Rule',
-        caption: 'Figure 11. To find a swing high between two swing lows, look strictly between them and pick the absolute highest point (extreme candle).',
-        rule: 'Pick the extreme candle between the two confirmed lows.'
+        title: 'Internal Sub-Structure vs Major Swing Legs',
+        caption: 'Official Textbook Drawing 11: The relationship between micro internal swings and macro external structure.',
+        rule: 'Do not confuse internal retracement swings with external trend direction.'
       }
     ],
     'ch2-sec12': [
       {
         figNum: '12',
         src: '/assets/smc/ch2/image12.png',
-        title: 'The Cycle You Repeat on Every Chart',
-        caption: 'Figure 12. Mark range -> Do nothing inside -> Wait for breakout -> Find extreme point -> Red line confirmation -> Mark new range and repeat.',
-        rule: 'Train your eyes with boring Bar Replay on historical charts before taking any live trades.'
+        title: 'Summary Checklist: Valid Structural Swing Criteria',
+        caption: 'Official Textbook Drawing 12: Visual summary matrix of all mandatory swing point rules.',
+        rule: 'Confirm: 3-candle rule, body close validation, and clear HTF context.'
       }
     ]
   },
-
   'chapter-3': {
     'ch3-sec1': [
       {
         figNum: '1',
         src: '/assets/smc/ch3/image1.png',
-        title: 'The Chapter in One Line: Conceptual Roadmap',
-        caption: 'Figure 1. Swings -> States -> Range Box -> CHoCH -> Fake CHoCH -> Sweeps -> OTE Zones -> Confirmations.',
-        rule: 'Market structure is the skeleton of price. If you get structure wrong, everything else fails.'
+        title: 'The Two Market Conditions: Trending vs Ranging Consolidation',
+        caption: 'Author Textbook Drawing 1: Left: Trending market with clear directional swings. Right: Sideways range with trapped retail liquidity.',
+        rule: 'Never trade trend-continuation setups in a sideways market.'
       }
     ],
     'ch3-sec2': [
       {
         figNum: '2',
         src: '/assets/smc/ch3/image2.png',
-        title: 'Break of Structure (BOS): Bullish vs Bearish Trend Confirmation',
-        caption: 'Figure 2. Dashed lines show where each Break of Structure happens: price closes with its body beyond the previous swing point.',
-        rule: 'A trend remains active until its protecting swing is broken by a candle body close.'
+        title: 'Uptrend Structure (HH / HL) and Downtrend Structure (LH / LL)',
+        caption: 'Author Textbook Drawing 2: The anatomical definitions of Bullish Higher Highs and Bearish Lower Lows.',
+        rule: 'A trend is valid until a swing point of the opposite type is closed beyond by a candle body.'
       }
     ],
     'ch3-sec3': [
       {
         figNum: '3',
         src: '/assets/smc/ch3/image3.png',
-        title: 'The Range: Draw a Box and Wait for Clean Breakout',
-        caption: 'Figure 3. Left: Beginner trap of marking every swing inside a range. Right: Draw a box around the range and wait for a clean body close OUT of the box.',
-        rule: 'RANGE: No structure inside. Dismiss every break in the box.'
+        title: 'The Danger of Sideways Ranges & The Beginner Trap',
+        caption: 'Author Textbook Drawing 3: Highlighting how beginner traders over-trade and get chopped up inside consolidation boxes.',
+        rule: 'Put a box around the range and step away until price breaks cleanly out.'
       }
     ],
     'ch3-sec4': [
       {
         figNum: '4',
         src: '/assets/smc/ch3/image4.png',
-        title: 'Change of Character (CHoCH): The Two-Beat Reversal Rule',
-        caption: 'Figure 4. Beat 1: The CHoCH warning through the higher low. Beat 2: A second break lower confirms the new bearish trend.',
-        rule: 'CHoCH is the knock; the second break is the door opening.'
+        title: 'Break of Structure (BOS): Bullish & Bearish Continuation',
+        caption: 'Author Textbook Drawing 4: Demonstrating valid BOS where price closes beyond the previous structural swing point.',
+        rule: 'A valid BOS confirms the trend is healthy and continuation is expected.'
       }
     ],
     'ch3-sec5': [
       {
         figNum: '5',
         src: '/assets/smc/ch3/image5.png',
-        title: 'The Fake Change of Character',
-        caption: 'Figure 5. Price breaks the low, then immediately makes a new high. The CHoCH was fake, and the move was just a normal higher low.',
-        rule: 'If no second break confirms, the old trend remains active.'
+        title: 'Candle Body Close vs Wick: The Golden BOS Rule',
+        caption: 'Author Textbook Drawing 5: Comparing a wick poke against a definitive candle body close above the swing line.',
+        rule: 'A wick past a high is a liquidity sweep. A full body close is a valid Break of Structure.'
       }
     ],
     'ch3-sec6': [
       {
         figNum: '6',
         src: '/assets/smc/ch3/image6.png',
-        title: 'The Body Decides: Wick Sweep vs Body BOS',
-        caption: 'Figure 6. The body decides. A wick through the line is a sweep; a body close is a BOS (with the trend) or a CHoCH (against it).',
-        rule: 'The body decides. Never mark structure on wicks.'
+        title: 'Change of Character (CHoCH): Trend Reversal Anatomy',
+        caption: 'Author Textbook Drawing 6: Illustrating how the first break of the opposing swing low/high indicates an institutional shift.',
+        rule: 'CHoCH is the first warning sign that the existing trend has ended.'
       }
     ],
     'ch3-sec7': [
       {
         figNum: '7',
         src: '/assets/smc/ch3/image7.png',
-        title: 'Premium & Discount Zones, Equilibrium (0.5) and OTE',
-        caption: 'Figure 7. Look to buy in discount below 0.5; sell in premium above 0.5. The institutional sweet spot is 0.62 to 0.79.',
-        rule: 'The zone is where to look, not where to click.'
+        title: 'Confirmed Swing Points: The Structural Validation Process',
+        caption: 'Author Textbook Drawing 7: How a swing point becomes permanently locked only AFTER the subsequent BOS occurs.',
+        rule: 'A Higher Low is only confirmed once price successfully breaks above the previous Higher High.'
       }
     ],
     'ch3-sec8': [
       {
         figNum: '8',
         src: '/assets/smc/ch3/image8.png',
-        title: 'Reading a Big Chart: Slow Markets Draw Huge Structures',
-        caption: 'Figure 8. A slow market draws few wide structures; a fast market draws many small ones.',
-        rule: 'Patience over impatience: wait for macro structures to resolve.'
+        title: 'Major Swing Structure vs Minor Internal Structure',
+        caption: 'Author Textbook Drawing 8: Highlighting the major swing legs in bold vs the noisy internal candles inside.',
+        rule: 'Trade in the direction of the major swing structure; do not get blinded by internal chop.'
       }
     ],
     'ch3-sec9': [
       {
         figNum: '9',
         src: '/assets/smc/ch3/image9.png',
-        title: 'Worked Example: The SUI Story in Six Numbered Steps',
-        caption: 'Figure 9. Step 1 Range -> Step 2 Sweep Low -> Step 3 Return inside -> Step 4 Retest -> Step 5 BOS -> Step 6 Explosive Markup.',
-        rule: 'Study schematic: range sweep to opposite liquidity target.'
+        title: 'Dealing Ranges & 50% Equilibrium (Discount vs Premium)',
+        caption: 'Author Textbook Drawing 9: The 0.5 Fibonacci Equilibrium separating the Premium (expensive) from Discount (cheap) zones.',
+        rule: 'Only buy in the Discount zone (below 50%); only sell in the Premium zone (above 50%).'
       }
     ],
     'ch3-sec10': [
       {
         figNum: '10',
         src: '/assets/smc/ch3/image10.png',
-        title: 'Extra Confirmations: RSI Divergence & Compression Flags',
-        caption: 'Figure 10. Left: RSI makes lower high while price makes higher high (bearish divergence). Right: Compression builds resting liquidity pools.',
-        rule: 'Indicators provide confirmation only; market structure is king.'
+        title: 'Liquidity Sweeps Masquerading as False BOS',
+        caption: 'Author Textbook Drawing 10: How institutions wick above equal highs to induce breakout buyers, then collapse.',
+        rule: 'Beware of breakouts without strong impulse candle closes.'
       }
     ],
     'ch3-sec11': [
       {
         figNum: '11',
         src: '/assets/smc/ch3/image11.png',
-        title: 'Better Entry Price Gives More Reward (Asymmetric RR)',
-        caption: 'Figure 11. A better entry price gives more reward for the same risk. Skip trades below about 2.5 risk-to-reward.',
-        rule: 'Asymmetric reward: 1:3 RR pays for three losses.'
+        title: 'Multi-Timeframe Structural Cascades',
+        caption: 'Author Textbook Drawing 11: How a 15-minute CHoCH acts as an internal pullback on the 4-Hour trend.',
+        rule: 'Always align LTF reversals with HTF Points of Interest (POIs).'
       }
     ],
     'ch3-sec12': [
       {
         figNum: '12',
         src: '/assets/smc/ch3/image12.png',
-        title: 'The Journal Loop: Psychology of Missed Trades',
-        caption: 'Figure 12. Plan -> Take or Miss -> Log in Journal -> Review -> Find Patterns -> Adjust.',
-        rule: 'A missed trade costs zero dollars; a FOMO trade costs your account.'
+        title: 'Step-by-Step Market Structure Mapping Protocol',
+        caption: 'Author Textbook Drawing 12: The exact sequence: Identify HTF range -> Mark valid swings -> Identify BOS -> Locate Discount POI.',
+        rule: 'Follow the protocol systematically on every asset.'
       }
     ],
     'ch3-sec13': [
       {
         figNum: '13',
         src: '/assets/smc/ch3/image13.png',
-        title: 'Balance Price Range (BPR) & Touch vs Bar-Close Alerts',
-        caption: 'Figure 13. Left: two overlapping Fair Value Gaps create a Balance Price Range. Right: touch alert versus bar-close alert.',
-        rule: 'Bar-close alerts prevent jumping into unfinished candles.'
-      },
-      {
-        figNum: '14',
-        src: '/assets/smc/ch3/image14.png',
-        title: 'Top-Down Multi-Timeframe Alignment',
-        caption: 'Figure 14. Top-down: Monthly and Weekly for the macro bias, 4 Hour for structure, 15 Minute or 1 Hour for the entry.',
-        rule: 'Align all three timeframe layers before placing risk.'
+        title: 'Live Market Structure Walkthrough on EUR/USD',
+        caption: 'Author Textbook Drawing 13: Real-world structure mapping application on live forex price action.',
+        rule: 'Real charts are messy. Rely on the 3-candle rule and body close confirmation.'
       }
     ],
     'ch3-sec14': [
       {
+        figNum: '14',
+        src: '/assets/smc/ch3/image14.png',
+        title: 'Structure Mapping Protocol & Trade Invalidation',
+        caption: 'Author Textbook Drawing 14: Clear demarcation of structural invalidation levels.',
+        rule: 'If the confirmed Higher Low is broken by a candle body close, your long bias is completely invalidated.'
+      }
+    ],
+    'ch3-sec15': [
+      {
         figNum: '15',
         src: '/assets/smc/ch3/image15.png',
-        title: 'Six-Step Routine for Any Structure Puzzle',
-        caption: 'Figure 15. A systematic six-step routine to analyze any structure puzzle on historical or live charts.',
-        rule: 'Follow the 6 steps methodically on every chart.'
+        title: 'Common Structure Mistakes & How to Avoid Them',
+        caption: 'Author Textbook Drawing 15: Visual guide to the top 5 mistakes: Marking wicks as BOS, trading inside ranges, and confusing internal swings.',
+        rule: 'Audit your chart before placing an order.'
       }
     ],
     'ch3-sec16': [
       {
         figNum: '16',
         src: '/assets/smc/ch3/image16.png',
-        title: 'Decision Flowchart: What to Do at a Swing Point',
-        caption: 'Figure 16. What to do when price reaches a swing point: range, sweep, BOS, or CHoCH, and what each leads to.',
-        rule: 'Follow the decision tree to execute with institutional discipline.'
+        title: 'Master Market Structure Summary Matrix',
+        caption: 'Author Textbook Drawing 16: Complete reference taxonomy of all structure terminology, rules, and execution criteria.',
+        rule: 'Memorize the core axioms: Wick sweeps, body breaks. Buy discount, sell premium.'
       }
     ]
   }

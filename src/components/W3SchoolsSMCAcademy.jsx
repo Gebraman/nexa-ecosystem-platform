@@ -41,13 +41,21 @@ import InstitutionalChartViewer from './InstitutionalChartViewer';
 import OrderBookDepthSimulator from './OrderBookDepthSimulator';
 import BarReplaySimulator from './BarReplaySimulator';
 import SMCPuzzleGame from './SMCPuzzleGame';
+import SMCChapter1BacktestingGame from './SMCChapter1BacktestingGame';
 import SMCChapter3BacktestingGame from './SMCChapter3BacktestingGame';
 
 export default function W3SchoolsSMCAcademy({ 
-  initialChapterId = 'chapter-3',
+  initialChapterId = 'chapter-1',
   onBackToOverview
 }) {
   const [activeChapterId, setActiveChapterId] = useState(initialChapterId);
+
+  // Synchronize activeChapterId whenever initialChapterId prop changes from parent
+  useEffect(() => {
+    if (initialChapterId) {
+      setActiveChapterId(initialChapterId);
+    }
+  }, [initialChapterId]);
   const [isExportingWord, setIsExportingWord] = useState(false);
   const [fontSize, setFontSize] = useState('base'); // 'sm', 'base', 'lg', 'xl'
   const [themeMode, setThemeMode] = useState('dark'); // 'dark', 'light', 'sepia'
@@ -1490,8 +1498,8 @@ export default function W3SchoolsSMCAcademy({
                 </div>
               </div>
 
-              {/* CHAPTER 1 INTERACTIVE BACKTESTING PUZZLE GAME */}
-              <SMCPuzzleGame chapterId="chapter-1" />
+              {/* CHAPTER 1 INTERACTIVE DUAL-VIEW BACKTESTING ARENA */}
+              <SMCChapter1BacktestingGame />
 
             </div>
           )}
