@@ -27,7 +27,8 @@ import {
   FileDown,
   Activity,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Play
 } from 'lucide-react';
 import { smcChapter1FullData } from '../data/smcChapter1FullData';
 import { smcChapter2FullData } from '../data/smcChapter2FullData';
