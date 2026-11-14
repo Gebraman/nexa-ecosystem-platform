@@ -43,6 +43,7 @@ import BarReplaySimulator from './BarReplaySimulator';
 import SMCPuzzleGame from './SMCPuzzleGame';
 import SMCChapter1BacktestingGame from './SMCChapter1BacktestingGame';
 import SMCChapter3BacktestingGame from './SMCChapter3BacktestingGame';
+import InstitutionalVsRetailShowdown from './InstitutionalVsRetailShowdown';
 
 export default function W3SchoolsSMCAcademy({ 
   initialChapterId = 'chapter-1',
@@ -947,6 +948,11 @@ export default function W3SchoolsSMCAcademy({
                   <a
                     key={sec.id}
                     href={`#${sec.id}`}
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                        setIsSidebarOpen(false);
+                      }
+                    }}
                     className="block px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-amber-300 hover:bg-[#131722] truncate transition-colors text-[11px]"
                   >
                     <span className="text-amber-500/70 mr-1.5 font-mono">{sec.num || '•'}</span>
@@ -1285,29 +1291,42 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* Structured Table (if present) */}
-                  {sec.table && (
-                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
-                            {sec.table.headers.map((h, i) => (
-                              <th key={i} className="p-3">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#2a2e39]/60">
-                          {sec.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
-                              {row.map((cell, cIdx) => (
-                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
-                                  {cell}
-                                </td>
+                  {/* SECTION 3 SPECIAL: INSTITUTIONAL VS RETAIL DIFFERENTIAL MATRIX */}
+                  {sec.id === 'ch1-sec3' && (
+                    <InstitutionalVsRetailShowdown />
+                  )}
+
+                  {/* Structured Table (if present and not section 3) */}
+                  {sec.table && sec.id !== 'ch1-sec3' && (
+                    <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
+                      <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5" /> Institutional Matrix • Section {sec.num}
+                        </span>
+                        <span className="text-[10px] text-slate-500 sm:hidden">Swipe horizontally →</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                              {sec.table.headers.map((h, i) => (
+                                <th key={i} className="p-3.5 font-bold">{h || 'Metric'}</th>
                               ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-[#2a2e39]/60">
+                            {sec.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className={`p-3.5 ${cIdx === 0 ? 'font-mono font-bold text-amber-300 whitespace-nowrap' : 'text-slate-300'}`}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
 
@@ -1544,29 +1563,42 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* Structured Table (if present) */}
-                  {sec.table && (
-                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
-                            {sec.table.headers.map((h, i) => (
-                              <th key={i} className="p-3">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#2a2e39]/60">
-                          {sec.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
-                              {row.map((cell, cIdx) => (
-                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
-                                  {cell}
-                                </td>
+                  {/* SECTION 3 SPECIAL: INSTITUTIONAL VS RETAIL DIFFERENTIAL MATRIX */}
+                  {sec.id === 'ch1-sec3' && (
+                    <InstitutionalVsRetailShowdown />
+                  )}
+
+                  {/* Structured Table (if present and not section 3) */}
+                  {sec.table && sec.id !== 'ch1-sec3' && (
+                    <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
+                      <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5" /> Institutional Matrix • Section {sec.num}
+                        </span>
+                        <span className="text-[10px] text-slate-500 sm:hidden">Swipe horizontally →</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                              {sec.table.headers.map((h, i) => (
+                                <th key={i} className="p-3.5 font-bold">{h || 'Metric'}</th>
                               ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-[#2a2e39]/60">
+                            {sec.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className={`p-3.5 ${cIdx === 0 ? 'font-mono font-bold text-amber-300 whitespace-nowrap' : 'text-slate-300'}`}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
 
@@ -1804,29 +1836,42 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* Structured Table (if present) */}
-                  {sec.table && (
-                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
-                            {sec.table.headers.map((h, i) => (
-                              <th key={i} className="p-3">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#2a2e39]/60">
-                          {sec.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
-                              {row.map((cell, cIdx) => (
-                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
-                                  {cell}
-                                </td>
+                  {/* SECTION 3 SPECIAL: INSTITUTIONAL VS RETAIL DIFFERENTIAL MATRIX */}
+                  {sec.id === 'ch1-sec3' && (
+                    <InstitutionalVsRetailShowdown />
+                  )}
+
+                  {/* Structured Table (if present and not section 3) */}
+                  {sec.table && sec.id !== 'ch1-sec3' && (
+                    <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
+                      <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5" /> Institutional Matrix • Section {sec.num}
+                        </span>
+                        <span className="text-[10px] text-slate-500 sm:hidden">Swipe horizontally →</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                              {sec.table.headers.map((h, i) => (
+                                <th key={i} className="p-3.5 font-bold">{h || 'Metric'}</th>
                               ))}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-[#2a2e39]/60">
+                            {sec.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className={`p-3.5 ${cIdx === 0 ? 'font-mono font-bold text-amber-300 whitespace-nowrap' : 'text-slate-300'}`}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   )}
 

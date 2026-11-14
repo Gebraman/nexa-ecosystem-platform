@@ -1,14 +1,15 @@
 import React from 'react';
-import { Terminal, Sparkles, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { Terminal, Sparkles, CheckCircle2, AlertTriangle, ArrowRight, Table as TableIcon } from 'lucide-react';
 
 export default function InstitutionalContentRenderer({ content }) {
   if (!content) return null;
 
-  // Split content by blocks: code blocks, blockquotes, headers, paragraphs
-  const rawBlocks = content.split(/(```text[\s\S]*?```|> [^\n]+(?:\n> [^\n]+)*)/g);
+  // Split content by blocks: code blocks, blockquotes, markdown tables, headers, paragraphs
+  // Regex matches ```text...```, blockquotes > ..., and markdown tables starting with |
+  const rawBlocks = content.split(/(```text[\s\S]*?```|> [^\n]+(?:\n> [^\n]+)*|\n(?:\|[^\n]+\|\n)+)/g);
 
   return (
-    <div className="space-y-4 text-slate-300 leading-relaxed text-sm">
+    <div className="space-y-4 text-slate-300 leading-relaxed text-xs sm:text-sm">
       {rawBlocks.map((block, idx) => {
         if (!block || !block.trim()) return null;
 
@@ -27,7 +28,7 @@ export default function InstitutionalContentRenderer({ content }) {
                   </div>
                   <span className="font-semibold text-amber-300/90 ml-1.5">INSTITUTIONAL SCHEMATIC ARCHITECTURE</span>
                 </div>
-                <span className="text-[10px] text-slate-500">MONOSPACE VECTOR MODEL</span>
+                <span className="text-[10px] text-slate-500 hidden sm:inline">MONOSPACE VECTOR MODEL</span>
               </div>
               <pre className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-cyan-300 leading-relaxed overflow-x-auto select-all">
                 {codeText}
@@ -44,20 +45,93 @@ export default function InstitutionalContentRenderer({ content }) {
               <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Institutional Axiom
               </span>
-              <p className="text-white font-semibold text-sm sm:text-base italic leading-relaxed">
+              <p className="text-white font-semibold text-xs sm:text-base italic leading-relaxed">
                 "{quoteLines.replace(/^\*+|\*+$/g, '')}"
               </p>
             </div>
           );
         }
 
-        // 3. Regular paragraphs and subheadings
+        // 3. Markdown Table Parser (Replaces raw pipes with human styled responsive table!)
+        if (block.trim().startsWith('|') && block.includes('---')) {
+          const tableRows = block
+            .trim()
+            .split('\n')
+            .filter(r => r.trim().startsWith('|'))
+            .map(r => r.split('|').map(c => c.trim()).filter((_, i, arr) => i > 0 && i < arr.length - 1));
+
+          if (tableRows.length >= 2) {
+            const headers = tableRows[0];
+            const dataRows = tableRows.slice(2); // Skip separator row
+
+            return (
+              <div key={idx} className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
+                <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                  <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                    <TableIcon className="w-3.5 h-3.5" /> Structured Institutional Data Matrix
+                  </span>
+                  <span className="text-[10px] text-slate-500 sm:hidden">Swipe to explore →</span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-300 font-mono">
+                        {headers.map((h, hIdx) => (
+                          <th key={hIdx} className="p-3.5 font-bold">{h || 'Metric'}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#2a2e39]/50">
+                      {dataRows.map((row, rIdx) => (
+                        <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                          {row.map((cell, cIdx) => (
+                            <td 
+                              key={cIdx} 
+                              className={`p-3.5 ${
+                                cIdx === 0 
+                                  ? 'font-mono font-bold text-amber-300 whitespace-nowrap' 
+                                  : cIdx === 1 
+                                  ? 'text-emerald-300' 
+                                  : 'text-slate-300'
+                              }`}
+                            >
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          }
+        }
+
+        // 4. Regular paragraphs, subheadings, and lists
         const lines = block.split('\n');
         return (
           <div key={idx} className="space-y-3">
             {lines.map((line, lIdx) => {
               const trimmed = line.trim();
               if (!trimmed) return null;
+
+              // Ignore standalone separator lines with pipes that might have leaked
+              if (/^\|[\s:-|]+\|$/.test(trimmed)) return null;
+
+              // If single row with pipes
+              if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                const cells = trimmed.split('|').map(c => c.trim()).filter(Boolean);
+                return (
+                  <div key={lIdx} className="my-2 p-3 rounded-xl bg-[#131722] border border-[#2a2e39] grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono">
+                    {cells.map((c, ci) => (
+                      <span key={ci} className={ci === 0 ? 'text-amber-400 font-bold' : 'text-slate-200'}>
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                );
+              }
 
               // H3 Subheading
               if (trimmed.startsWith('### ')) {
