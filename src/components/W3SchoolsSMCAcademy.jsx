@@ -32,6 +32,10 @@ import {
 import { smcChapter1FullData } from '../data/smcChapter1FullData';
 import { smcChapter2FullData } from '../data/smcChapter2FullData';
 import { smcChapter3FullData } from '../data/smcChapter3FullData';
+import { smcChapter0OrientationData } from '../data/smcChapter0OrientationData';
+import { chapterFiguresMap } from '../data/smcChapterFiguresMap';
+import InstitutionalRealFigureViewer from './InstitutionalRealFigureViewer';
+
 import InstitutionalContentRenderer from './InstitutionalContentRenderer';
 import InstitutionalChartViewer from './InstitutionalChartViewer';
 import OrderBookDepthSimulator from './OrderBookDepthSimulator';
@@ -44,6 +48,7 @@ export default function W3SchoolsSMCAcademy({
   onBackToOverview
 }) {
   const [activeChapterId, setActiveChapterId] = useState(initialChapterId);
+  const [isExportingWord, setIsExportingWord] = useState(false);
   const [fontSize, setFontSize] = useState('base'); // 'sm', 'base', 'lg', 'xl'
   const [themeMode, setThemeMode] = useState('dark'); // 'dark', 'light', 'sepia'
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,12 +67,14 @@ export default function W3SchoolsSMCAcademy({
   const [quizSubmitted, setQuizSubmitted] = useState({});
 
   const chaptersMap = {
+    'chapter-0': smcChapter0OrientationData,
     'chapter-1': smcChapter1FullData,
     'chapter-2': smcChapter2FullData,
     'chapter-3': smcChapter3FullData
   };
 
   const courseChapters = [
+    { id: 'chapter-0', num: '00', title: '0. Institutional Orientation & Video Hub', isReady: true, subCount: 4 },
     { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 15 },
     { id: 'chapter-2', num: '02', title: '2. How to Identify Structural Swing Points', isReady: true, subCount: 14 },
     { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: true, subCount: 16 },
@@ -82,6 +89,24 @@ export default function W3SchoolsSMCAcademy({
   const currentChapterIndex = courseChapters.findIndex(c => c.id === activeChapterId);
   const prevChapterItem = currentChapterIndex > 0 ? courseChapters[currentChapterIndex - 1] : null;
   const nextChapterItem = currentChapterIndex < courseChapters.length - 1 ? courseChapters[currentChapterIndex + 1] : null;
+
+
+  // Asynchronously fetch image blob and convert to Base64 for Word .doc inline embedding
+  const fetchImageBase64 = async (url) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch (e) {
+      return null;
+    }
+  };
 
   // Converts markdown-flavored text to clean HTML elements for Word export
   const convertMdToBookHtml = (mdText) => {
@@ -179,9 +204,23 @@ export default function W3SchoolsSMCAcademy({
     return out.join('\n');
   };
 
-  // Handle Export to Luxury Canva-Style Master Book (.doc) - 100% Complete & Unabridged
-  const handleExportWord = () => {
-    const sections = currentChapter.sections || [];
+  // Handle Export to Luxury Canva-Style Master Book (.doc) - 100% Complete with Base64 Inline Images
+  const handleExportWord = async () => {
+    setIsExportingWord(true);
+    try {
+      const sections = currentChapter.sections || [];
+      const chapterFigs = chapterFiguresMap[activeChapterId] || {};
+
+      // Pre-fetch base64 data for all figures in this chapter
+      const base64Map = {};
+      for (const sec of sections) {
+        const figs = chapterFigs[sec.id] || [];
+        for (const fig of figs) {
+          if (!base64Map[fig.src]) {
+            base64Map[fig.src] = await fetchImageBase64(fig.src);
+          }
+        }
+      }
     
     // Build Table of Contents HTML
     const tocRows = sections.map((sec) => `
@@ -305,6 +344,25 @@ export default function W3SchoolsSMCAcademy({
             ${convertedContent}
             ${sectionTableHtml}
             ${subsectionsHtml}
+            ${(() => {
+              const figs = chapterFigs[sec.id] || [];
+              if (!figs || figs.length === 0) return '';
+              return figs.map(fig => {
+                const b64 = base64Map[fig.src];
+                return `
+                  <div style="text-align: center; margin: 28px auto; page-break-inside: avoid; background-color: #f8fafc; padding: 18px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <div style="font-family: Consolas, monospace; font-size: 10pt; font-weight: bold; color: #b45309; text-transform: uppercase; margin-bottom: 8px;">
+                      FIGURE ${fig.figNum}: ${fig.title}
+                    </div>
+                    ${b64 ? `<img src="${b64}" alt="${fig.title}" style="max-width: 600px; width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 4px; display: block; margin: 0 auto;" />` : ''}
+                    <div style="font-family: Georgia, serif; font-size: 10pt; color: #475569; font-style: italic; margin-top: 10px; line-height: 1.6;">
+                      <strong>Institutional Drawing Rationale:</strong> ${fig.caption}
+                    </div>
+                    ${fig.rule ? `<div style="margin-top: 8px; font-family: Segoe UI, sans-serif; font-size: 9.5pt; color: #047857; font-weight: bold; background-color: #ecfdf5; padding: 6px 12px; border-radius: 4px; border-left: 3px solid #10b981;">Mandatory Rule: ${fig.rule}</div>` : ''}
+                  </div>
+                `;
+              }).join('');
+            })()}
           </div>
         </div>
       `;
@@ -531,6 +589,11 @@ export default function W3SchoolsSMCAcademy({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Word export error:', err);
+    } finally {
+      setIsExportingWord(false);
+    }
   };
 
   const handlePrintPdf = () => {
@@ -896,7 +959,7 @@ export default function W3SchoolsSMCAcademy({
               >
                 <div className="flex items-center gap-2">
                   <FileText className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Download Canva Master Book</span>
+                  <span>{isExportingWord ? 'Packaging Book (Base64)...' : 'Download Canva Master Book'}</span>
                 </div>
                 <Download className="w-3 h-3 text-amber-400" />
               </button>
@@ -945,6 +1008,231 @@ export default function W3SchoolsSMCAcademy({
               </button>
             </div>
           </section>
+
+                    {/* ============================================================== */}
+          {/* CHAPTER 0: INSTITUTIONAL ORIENTATION & VIDEO MASTERCLASS HUB   */}
+          {/* ============================================================== */}
+          {activeChapterId === 'chapter-0' && (
+            <div className="space-y-12">
+              
+              {/* Orientation Hero Banner */}
+              <div className="p-8 rounded-3xl bg-gradient-to-r from-amber-500/15 via-[#0d1117] to-[#0d1117] border-l-4 border-amber-500 space-y-4 shadow-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider border border-amber-500/30">
+                    ACADEMY FOUNDATION & SYLLABUS
+                  </span>
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                  Institutional Orientation & Video Masterclass Hub
+                </h1>
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans max-w-4xl">
+                  Welcome to the Nexa Institutional SMC Academy. Smart Money Concepts teach you to read the footprints of central banks, hedge funds, and interbank algorithms. Study the foundational principles and access live lecture recordings below before proceeding to Chapter 1.
+                </p>
+                <div className="p-4 rounded-xl bg-[#090d16] border border-amber-500/30 text-amber-300 font-mono text-xs sm:text-sm font-semibold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>Sovereign SMC Axiom: “Retail traders put stop losses in obvious places. Those stop losses become the liquidity Smart Money uses to fill its orders.”</span>
+                </div>
+              </div>
+
+              {/* Curated Video Masterclasses Grid */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-white font-mono flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-amber-400" />
+                    <span>Curated Video Masterclasses & Study Streams</span>
+                  </h3>
+                  <span className="text-xs font-mono text-slate-400">Stream Recordings & Live Zoom Archives</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  {/* Video 1: SMC Strategy Part 1 */}
+                  <a
+                    href="https://youtu.be/M8dQpAeqsbY?si=uXzrSITcwVsjslcZ"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 01</span>
+                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
+                          Watch on YouTube <ExternalLink className="w-3 h-3" />
+                        </span>
+                      </div>
+                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                        SMC Strategy Part 1: Foundations of Smart Money Concepts
+                      </h4>
+                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                        Introduction to algorithmic order delivery, the $10B liquidity problem, and Wyckoff accumulation mechanics.
+                      </p>
+                    </div>
+                    <div className="text-[11px] font-mono text-emerald-400">
+                      Duration: ~3 hrs &bull; Primary Topic: Introduction to SMC
+                    </div>
+                  </a>
+
+                  {/* Video 2: SMC Strategy Part 2 */}
+                  <a
+                    href="https://www.youtube.com/watch?v=NDLCZ_r58MY"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 02</span>
+                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
+                          Watch on YouTube <ExternalLink className="w-3 h-3" />
+                        </span>
+                      </div>
+                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                        SMC Strategy Part 2: Market Structure & Structural Swings
+                      </h4>
+                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                        Deep dive into 3-candle swing geometry, the Red Line confirmation rule, and Break of Structure (BOS).
+                      </p>
+                    </div>
+                    <div className="text-[11px] font-mono text-emerald-400">
+                      Duration: ~3 hrs 23 min &bull; Primary Topic: Structural Swings & BOS
+                    </div>
+                  </a>
+
+                  {/* Video 3: Sideways Market Strategies */}
+                  <a
+                    href="https://youtu.be/WBbF0HJJOYc?si=Z3O5pci91p_CTI9E"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 03</span>
+                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
+                          Watch on YouTube <ExternalLink className="w-3 h-3" />
+                        </span>
+                      </div>
+                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+                        Trading Strategies in Sideways Ranges & Deviations
+                      </h4>
+                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                        How to trade sideways consolidation: avoiding internal noise, reading spring deviations, and capitalizing on fakeouts.
+                      </p>
+                    </div>
+                    <div className="text-[11px] font-mono text-emerald-400">
+                      Duration: ~3 hrs 8 min &bull; Primary Topic: Range Boundaries & OTE
+                    </div>
+                  </a>
+
+                  {/* Video 4: Web Architecture & Full-Stack Clones */}
+                  <div className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] flex flex-col justify-between space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-bold">FULL-STACK TRACK</span>
+                        <span className="text-slate-400">Recorded Sessions</span>
+                      </div>
+                      <h4 className="text-base font-bold text-white">
+                        Full-Stack Trading Systems & Web Dashboard Development
+                      </h4>
+                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
+                        Master HTML5 semantics, responsive CSS grids, and real-time WebSocket market tickers used to construct the Nexa platform.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1">
+                      <a href="https://youtu.be/M8dQpAeqsbY?si=uXzrSITcwVsjslcZ" target="_blank" rel="noreferrer" className="text-[11px] font-mono text-cyan-400 hover:underline">
+                        HTML Part 1 (3:14:08) &rarr;
+                      </a>
+                      <span className="text-slate-600">|</span>
+                      <a href="https://www.youtube.com/watch?v=NDLCZ_r58MY" target="_blank" rel="noreferrer" className="text-[11px] font-mono text-cyan-400 hover:underline">
+                        HTML Part 2 (3:23:53) &rarr;
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Orientation Syllabus Sections */}
+              {filteredSections.map((sec) => (
+                <article key={sec.id} id={sec.id} className="scroll-mt-24 space-y-5 pt-6 border-t border-[#2a2e39]/60">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      Module {sec.num}
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                      {sec.title}
+                    </h2>
+                  </div>
+
+                  {sec.summary && (
+                    <p className="text-xs sm:text-sm font-mono text-slate-400 bg-[#090d16] p-3 rounded-xl border border-[#2a2e39]">
+                      <strong>Executive Summary:</strong> {sec.summary}
+                    </p>
+                  )}
+
+                  <InstitutionalContentRenderer content={sec.content} />
+
+                  {sec.table && (
+                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
+                            {sec.table.headers.map((h, i) => (
+                              <th key={i} className="p-3">{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#2a2e39]/60">
+                          {sec.table.rows.map((row, rIdx) => (
+                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                              {row.map((cell, cIdx) => (
+                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {sec.checklist && (
+                    <div className="my-4 p-4 rounded-xl bg-[#090d16] border border-emerald-500/30 space-y-2">
+                      <span className="text-xs font-mono font-bold text-emerald-400 uppercase block">Study Readiness Commitment:</span>
+                      <div className="space-y-1.5">
+                        {sec.checklist.map((item, ci) => (
+                          <div key={ci} className="flex items-center gap-2 text-xs text-slate-300">
+                            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </article>
+              ))}
+
+              {/* Next Step Call to Action */}
+              <div className="p-6 rounded-2xl bg-[#090d16] border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h4 className="text-lg font-bold text-white font-mono">Ready to Begin Chapter 01?</h4>
+                  <p className="text-xs text-slate-400 font-sans">Start the 15-section masterclass on institutional order flow, bank liquidity sweeps, and the $10B problem.</p>
+                </div>
+                <button
+                  onClick={() => {
+                    setActiveChapterId('chapter-1');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg"
+                >
+                  <span>Enter Chapter 01</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+            </div>
+          )}
 
           {/* ============================================================== */}
           {/* CHAPTER 1 SPECIALIZED SECTION ENGINE (ALL 15 SECTIONS VERBATIM) */}
@@ -1071,35 +1359,19 @@ export default function W3SchoolsSMCAcademy({
                     </div>
                   )}
 
-                  {/* SECTION 7: LIQUIDITY SWEEP & FAKE BREAKOUT ANATOMY */}
-                  {sec.id === 'ch1-sec7' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="sweep-break" 
-                        title="Figure 1. Liquidity Grab & False Breakout vs Break of Structure" 
-                      />
-                    </div>
-                  )}
+                  {/* Institutional Real Textbook Drawings for Chapter 1 */}
+                  {chapterFiguresMap['chapter-1']?.[sec.id]?.map((fig, fIdx) => (
+                    <InstitutionalRealFigureViewer
+                      key={fIdx}
+                      src={fig.src}
+                      title={fig.title}
+                      caption={fig.caption}
+                      figureNum={fig.figNum}
+                      rule={fig.rule}
+                    />
+                  ))}
 
-                  {/* SECTION 12: FAIR VALUE GAP (FVG) HIGH PRECISION VECTOR VIEWER */}
-                  {sec.id === 'ch1-sec12' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fvg" 
-                        title="Figure 2. Fair Value Gap (FVG) Microstructure & 50% CE Rebalance" 
-                      />
-                    </div>
-                  )}
 
-                  {/* SECTION 13: MULTI-TIMEFRAME INTERBANK ALIGNMENT */}
-                  {sec.id === 'ch1-sec13' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="topdown" 
-                        title="Figure 3. Interbank Top-Down Multi-Timeframe Alignment (Daily -> 4H -> 15m)" 
-                      />
-                    </div>
-                  )}
 
                   {/* SECTION 15: SEARCHABLE INSTITUTIONAL GLOSSARY */}
                   {sec.id === 'ch1-sec15' && (
@@ -1290,75 +1562,25 @@ export default function W3SchoolsSMCAcademy({
                     </div>
                   )}
 
-                  {/* FIGURE 1: TOP DOWN FIVE-STEP MATRIX */}
-                  {sec.figureId === 'fig-1' && (
-                    <InstitutionalChartViewer 
-                      type="topdown" 
-                      title="Figure 1. The Interbank Top-Down 5-Step Methodology" 
+                  {/* Institutional Real Textbook Drawings for Chapter 2 */}
+                  {chapterFiguresMap['chapter-2']?.[sec.id]?.map((fig, fIdx) => (
+                    <InstitutionalRealFigureViewer
+                      key={fIdx}
+                      src={fig.src}
+                      title={fig.title}
+                      caption={fig.caption}
+                      figureNum={fig.figNum}
+                      rule={fig.rule}
                     />
-                  )}
-
-                  {/* FIGURE 4 & SECTION 4: THREE CANDLE FORMATION */}
-                  {sec.figureId === 'fig-5' && (
-                    <InstitutionalChartViewer 
-                      type="trio" 
-                      title="Figure 5. The Three-Candle Structural Formation Rules" 
-                    />
-                  )}
-
-                  {/* SECTION 8: RED LINE RULE + INTERACTIVE BAR REPLAY SIMULATOR */}
-                  {sec.figureId === 'fig-8' && (
-                    <div className="space-y-6">
-                      <InstitutionalChartViewer 
-                        type="redline" 
-                        title="Figure 8. The Red Line Validation Theorem (Potential vs Confirmed)" 
-                      />
-                      <BarReplaySimulator />
-                    </div>
-                  )}
-
-                  {/* FIGURE 10: WICK VS BODY CLOSE (SWEEP VS BREAK) */}
-                  {sec.figureId === 'fig-10' && (
-                    <InstitutionalChartViewer 
-                      type="sweep-break" 
-                      title="Figure 10. Liquidity Sweep (Wick) vs Break of Structure (Body Close)" 
-                    />
-                  )}
+                  ))}
 
                   {/* Subsections rendering */}
                   {sec.subsections && sec.subsections.map((sub, sIdx) => (
                     <div key={sIdx} className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] space-y-3">
-                      <h4 className="text-lg font-bold text-amber-300">
+                      <h3 className="text-lg font-bold text-amber-300 font-sans">
                         {sub.title}
-                      </h4>
-                      {sub.content && (
-                        <InstitutionalContentRenderer content={sub.content} />
-                      )}
-                      {sub.figureId === 'fig-2' && (
-                        <InstitutionalChartViewer type="fvg" title="Figure 2. Bearish Fair Value Gap Microstructure" />
-                      )}
-                      {sub.table && (
-                        <div className="my-3 overflow-x-auto rounded-xl border border-[#2a2e39]">
-                          <table className="w-full text-left text-xs border-collapse">
-                            <thead>
-                              <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
-                                {sub.table.headers.map((h, i) => (
-                                  <th key={i} className="p-2.5">{h}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#2a2e39]/60">
-                              {sub.table.rows.map((row, rIdx) => (
-                                <tr key={rIdx}>
-                                  {row.map((cell, cIdx) => (
-                                    <td key={cIdx} className="p-2.5 text-slate-300">{cell}</td>
-                                  ))}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
+                      </h3>
+                      {sub.content && <InstitutionalContentRenderer content={sub.content} />}
                       {sub.checklist && (
                         <div className="space-y-2 pt-2">
                           {sub.checklist.map((item, cIdx) => (
@@ -1600,75 +1822,17 @@ export default function W3SchoolsSMCAcademy({
                     </div>
                   )}
 
-                  {/* FIGURE 2: THREE STATES & BREAK OF STRUCTURE (BOS) */}
-                  {sec.figureId === 'fig-ch3-2' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-2" 
-                        title="Figure 2. Break of Structure (BOS): Bullish vs Bearish Trend Confirmation" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 3: THE RANGE: NOISE VS CLEAN BREAKOUT */}
-                  {sec.figureId === 'fig-ch3-3' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-3" 
-                        title="Figure 3. The Range: Internal Noise Trap vs Clean Breakout Box" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 4: CHANGE OF CHARACTER (CHoCH) TWO-BEAT REVERSAL */}
-                  {sec.figureId === 'fig-ch3-4' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-4" 
-                        title="Figure 4. Change of Character (CHoCH): Two Beats (Warning & Second Break Confirmation)" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 5: FAKE CHANGE OF CHARACTER */}
-                  {sec.figureId === 'fig-ch3-5' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-5" 
-                        title="Figure 5. Fake Change of Character: Old Trend Remains Active" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 6: WICK SWEEP VS CANDLE BODY BOS */}
-                  {sec.figureId === 'fig-ch3-6' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-6" 
-                        title="Figure 6. Liquidity Sweep (Wick Only) vs Break of Structure (Body Close)" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 7: PREMIUM / DISCOUNT ZONES & OPTIMAL TRADE ENTRY (OTE) */}
-                  {sec.figureId === 'fig-ch3-7' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-7" 
-                        title="Figure 7. Premium & Discount Zones with 0.62–0.79 Optimal Trade Entry (OTE)" 
-                      />
-                    </div>
-                  )}
-
-                  {/* FIGURE 13: BALANCE PRICE RANGE (BPR) & BAR-CLOSE ALERT */}
-                  {sec.figureId === 'fig-ch3-13' && (
-                    <div className="my-6 space-y-3">
-                      <InstitutionalChartViewer 
-                        type="fig-ch3-13" 
-                        title="Figure 13. Balance Price Range (BPR Overlap) & Touch vs Bar-Close Alerts" 
-                      />
-                    </div>
-                  )}
+                  {/* Institutional Real Textbook Drawings for Chapter 3 */}
+                  {chapterFiguresMap['chapter-3']?.[sec.id]?.map((fig, fIdx) => (
+                    <InstitutionalRealFigureViewer
+                      key={fIdx}
+                      src={fig.src}
+                      title={fig.title}
+                      caption={fig.caption}
+                      figureNum={fig.figNum}
+                      rule={fig.rule}
+                    />
+                  ))}
 
                 </article>
               ))}

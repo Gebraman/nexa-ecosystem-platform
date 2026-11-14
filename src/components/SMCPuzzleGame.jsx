@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, CheckCircle2, XCircle, Sparkles, Award, RefreshCw, Trophy, ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Target, CheckCircle2, XCircle, Sparkles, Award, RotateCcw, Trophy, ArrowRight, ShieldCheck, HelpCircle, Moon, Sun, Image as ImageIcon } from 'lucide-react';
 
 export default function SMCPuzzleGame({ chapterId = 'chapter-1' }) {
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
@@ -8,137 +8,130 @@ export default function SMCPuzzleGame({ chapterId = 'chapter-1' }) {
   const [score, setScore] = useState(0);
   const [unlockedTricks, setUnlockedTricks] = useState([]);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [invertImage, setInvertImage] = useState(false);
 
-  const puzzles = [
+  // Chapter 1 Puzzles with Real Drawings
+  const chapter1Puzzles = [
     {
       id: 1,
       title: "Puzzle 01: Where Are the Retail Stops Hiding?",
-      scenario: "EUR/USD is forming a support level around 1.08400. Thousands of retail traders bought this bounce. An institutional desk wants to accumulate a $10 Billion long position. Where must they drive price to harvest the liquidity?",
-      chartSvg: (
-        <svg viewBox="0 0 500 180" className="w-full h-full">
-          <line x1="20" y1="50" x2="480" y2="50" stroke="#1f2430" strokeDasharray="3 3" />
-          <text x="440" y="46" fill="#64748b" fontSize="9" fontFamily="monospace">1.09200 (BSL)</text>
-          
-          <line x1="20" y1="130" x2="480" y2="130" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="400" y="124" fill="#fbbf24" fontSize="9" fontFamily="monospace">1.08400 (Support)</text>
-
-          {/* Price line bouncing off support */}
-          <path d="M 40 70 L 90 130 L 140 80 L 190 130 L 250 85 L 300 130 L 340 100" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
-          
-          {/* Target Zone Box */}
-          <rect x="180" y="135" width="220" height="35" fill="#ef4444" fillOpacity="0.15" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3 3" rx="4" />
-          <text x="290" y="157" fill="#f87171" fontSize="10" fontFamily="monospace" fontWeight="bold" textAnchor="middle">
-            ZONE X: Below Support Lows
-          </text>
-        </svg>
-      ),
+      concept: "Liquidity Pools & The Retail Trap (Figure 4)",
+      realImage: "/assets/smc/ch1/image4.png",
+      caption: "Figure 4. Retail traders buy obvious support and cluster stop-loss sell orders just beneath it. Smart Money sweeps these stops to fill large institutional orders.",
+      scenario: "EUR/USD forms an obvious double bottom support level. Thousands of retail traders enter long. Smart Money needs to accumulate a massive $10 Billion buy order. Where must they drive price to harvest the necessary liquidity?",
       options: [
-        { id: 'A', text: "Above the 1.09200 resistance high where breakout buyers are waiting.", correct: false, reason: "Above the high is Buy-Side Liquidity (BSL). Institutions wanting to BUY need SELLER stops (sell-side liquidity)." },
-        { id: 'B', text: "Below the 1.08400 support level where retail stop-loss SELL orders are clustered.", correct: true, reason: "CORRECT! Retail buyers place stop losses below support. A stop loss on a buy is a SELL order. Institutions drive price here to absorb these sells at a discount!" },
-        { id: 'C', text: "Exactly in the middle at 1.08800 equilibrium.", correct: false, reason: "The midpoint has low liquidity density. Institutions need massive stop clusters located beyond extremes." }
+        { id: 'A', text: "Above the resistance high where breakout buyers are waiting.", correct: false, reason: "Above the high is Buy-Side Liquidity (BSL). Institutions wanting to BUY need SELLER stops (sell-side liquidity)." },
+        { id: 'B', text: "Below the support level where retail stop-loss SELL orders are clustered.", correct: true, reason: "CORRECT! Retail buyers place stop losses below support. A stop loss on a buy is a SELL order. Institutions drive price here to absorb these sells at a discount!" },
+        { id: 'C', text: "Exactly in the middle at equilibrium.", correct: false, reason: "The midpoint has low liquidity density. Institutions need massive stop clusters located beyond extremes." }
       ],
       memoryTrick: "“Your stop is their entry.”"
     },
     {
       id: 2,
       title: "Puzzle 02: Stop Hunt Cascade vs. Real Breakdown",
-      scenario: "Price violently pierces below the 1.08400 support level. A long hammer rejection wick forms, and the candle closes back INSIDE the range at 1.08450. What is your institutional action?",
-      chartSvg: (
-        <svg viewBox="0 0 500 180" className="w-full h-full">
-          <line x1="20" y1="100" x2="480" y2="100" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="400" y="94" fill="#fbbf24" fontSize="9" fontFamily="monospace">1.08400 (Support)</text>
-
-          {/* Candle 1 & 2 */}
-          <line x1="120" y1="70" x2="120" y2="100" stroke="#64748b" strokeWidth="1.5" />
-          <rect x="110" y="75" width="20" height="20" fill="#64748b" rx="1" />
-          
-          {/* Hammer Candle with Long Rejection Wick */}
-          <line x1="220" y1="80" x2="220" y2="160" stroke="#10b981" strokeWidth="2.5" />
-          <rect x="208" y="85" width="24" height="25" fill="#10b981" rx="2" />
-          
-          <polygon points="220,165 215,155 225,155" fill="#ef4444" />
-          <text x="220" y="175" fill="#f87171" fontSize="9" fontFamily="monospace" textAnchor="middle">
-            LIQUIDITY RAID WICK
-          </text>
-        </svg>
-      ),
+      concept: "The Cascade Waterfall (Figure 5)",
+      realImage: "/assets/smc/ch1/image5.png",
+      caption: "Figure 5. Chain reaction: Each triggered sell stop becomes a market order that knocks price into the next tier of stops until institutions absorb all volume.",
+      scenario: "Price punches below the swing low. The first stop losses trigger as market sell orders, knocking price into the next cluster. What is this phenomenon and who is buying?",
       options: [
-        { id: 'A', text: "Sell immediately with a market order because the support level was pierced.", correct: false, reason: "This is the classic breakout trap! Breakout sellers are now trapped on the wrong side." },
-        { id: 'B', text: "Recognize the liquidity raid! Drop to 15m/5m, wait for a Market Structure Break (BOS body close) and enter on the retest.", correct: true, reason: "EXCELLENT! The long wick proves order book absorption. You confirm buyer control with a lower-timeframe BOS before entering safely." },
-        { id: 'C', text: "DCA down with multiple orders without a stop loss.", correct: false, reason: "DCA on futures without confirmation is strictly prohibited in professional risk management." }
+        { id: 'A', text: "It is normal market panic; nobody is buying.", correct: false, reason: "Every trade has two sides. While retail stops are executing as forced market sells, institutions are quietly absorbing them." },
+        { id: 'B', text: "It is an engineered stop-hunt cascade: Smart Money places passive limit buy orders to absorb all panic sell volume.", correct: true, reason: "CORRECT! This order cascade clears the order book. Smart Money buys huge volume at the lowest prices, setting up the markup rally!" },
+        { id: 'C', text: "It means the cryptocurrency has reached zero value.", correct: false, reason: "Liquidity sweeps happen on healthy, active institutional markets like Bitcoin and Forex every single day." }
       ],
-      memoryTrick: "“Sweep, shift, retest, enter.”"
+      memoryTrick: "“Price moves from liquidity to liquidity.”"
     },
     {
       id: 3,
-      title: "Puzzle 03: The 3-Candle Fair Value Gap (FVG)",
-      scenario: "During an aggressive displacement drop, three candles print consecutively. Between which two points does the institutional Fair Value Gap (FVG) exist?",
-      chartSvg: (
-        <svg viewBox="0 0 500 180" className="w-full h-full">
-          {/* C1 */}
-          <line x1="120" y1="30" x2="120" y2="90" stroke="#f23645" strokeWidth="1.5" />
-          <rect x="110" y="40" width="20" height="35" fill="#f23645" rx="1" />
-          <line x1="100" y1="75" x2="140" y2="75" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="120" y="105" fill="#94a3b8" fontSize="8" fontFamily="monospace" textAnchor="middle">C1 Low</text>
-
-          {/* C2 Displacement */}
-          <line x1="220" y1="60" x2="220" y2="165" stroke="#f23645" strokeWidth="2" />
-          <rect x="208" y="75" width="24" height="80" fill="#f23645" rx="2" />
-
-          {/* C3 */}
-          <line x1="320" y1="120" x2="320" y2="175" stroke="#f23645" strokeWidth="1.5" />
-          <rect x="310" y="135" width="20" height="35" fill="#f23645" rx="1" />
-          <line x1="300" y1="120" x2="340" y2="120" stroke="#f59e0b" strokeWidth="1.5" />
-          <text x="320" y="112" fill="#94a3b8" fontSize="8" fontFamily="monospace" textAnchor="middle">C3 High</text>
-
-          {/* Shaded Gap */}
-          <rect x="140" y="75" width="160" height="45" fill="#f59e0b" fillOpacity="0.2" stroke="#f59e0b" strokeWidth="1" strokeDasharray="3 3" />
-          <text x="220" y="102" fill="#fbbf24" fontSize="9" fontFamily="monospace" fontWeight="bold" textAnchor="middle">
-            IMBALANCE GAP
-          </text>
-        </svg>
-      ),
+      title: "Puzzle 03: Wick Sweep vs Body Close (Fakeout vs BOS)",
+      concept: "Validation Mechanics (Figure 6)",
+      realImage: "/assets/smc/ch1/image6.png",
+      caption: "Figure 6. The body decides. A wick through the line is a sweep; a full candle body close beyond it is a valid Break of Structure.",
+      scenario: "A candle pierces through a key resistance level with a long wick, but the candle BODY closes firmly back below the line. How does an institutional SMC trader classify this?",
       options: [
-        { id: 'A', text: "Between the Low of Candle 1 and the High of Candle 3.", correct: true, reason: "PERFECT! The untraded void between Candle 1's lowest point and Candle 3's highest point is the Bearish Fair Value Gap." },
-        { id: 'B', text: "Between the Open and Close of Candle 2.", correct: false, reason: "Candle 2's body is the displacement candle, but the FVG is the empty distance between the first and third candles." },
-        { id: 'C', text: "Between the High of Candle 1 and the Low of Candle 3.", correct: false, reason: "That spans the entire range, not the unfilled imbalance." }
+        { id: 'A', text: "A confirmed breakout! Buy with maximum leverage immediately.", correct: false, reason: "Entering on a wick breakout is the number one beginner trap. The body failed to close above!" },
+        { id: 'B', text: "A Liquidity Sweep (Fakeout): Smart Money triggered buy-stops and is preparing to reverse downwards.", correct: true, reason: "100% CORRECT! 'Wick takes the cash, body breaks the path.' A wick beyond the line without a body close is a sweep, not a break." },
+        { id: 'C', text: "A Fair Value Gap.", correct: false, reason: "An FVG is a 3-candle imbalance void, not a single wick pierce." }
       ],
-      memoryTrick: "“Liquidity to liquidity.”"
+      memoryTrick: "“Wick is a sweep, close is a break — wait for the body for safety's sake.”"
     },
     {
       id: 4,
-      title: "Puzzle 04: The Red Line Validation Rule",
-      scenario: "A 3-candle swing high forms at 1.09200. You draw the Red Line at the lowest point of the swing candle (1.08700). When is this structural swing officially validated?",
-      chartSvg: (
-        <svg viewBox="0 0 500 180" className="w-full h-full">
-          {/* Swing Candle */}
-          <line x1="160" y1="30" x2="160" y2="110" stroke="#10b981" strokeWidth="2" />
-          <rect x="148" y="45" width="24" height="50" fill="#10b981" rx="2" />
-          <circle cx="160" cy="30" r="4" fill="none" stroke="#f59e0b" strokeWidth="2" />
-          <text x="160" y="22" fill="#fbbf24" fontSize="9" fontFamily="monospace" textAnchor="middle">Swing High</text>
-
-          {/* Red Line */}
-          <line x1="80" y1="110" x2="420" y2="110" stroke="#ef4444" strokeWidth="2" />
-          <text x="360" y="104" fill="#ef4444" fontSize="9" fontFamily="monospace" fontWeight="bold">RED LINE (Low)</text>
-
-          {/* Candle Closing Below */}
-          <line x1="260" y1="90" x2="260" y2="155" stroke="#f23645" strokeWidth="2" />
-          <rect x="248" y="105" width="24" height="35" fill="#f23645" rx="2" />
-          <text x="260" y="170" fill="#34d399" fontSize="9" fontFamily="monospace" fontWeight="bold" textAnchor="middle">
-            BODY CLOSES BELOW
-          </text>
-        </svg>
-      ),
+      title: "Puzzle 04: The 3-Candle Fair Value Gap (FVG)",
+      concept: "Points of Interest (Figure 10)",
+      realImage: "/assets/smc/ch1/image10.png",
+      caption: "Figure 10. Fair Value Gap (FVG) between Candle 1 High and Candle 3 Low, featuring the 50% Consequent Encroachment (CE) midline.",
+      scenario: "During an aggressive bullish rally, three candles form consecutively. Between which two points does the institutional Fair Value Gap (FVG) exist?",
       options: [
-        { id: 'A', text: "As soon as the peak candle wick prints at the top.", correct: false, reason: "No! Until price breaks lower, the market can keep rising, invalidating the candidate." },
-        { id: 'B', text: "When a wick briefly touches or pokes through the red line.", correct: false, reason: "A wick touch is only a sweep or test, not a confirmation." },
-        { id: 'C', text: "Only after a subsequent candle closes with its full BODY below the red line.", correct: true, reason: "100% CORRECT! Roman's rule: 'No close, no swing. Wick is a sweep, body close is a break.'" }
+        { id: 'A', text: "Between the High of Candle 1 and the Low of Candle 3.", correct: true, reason: "PERFECT! The untraded void between Candle 1's high and Candle 3's low is the Bullish Fair Value Gap. Price often retraces to the 50% CE line before continuing." },
+        { id: 'B', text: "Between the open and close of the middle candle.", correct: false, reason: "Candle 2's body is the displacement candle, but the gap is the space left untraded between Candle 1 and Candle 3." },
+        { id: 'C', text: "Across the entire 10-candle range.", correct: false, reason: "An FVG is strictly a 3-candle imbalance." }
       ],
-      memoryTrick: "“No close, no swing. Wick is a sweep, body close is a break.”"
+      memoryTrick: "“Candle 1 and Candle 3 don't meet — Smart Money fills the empty street.”"
     }
   ];
 
-  const current = puzzles[currentPuzzleIndex];
+  // Chapter 2 Puzzles with Real Drawings
+  const chapter2Puzzles = [
+    {
+      id: 1,
+      title: "Puzzle 01: The Three-Candle Structural Formation",
+      concept: "Geometry of Swings (Figure 5)",
+      realImage: "/assets/smc/ch2/image5.png",
+      caption: "Figure 5. The three-candle formation. A and B are valid swings because the middle candle has the extreme point. C and D are not swings.",
+      scenario: "Look at the four formations A, B, C, and D in the real drawing. Why are A and B valid swing points while C and D are invalid?",
+      options: [
+        { id: 'A', text: "Because A and B have green candles only.", correct: false, reason: "Candle color does NOT matter. Only the extreme wick tip matters." },
+        { id: 'B', text: "Because in A and B, the middle candle has the true extreme point (highest high or lowest low) compared to both neighbours.", correct: true, reason: "CORRECT! Rule: A swing requires three candles where the middle candle has the extreme high (swing high) or extreme low (swing low)." },
+        { id: 'C', text: "Because C and D are inside an order block.", correct: false, reason: "Structure takes precedence over order blocks. C and D fail the 3-candle geometry test." }
+      ],
+      memoryTrick: "“Three candles, extreme in the middle.”"
+    },
+    {
+      id: 2,
+      title: "Puzzle 02: The Red Line Validation Theorem",
+      concept: "Potential vs Validated Swings (Figure 8)",
+      realImage: "/assets/smc/ch2/image8.png",
+      caption: "Figure 8. Potential swing versus validated swing using the red line. For a swing high, you must see a body close below the lowest point of the swing candle.",
+      scenario: "A 3-candle swing high shape has printed on the 4-hour chart. You draw the Red Line at the lowest point of the swing candle. When does this candidate officially become a VALIDATED swing high?",
+      options: [
+        { id: 'A', text: "Immediately as soon as Candle 3 finishes printing.", correct: false, reason: "No! Until price closes below the red line, price can keep rising and invalidate the candidate high." },
+        { id: 'B', text: "When a wick pokes below the red line.", correct: false, reason: "A wick touch is only a test, not a confirmation." },
+        { id: 'C', text: "Only after a subsequent candle closes with its full BODY below the red line.", correct: true, reason: "100% CORRECT! Roman's rule: 'No close below the red line, no swing.' This removes 90% of retail false swing markings." }
+      ],
+      memoryTrick: "“No close below the red line base means don't you mark a swing in haste.”"
+    },
+    {
+      id: 3,
+      title: "Puzzle 03: The Range: Trading Inside vs Waiting for Escape",
+      concept: "Dealing Ranges (Figure 9)",
+      realImage: "/assets/smc/ch2/image9.png",
+      caption: "Figure 9. Work inside the range. Wait for price to break out of it. Internal wiggles are not structural swings.",
+      scenario: "Price breaks below a swing low, defining a new structural dealing range. While price stays inside this range, several small peaks and valleys form. What should you mark?",
+      options: [
+        { id: 'A', text: "Mark every peak as a new structural swing high.", correct: false, reason: "Beginner trap! Those are internal movements, not structural swings." },
+        { id: 'B', text: "Mark nothing inside the range. Wait for price to break cleanly OUT of the range boundaries.", correct: true, reason: "PERFECT! Roman and the host both emphasized: 'Inside the range, mark nothing.' You trade only when price breaks out or into POIs." },
+        { id: 'C', text: "Switch to 1-minute and take 50 scalps.", correct: false, reason: "Overtrading internal range noise destroys capital and causes emotional tilt." }
+      ],
+      memoryTrick: "“Inside the range, mark nothing.”"
+    },
+    {
+      id: 4,
+      title: "Puzzle 04: The Extreme Point Rule",
+      concept: "Finding the Valid Swing High (Figure 11)",
+      realImage: "/assets/smc/ch2/image11.png",
+      caption: "Figure 11. To find a swing high between two swing lows, look ONLY between those two lows and pick the highest extreme candle.",
+      scenario: "Price breaks down and establishes a new swing low. To locate the valid structural swing high between the old low and the new low, what is the exact rule?",
+      options: [
+        { id: 'A', text: "Pick the candle with the highest trading volume.", correct: false, reason: "Volume does not define structural swing location." },
+        { id: 'B', text: "Look strictly between the two swing lows and pick the absolute highest point (extreme candle).", correct: true, reason: "CORRECT! The extreme point rule states that the structural swing high is the absolute highest candle between the two lows." },
+        { id: 'C', text: "Guess based on the 50% Fibonacci mark.", correct: false, reason: "Fibonacci is for measuring premium/discount, not for finding structural swing anchors." }
+      ],
+      memoryTrick: "“Extreme point between the lows defines the swing that Roman knows.”"
+    }
+  ];
+
+  const puzzles = chapterId === 'chapter-2' ? chapter2Puzzles : chapter1Puzzles;
+  const currentPuzzle = puzzles[currentPuzzleIndex];
 
   const handleSelectOption = (opt) => {
     if (isAnswered) return;
@@ -147,8 +140,8 @@ export default function SMCPuzzleGame({ chapterId = 'chapter-1' }) {
 
     if (opt.correct) {
       setScore(prev => prev + 1);
-      if (!unlockedTricks.includes(current.memoryTrick)) {
-        setUnlockedTricks(prev => [...prev, current.memoryTrick]);
+      if (currentPuzzle.memoryTrick && !unlockedTricks.includes(currentPuzzle.memoryTrick)) {
+        setUnlockedTricks(prev => [...prev, currentPuzzle.memoryTrick]);
       }
     }
   };
@@ -163,186 +156,218 @@ export default function SMCPuzzleGame({ chapterId = 'chapter-1' }) {
     }
   };
 
-  const handleResetGame = () => {
+  const handleRestart = () => {
     setCurrentPuzzleIndex(0);
     setSelectedOption(null);
     setIsAnswered(false);
     setScore(0);
-    setUnlockedTricks([]);
     setGameCompleted(false);
   };
 
   return (
-    <div className="w-full my-8 p-6 sm:p-8 rounded-3xl bg-[#090d16] border-2 border-amber-500/40 space-y-6 shadow-2xl">
+    <div className="w-full my-8 p-6 sm:p-8 rounded-3xl bg-[#090d16] border-2 border-amber-500/40 shadow-2xl space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2a2e39] pb-4">
-        <div>
-          <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4" /> Interactive Chart Backtesting Game
-          </span>
-          <h3 className="text-xl sm:text-2xl font-black text-white mt-1">
-            Institutional Memory & Tactical Puzzle Arena
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#2a2e39]">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono text-[11px] font-bold uppercase tracking-wider border border-amber-500/30">
+              {chapterId === 'chapter-2' ? 'Chapter 02 Backtesting Challenge' : 'Chapter 01 Backtesting Challenge'}
+            </span>
+            <span className="text-xs font-mono text-slate-400">
+              Puzzle {currentPuzzleIndex + 1} of {puzzles.length}
+            </span>
+          </div>
+          <h3 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+            <Target className="w-6 h-6 text-amber-400" />
+            <span>{currentPuzzle.title}</span>
           </h3>
+          <p className="text-xs font-mono text-amber-300/80">
+            {currentPuzzle.concept}
+          </p>
         </div>
 
+        {/* Score & Reset */}
         <div className="flex items-center gap-3">
-          <div className="px-3 py-1.5 rounded-xl bg-[#131722] border border-[#2a2e39] font-mono text-xs text-slate-300">
-            Score: <span className="text-amber-400 font-bold">{score}</span> / {puzzles.length}
-          </div>
           <button
-            onClick={handleResetGame}
-            className="p-2 rounded-xl bg-[#131722] hover:bg-slate-800 border border-[#2a2e39] text-slate-400 hover:text-white"
-            title="Reset Arena"
+            onClick={() => setInvertImage(!invertImage)}
+            className="px-3 py-1.5 rounded-xl bg-[#131722] border border-[#2a2e39] text-xs font-mono text-slate-300 hover:text-white flex items-center gap-1.5"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            {invertImage ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-cyan-400" />}
+            <span>{invertImage ? 'Paper' : 'Dark'}</span>
+          </button>
+          
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#131722] border border-[#2a2e39] text-center font-mono">
+            <span className="text-[9px] text-slate-400 uppercase block">Score</span>
+            <span className="text-sm font-black text-amber-400">{score} / {puzzles.length}</span>
+          </div>
+
+          <button
+            onClick={handleRestart}
+            className="p-2 rounded-xl bg-[#131722] hover:bg-slate-800 border border-[#2a2e39] text-slate-300 hover:text-white"
+            title="Restart Challenge"
+          >
+            <RotateCcw className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {!gameCompleted ? (
-        <div className="space-y-6">
-          
-          {/* Progress Bar */}
-          <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>Puzzle {currentPuzzleIndex + 1} of {puzzles.length}</span>
-            <span className="text-amber-400 font-bold">Level {currentPuzzleIndex + 1}: Tactical IQ</span>
+      {/* Scenario & Real Drawing Card */}
+      <div className="space-y-4">
+        <p className="text-xs sm:text-sm text-slate-300 font-mono leading-relaxed bg-[#131722] p-3.5 rounded-xl border border-[#2a2e39]">
+          <strong className="text-amber-400">Trading Situation:</strong> {currentPuzzle.scenario}
+        </p>
+
+        {/* Real Drawing Image Card */}
+        <div className="rounded-2xl bg-[#060913] border border-[#2a2e39] overflow-hidden">
+          <div className="p-3 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-xs font-mono">
+            <span className="text-amber-400 font-bold flex items-center gap-1.5">
+              <ImageIcon className="w-3.5 h-3.5" /> Official Textbook Drawing
+            </span>
+            <span className="text-slate-400 text-[11px] font-mono">Study the labels and price action carefully</span>
           </div>
-          <div className="w-full h-1.5 bg-[#131722] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-300" 
-              style={{ width: `${((currentPuzzleIndex + 1) / puzzles.length) * 100}%` }}
+
+          <div className={`p-4 flex items-center justify-center min-h-[220px] transition-colors ${invertImage ? 'bg-white' : 'bg-[#070b12]'}`}>
+            <img
+              src={currentPuzzle.realImage}
+              alt={currentPuzzle.title}
+              className={`max-w-full max-h-[300px] object-contain rounded transition-all ${
+                invertImage ? 'filter-none' : 'filter invert hue-rotate-180 brightness-95 contrast-125'
+              }`}
             />
           </div>
 
-          {/* Scenario Text */}
-          <div className="space-y-2">
-            <h4 className="text-base sm:text-lg font-bold text-white">
-              {current.title}
-            </h4>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-[#131722] p-4 rounded-xl border border-[#2a2e39]">
-              {current.scenario}
-            </p>
+          <div className="p-3 bg-[#0d121f] border-t border-[#2a2e39] text-[11px] font-mono text-slate-400">
+            {currentPuzzle.caption}
           </div>
+        </div>
+      </div>
 
-          {/* Interactive Chart Canvas */}
-          <div className="relative h-56 w-full bg-[#060913] rounded-2xl border border-[#2a2e39] overflow-hidden flex items-center justify-center p-2">
-            {current.chartSvg}
-          </div>
+      {/* Options Selection */}
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
+        <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase">
+          <HelpCircle className="w-4 h-4 text-amber-400" />
+          <span>Select the Institutional Trade Decision:</span>
+        </div>
 
-          {/* Options */}
-          <div className="space-y-3">
-            <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block font-semibold">
-              Select Your Institutional Move:
-            </span>
-            <div className="grid grid-cols-1 gap-2.5">
-              {current.options.map((opt) => {
-                let btnStyle = "bg-[#131722] border-[#2a2e39] text-slate-300 hover:border-slate-700";
-                if (selectedOption?.id === opt.id) {
-                  btnStyle = opt.correct 
-                    ? "bg-emerald-950/40 border-emerald-500 text-emerald-300 font-bold shadow-lg shadow-emerald-500/10" 
-                    : "bg-red-950/40 border-red-500 text-red-300 font-bold";
-                } else if (isAnswered && opt.correct) {
-                  btnStyle = "bg-emerald-950/20 border-emerald-500 text-emerald-300";
-                }
+        <div className="space-y-2.5">
+          {currentPuzzle.options.map((opt) => {
+            const isSelected = selectedOption?.id === opt.id;
+            let btnClass = "bg-[#090d16] border-[#2a2e39] text-slate-300 hover:bg-[#1a202e] hover:border-amber-500/40";
 
-                return (
-                  <button
-                    key={opt.id}
-                    disabled={isAnswered}
-                    onClick={() => handleSelectOption(opt)}
-                    className={`w-full p-4 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-start gap-3 ${btnStyle}`}
-                  >
-                    <span className="px-2 py-0.5 rounded bg-[#090d16] font-mono text-xs font-bold shrink-0 mt-0.5">
-                      {opt.id}
-                    </span>
-                    <span className="leading-relaxed">{opt.text}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+            if (isAnswered) {
+              if (opt.correct) {
+                btnClass = "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold";
+              } else if (isSelected && !opt.correct) {
+                btnClass = "bg-red-500/20 border-red-500 text-red-300 font-bold";
+              } else {
+                btnClass = "bg-[#090d16] border-[#2a2e39] text-slate-500 opacity-50";
+              }
+            }
 
-          {/* Feedback & Next Step */}
-          {isAnswered && (
-            <div className={`p-5 rounded-2xl border space-y-3 animate-fade-in ${
-              selectedOption?.correct ? 'bg-emerald-950/20 border-emerald-500/50' : 'bg-red-950/20 border-red-500/50'
-            }`}>
-              <div className="flex items-center gap-2">
-                {selectedOption?.correct ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                ) : (
-                  <XCircle className="w-5 h-5 text-red-400" />
-                )}
-                <span className="text-sm font-bold text-white">
-                  {selectedOption?.correct ? "Institutional Solution Verified!" : "Retail Trap Detected!"}
+            return (
+              <button
+                key={opt.id}
+                onClick={() => handleSelectOption(opt)}
+                disabled={isAnswered}
+                className={`w-full p-3.5 rounded-xl border text-left text-xs sm:text-sm font-sans flex items-start gap-3 transition-all ${btnClass}`}
+              >
+                <span className={`w-6 h-6 rounded-lg font-mono font-bold flex items-center justify-center shrink-0 text-xs ${
+                  isAnswered && opt.correct
+                    ? 'bg-emerald-500 text-dark-950 font-black'
+                    : isAnswered && isSelected && !opt.correct
+                    ? 'bg-red-500 text-white'
+                    : 'bg-[#131722] text-amber-400 border border-[#2a2e39]'
+                }`}>
+                  {opt.id}
                 </span>
+                <span className="leading-relaxed">{opt.text}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Feedback Section */}
+        {isAnswered && (
+          <div className="space-y-4 pt-3 animate-fadeIn">
+            <div className={`p-4 rounded-xl border ${
+              selectedOption.correct 
+                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300' 
+                : 'bg-red-500/10 border-red-500/40 text-red-300'
+            }`}>
+              <div className="flex items-center gap-2 font-mono font-bold text-xs uppercase mb-1">
+                {selectedOption.correct ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>✓ Correct Institutional Analysis!</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="w-4 h-4 text-red-400" />
+                    <span>⚠️ Retail Execution Trap Detected</span>
+                  </>
+                )}
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                {selectedOption?.reason}
+              <p className="text-xs sm:text-sm font-sans leading-relaxed text-slate-200">
+                {selectedOption.reason}
               </p>
 
-              {selectedOption?.correct && (
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs font-bold flex items-center gap-2">
-                  <span>🧠 Memory Trick Unlocked:</span>
-                  <span>{current.memoryTrick}</span>
+              {currentPuzzle.memoryTrick && (
+                <div className="mt-3 p-3 rounded-lg bg-[#090d16] border border-amber-500/30 text-amber-300 font-mono text-xs flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span><strong>Memory Trick Unlocked:</strong> {currentPuzzle.memoryTrick}</span>
                 </div>
               )}
-
-              <button
-                onClick={handleNextPuzzle}
-                className="mt-3 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20"
-              >
-                <span>{currentPuzzleIndex < puzzles.length - 1 ? 'Next Tactical Puzzle' : 'Complete Arena'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
-          )}
 
+            <button
+              onClick={handleNextPuzzle}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 text-dark-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all"
+            >
+              <span>{currentPuzzleIndex < puzzles.length - 1 ? 'Next Puzzle' : 'Claim Mastery Trophy'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Unlocked Tricks Vault */}
+      {unlockedTricks.length > 0 && (
+        <div className="p-4 rounded-xl bg-[#060913] border border-[#2a2e39] space-y-2">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold text-amber-400 uppercase">
+            <Award className="w-4 h-4 text-amber-400" />
+            <span>Unlocked Memory Rhymes ({unlockedTricks.length})</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {unlockedTricks.map((trick, i) => (
+              <span key={i} className="px-3 py-1.5 rounded-lg bg-[#131722] border border-amber-500/30 text-amber-300 text-xs font-mono">
+                {trick}
+              </span>
+            ))}
+          </div>
         </div>
-      ) : (
-        /* Game Completed Trophy Screen */
-        <div className="py-8 text-center space-y-6 animate-fade-in">
-          <div className="w-16 h-16 rounded-3xl bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center mx-auto shadow-xl">
-            <Trophy className="w-8 h-8" />
-          </div>
+      )}
 
-          <div className="space-y-2">
-            <h4 className="text-2xl sm:text-3xl font-black text-white">
-              Backtesting Arena Completed!
-            </h4>
-            <p className="text-sm text-slate-400 max-w-md mx-auto">
-              You scored <span className="text-amber-400 font-bold">{score} / {puzzles.length}</span>. Your institutional eye is calibrated to detect retail traps before risking capital.
-            </p>
-          </div>
-
-          {/* Unlocked Memory Rhymes Card */}
-          <div className="p-6 rounded-2xl bg-[#131722] border border-[#2a2e39] max-w-xl mx-auto text-left space-y-3">
-            <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest block">
-              🏆 Mastered Memory Rhymes:
-            </span>
-            <div className="space-y-2">
-              {[
-                "“Your stop is their entry.”",
-                "“Sweep, shift, retest, enter.”",
-                "“Liquidity to liquidity.”",
-                "“No close, no swing. Wick is a sweep, body close is a break.”",
-                "“High time frame for direction, low time frame for entry.”"
-              ].map((rhyme, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-[#090d16] border border-[#2a2e39] text-xs font-mono text-emerald-300 flex items-center gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>{rhyme}</span>
-                </div>
-              ))}
+      {/* Completion Modal */}
+      {gameCompleted && (
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="max-w-lg w-full p-8 rounded-3xl bg-[#090d16] border-2 border-amber-500 text-center space-y-5 shadow-2xl animate-scaleUp">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto">
+              <Trophy className="w-8 h-8" />
             </div>
+            <h3 className="text-2xl font-black text-white">
+              Institutional Challenge Completed!
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              You scored <strong className="text-amber-400 font-mono">{score} out of {puzzles.length}</strong> using real textbook chart drawings.
+            </p>
+            <button
+              onClick={handleRestart}
+              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-black text-xs uppercase tracking-wider transition-all"
+            >
+              Replay Challenge
+            </button>
           </div>
-
-          <button
-            onClick={handleResetGame}
-            className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-black text-xs transition-all shadow-xl shadow-amber-500/20"
-          >
-            Play Backtesting Arena Again
-          </button>
         </div>
       )}
 
