@@ -32,6 +32,7 @@ import {
 import { smcChapter1FullData } from '../data/smcChapter1FullData';
 import { smcChapter2FullData } from '../data/smcChapter2FullData';
 import { smcChapter3FullData } from '../data/smcChapter3FullData';
+import { smcChapter4FullData } from '../data/smcChapter4FullData';
 import { smcChapter0OrientationData } from '../data/smcChapter0OrientationData';
 import { chapterFiguresMap } from '../data/smcChapterFiguresMap';
 import InstitutionalRealFigureViewer from './InstitutionalRealFigureViewer';
@@ -43,10 +44,13 @@ import BarReplaySimulator from './BarReplaySimulator';
 import SMCPuzzleGame from './SMCPuzzleGame';
 import SMCChapter1BacktestingGame from './SMCChapter1BacktestingGame';
 import SMCChapter3BacktestingGame from './SMCChapter3BacktestingGame';
+import SMCChapter4BacktestingGame from './SMCChapter4BacktestingGame';
 import InstitutionalVsRetailShowdown from './InstitutionalVsRetailShowdown';
 import WickVsBodyShowdown from './WickVsBodyShowdown';
 import MarketStateShowdown from './MarketStateShowdown';
 import EquilibriumZoneCalculator from './EquilibriumZoneCalculator';
+import InternalVsExternalLiquidityShowdown from './InternalVsExternalLiquidityShowdown';
+import LiquidityPoolSweepSimulator from './LiquidityPoolSweepSimulator';
 
 export default function W3SchoolsSMCAcademy({ 
   initialChapterId = 'chapter-1',
@@ -82,7 +86,8 @@ export default function W3SchoolsSMCAcademy({
     'chapter-0': smcChapter0OrientationData,
     'chapter-1': smcChapter1FullData,
     'chapter-2': smcChapter2FullData,
-    'chapter-3': smcChapter3FullData
+    'chapter-3': smcChapter3FullData,
+    'chapter-4': smcChapter4FullData
   };
 
   const courseChapters = [
@@ -90,7 +95,7 @@ export default function W3SchoolsSMCAcademy({
     { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 15 },
     { id: 'chapter-2', num: '02', title: '2. How to Identify Structural Swing Points', isReady: true, subCount: 14 },
     { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: true, subCount: 16 },
-    { id: 'chapter-4', num: '04', title: '4. Liquidity & Price Movement', isReady: false, subCount: 10 },
+    { id: 'chapter-4', num: '04', title: '4. Liquidity & Price Movement', isReady: true, subCount: 10 },
     { id: 'chapter-5', num: '05', title: '5. POIs, Fibonacci & SMC Strategy', isReady: false, subCount: 11 },
     { id: 'chapter-6', num: '06', title: '6. Strategies in a Sideways Market', isReady: false, subCount: 9 },
     { id: 'chapter-7', num: '07', title: '7. Master Premium & Discount Zones', isReady: false, subCount: 8 },
@@ -1969,6 +1974,208 @@ export default function W3SchoolsSMCAcademy({
 
               {/* CHAPTER 3 PLAY/PAUSE INTERACTIVE BACKTESTING PREDICTION GAME */}
               <SMCChapter3BacktestingGame />
+
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* CHAPTER 4: LIQUIDITY & HOW IT INFLUENCES PRICE MOVEMENT                   */}
+          {/* ========================================================================= */}
+          {activeChapterId === 'chapter-4' && (
+            <div className="space-y-12">
+              {/* CHAPTER 4 INTRO CARD & UNLISTED STREAM */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#090d16] border border-[#2a2e39] space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse" />
+                      <span className="text-xs font-mono font-bold text-rose-400 uppercase tracking-widest">
+                        Chapter 04 • Core Institutional Mechanics
+                      </span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                      {smcChapter4FullData.title}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                      {smcChapter4FullData.subtitle}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleExportWord}
+                    disabled={isExportingWord}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-mono text-xs font-bold border border-rose-500/30 transition-all self-start sm:self-auto shrink-0 shadow-lg shadow-rose-500/5"
+                  >
+                    <FileDown className="w-4 h-4" />
+                    <span>{isExportingWord ? 'Generating Manual...' : 'Export Chapter 4 Manual (.doc)'}</span>
+                  </button>
+                </div>
+
+                {/* Unlisted Video Player Embed */}
+                <div className="rounded-2xl bg-[#07090e] border border-[#2a2e39] overflow-hidden space-y-3 p-4">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-rose-400 font-bold flex items-center gap-1.5">
+                      <Play className="w-3.5 h-3.5 fill-rose-400" /> {smcChapter4FullData.videoTitle}
+                    </span>
+                    <a
+                      href="https://www.youtube.com/watch?v=XVTWQ8b2M9A"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
+                    >
+                      <span>Open in YouTube</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-[#1b202c]">
+                    <iframe
+                      src={smcChapter4FullData.videoUrl}
+                      title={smcChapter4FullData.videoTitle}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+
+                {/* Executive Thesis Card */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#0c1017] border border-amber-500/30 text-amber-300 font-mono text-xs sm:text-sm font-semibold">
+                  “Price is an auction mechanism. It does not move to make you profit; it moves relentlessly toward the highest concentration of resting orders.”
+                </div>
+              </div>
+
+              {/* Render Every Section of Chapter 4 */}
+              {filteredSections.map((sec) => (
+                <article key={sec.id} id={sec.id} className="scroll-mt-24 space-y-5 pt-6 border-t border-[#2a2e39]/60">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                      Section {sec.num}
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                      {sec.title}
+                    </h2>
+                  </div>
+
+                  {sec.summary && (
+                    <p className="text-xs sm:text-sm font-mono text-slate-400 bg-[#090d16] p-3 rounded-xl border border-[#2a2e39]">
+                      <strong>Executive Summary:</strong> {sec.summary}
+                    </p>
+                  )}
+
+                  {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
+                  <InstitutionalContentRenderer content={sec.content} />
+
+                  {/* SPECIAL CHAPTER 4 INTERACTIVE SHOWDOWNS */}
+                  {(sec.id === 'ch4-sec3' || sec.num === '03') && (
+                    <InternalVsExternalLiquidityShowdown />
+                  )}
+
+                  {(sec.id === 'ch4-sec4' || sec.num === '04' || sec.id === 'ch4-sec5' || sec.num === '05') && (
+                    <LiquidityPoolSweepSimulator />
+                  )}
+
+                  {/* Structured Table */}
+                  {sec.table && (
+                    <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
+                      <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
+                        <span className="text-rose-400 font-bold flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5" /> Institutional Liquidity Matrix • Section {sec.num}
+                        </span>
+                        <span className="text-[10px] text-slate-500 sm:hidden">Swipe horizontally →</span>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-[#131722] border-b border-[#2a2e39] text-rose-300 font-mono">
+                              {sec.table.headers.map((h, i) => (
+                                <th key={i} className="p-3.5 font-bold">{h || 'Metric'}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#2a2e39]/60">
+                            {sec.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className={`p-3.5 ${cIdx === 0 ? 'font-mono font-bold text-amber-300 whitespace-nowrap' : 'text-slate-300'}`}>
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </article>
+              ))}
+
+              {/* CHAPTER 4 KNOWLEDGE QUIZ */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-[#090d16] border border-[#2a2e39] space-y-6">
+                <div className="flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5 text-rose-400" />
+                  <h3 className="text-xl font-bold text-white">
+                    Chapter 4 Institutional Liquidity Knowledge Assessment
+                  </h3>
+                </div>
+                <div className="space-y-6">
+                  {(currentChapter.quiz || []).map((q, qIndex) => {
+                    const selected = selectedQuizAnswers[`ch4-${qIndex}`];
+                    const isSubmitted = quizSubmitted[`ch4-${qIndex}`];
+
+                    return (
+                      <div key={qIndex} className="p-4 sm:p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
+                        <p className="text-sm font-bold text-white">
+                          <span className="text-rose-400 mr-2">Q{qIndex + 1}:</span> {q.question}
+                        </p>
+                        <div className="space-y-2">
+                          {q.options.map((opt, optIdx) => {
+                            let optionClass = "bg-[#090d16] border-[#2a2e39] text-slate-300 hover:border-slate-700";
+                            if (selected === optIdx) {
+                              optionClass = "bg-rose-500/20 border-rose-500 text-rose-300 font-semibold";
+                            }
+                            if (isSubmitted) {
+                              if (optIdx === q.correctAnswer) {
+                                optionClass = "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold";
+                              } else if (selected === optIdx && optIdx !== q.correctAnswer) {
+                                optionClass = "bg-red-500/20 border-red-500 text-red-300";
+                              }
+                            }
+                            return (
+                              <button
+                                key={optIdx}
+                                disabled={isSubmitted}
+                                onClick={() => setSelectedQuizAnswers(prev => ({ ...prev, [`ch4-${qIndex}`]: optIdx }))}
+                                className={`w-full p-3 rounded-xl border text-left text-xs transition-all ${optionClass}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {!isSubmitted ? (
+                          <button
+                            onClick={() => setQuizSubmitted(prev => ({ ...prev, [`ch4-${qIndex}`]: true }))}
+                            disabled={selected === undefined}
+                            className="mt-2 px-4 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 disabled:opacity-40 disabled:hover:bg-rose-500 text-white text-xs font-bold transition-all"
+                          >
+                            Verify Institutional Rationale
+                          </button>
+                        ) : (
+                          <div className="p-3 rounded-xl bg-[#090d16] border border-[#2a2e39] text-xs space-y-1">
+                            <span className="text-emerald-400 font-bold font-mono">Institutional Rationale:</span>
+                            <p className="text-slate-300">{q.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* CHAPTER 4 INTERACTIVE LIQUIDITY HUNT BACKTESTING ARENA */}
+              <SMCChapter4BacktestingGame />
 
             </div>
           )}
