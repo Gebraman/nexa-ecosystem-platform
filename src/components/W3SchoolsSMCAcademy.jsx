@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   BookOpen, 
   FileText, 
@@ -34,7 +34,6 @@ import { smcChapter1FullData } from '../data/smcChapter1FullData';
 import { smcChapter2FullData } from '../data/smcChapter2FullData';
 import { smcChapter3FullData } from '../data/smcChapter3FullData';
 import { smcChapter4FullData } from '../data/smcChapter4FullData';
-import { smcChapter0OrientationData } from '../data/smcChapter0OrientationData';
 import { chapterFiguresMap } from '../data/smcChapterFiguresMap';
 import InstitutionalRealFigureViewer from './InstitutionalRealFigureViewer';
 
@@ -83,8 +82,10 @@ export default function W3SchoolsSMCAcademy({
   const [selectedQuizAnswers, setSelectedQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState({});
 
+  // Reference for smooth, localized in-reader navigation
+  const readerTopRef = useRef(null);
+
   const chaptersMap = {
-    'chapter-0': smcChapter0OrientationData,
     'chapter-1': smcChapter1FullData,
     'chapter-2': smcChapter2FullData,
     'chapter-3': smcChapter3FullData,
@@ -92,7 +93,6 @@ export default function W3SchoolsSMCAcademy({
   };
 
   const courseChapters = [
-    { id: 'chapter-0', num: '00', title: '0. Institutional Orientation & Video Hub', isReady: true, subCount: 4 },
     { id: 'chapter-1', num: '01', title: '1. What Are Smart Money Concepts', isReady: true, subCount: 15 },
     { id: 'chapter-2', num: '02', title: '2. How to Identify Structural Swing Points', isReady: true, subCount: 14 },
     { id: 'chapter-3', num: '03', title: '3. How to Identify Market Structure', isReady: true, subCount: 16 },
@@ -107,6 +107,23 @@ export default function W3SchoolsSMCAcademy({
   const currentChapterIndex = courseChapters.findIndex(c => c.id === activeChapterId);
   const prevChapterItem = currentChapterIndex > 0 ? courseChapters[currentChapterIndex - 1] : null;
   const nextChapterItem = currentChapterIndex < courseChapters.length - 1 ? courseChapters[currentChapterIndex + 1] : null;
+
+  // Smooth, non-jarring chapter switcher that retains focus on reader
+  const handleSelectChapter = (chapterId) => {
+    setActiveChapterId(chapterId);
+    if (readerTopRef.current) {
+      readerTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
+  // Smooth sub-topic anchor navigator
+  const handleScrollToSection = (e, sectionId) => {
+    if (e) e.preventDefault();
+    const elem = document.getElementById(sectionId);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
 
   // Asynchronously fetch image blob and convert to Base64 for Word .doc inline embedding
@@ -758,7 +775,7 @@ export default function W3SchoolsSMCAcademy({
         <div className="flex items-center gap-1.5">
           {prevChapterItem && (
             <button
-              onClick={() => setActiveChapterId(prevChapterItem.id)}
+              onClick={() => handleSelectChapter(prevChapterItem.id)}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#161b22] hover:bg-slate-800 border border-[#2a2e39] text-slate-300 hover:text-white text-xs font-semibold transition-all"
               title={`Go to ${prevChapterItem.title}`}
             >
@@ -768,16 +785,16 @@ export default function W3SchoolsSMCAcademy({
           )}
 
           <div className="px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold">
-            {currentChapter.badge} / 08
+            Chapter {currentChapterIndex + 1} / 08
           </div>
 
           {nextChapterItem && (
             <button
               onClick={() => {
                 if (nextChapterItem.isReady) {
-                  setActiveChapterId(nextChapterItem.id);
+                  handleSelectChapter(nextChapterItem.id);
                 } else {
-                  alert(`Chapter ${nextChapterItem.num} will unlock in the next curriculum update. Chapters 1 and 2 are fully unlocked!`);
+                  alert(`Chapter ${nextChapterItem.num} will unlock in the next curriculum update. Chapters 1, 2, 3, and 4 are fully unlocked!`);
                 }
               }}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
@@ -890,84 +907,77 @@ export default function W3SchoolsSMCAcademy({
             <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-amber-400 font-bold">Curriculum Roadmap</span>
-                <span className="text-slate-400">3 / 8 Active</span>
+                <span className="text-slate-400">4 / 8 Unlocked</span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-[#131722] overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-3/8 rounded-full" />
+                <div className="h-full bg-gradient-to-r from-amber-500 to-amber-300 w-1/2 rounded-full" />
               </div>
-              <p className="text-[10px] text-slate-400">Chapters 01, 02 & 03 are completely unlocked with full visual interactive textbooks.</p>
+              <p className="text-[10px] text-slate-400">Chapters 01, 02, 03 & 04 are completely unlocked with full interactive simulations.</p>
             </div>
 
-            {/* Chapter Selector Accordion */}
+            {/* Chapter Selector Accordion with Nested Sub-Topics */}
             <div className="space-y-1">
               <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 font-bold block">
-                Modules Roadmap
+                SMC Strategy Modules (8 Chapters)
               </span>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {courseChapters.map((ch) => {
                   const isActive = ch.id === activeChapterId;
                   return (
-                    <button
-                      key={ch.id}
-                      onClick={() => {
-                        if (ch.isReady) {
-                          setActiveChapterId(ch.id);
-                        } else {
-                          alert(`Chapter ${ch.num} will unlock in the next curriculum update. Currently studying Chapters 1 & 2.`);
-                        }
-                      }}
-                      className={`w-full p-2.5 rounded-xl text-left text-xs transition-all flex items-center justify-between group ${
-                        isActive
-                          ? 'bg-amber-500/20 text-white font-bold border border-amber-500/40'
-                          : ch.isReady
-                          ? 'text-slate-300 hover:bg-[#131722] border border-transparent'
-                          : 'text-slate-600 opacity-60 cursor-not-allowed border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                          isActive 
-                            ? 'bg-amber-500 text-dark-950 font-black' 
-                            : ch.isReady 
-                            ? 'bg-[#131722] text-amber-400 border border-amber-500/20' 
-                            : 'bg-[#131722] text-slate-600'
-                        }`}>
-                          {ch.num}
-                        </span>
-                        <span className="truncate">{ch.title.replace(/^\d+\.\s*/, '')}</span>
-                      </div>
-                      {ch.isReady ? (
-                        <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-amber-400' : 'text-emerald-500/50'}`} />
-                      ) : (
-                        <span className="text-[9px] font-mono text-slate-600">Upcoming</span>
+                    <div key={ch.id} className="space-y-1">
+                      <button
+                        onClick={() => {
+                          if (ch.isReady) {
+                            handleSelectChapter(ch.id);
+                          } else {
+                            alert(`Chapter ${ch.num} will unlock in the next curriculum update. Currently studying Chapters 1, 2, 3, and 4.`);
+                          }
+                        }}
+                        className={`w-full p-2.5 rounded-xl text-left text-xs transition-all flex items-center justify-between group ${
+                          isActive
+                            ? 'bg-amber-500/20 text-white font-bold border border-amber-500/40 shadow-sm'
+                            : ch.isReady
+                            ? 'text-slate-300 hover:bg-[#131722] border border-transparent'
+                            : 'text-slate-600 opacity-60 cursor-not-allowed border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                            isActive 
+                              ? 'bg-amber-500 text-dark-950 font-black' 
+                              : ch.isReady 
+                              ? 'bg-[#131722] text-amber-400 border border-amber-500/20' 
+                              : 'bg-[#131722] text-slate-600'
+                          }`}>
+                            {ch.num}
+                          </span>
+                          <span className="truncate">{ch.title.replace(/^\d+\.\s*/, '')}</span>
+                        </div>
+                        {ch.isReady ? (
+                          <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-amber-400' : 'text-emerald-500/50'}`} />
+                        ) : (
+                          <span className="text-[9px] font-mono text-slate-600">Upcoming</span>
+                        )}
+                      </button>
+
+                      {/* Nested Sub-Topics when Chapter is Active */}
+                      {isActive && (
+                        <div className="pl-5 pr-1 py-1 space-y-1 border-l-2 border-amber-500/40 ml-3.5 animate-fade-in">
+                          {filteredSections.map((sec, idx) => (
+                            <button
+                              key={sec.id}
+                              onClick={(e) => handleScrollToSection(e, sec.id)}
+                              className="w-full text-left px-2 py-1 rounded-md text-[11px] text-slate-400 hover:text-amber-300 hover:bg-[#131722] truncate transition-colors flex items-center gap-1.5"
+                            >
+                              <span className="text-amber-500/70 font-mono text-[10px] shrink-0">{sec.num || `${currentChapterIndex + 1}.${idx + 1}`}</span>
+                              <span className="truncate">{sec.title}</span>
+                            </button>
+                          ))}
+                        </div>
                       )}
-                    </button>
+                    </div>
                   );
                 })}
-              </div>
-            </div>
-
-            {/* Quick In-Chapter Section Outline */}
-            <div className="pt-2 border-t border-[#2a2e39] space-y-2">
-              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider px-2 font-bold block">
-                {currentChapter.badge} Outline ({filteredSections.length} Sections)
-              </span>
-              <div className="max-h-64 overflow-y-auto pr-1 space-y-1 custom-scrollbar text-xs">
-                {filteredSections.map((sec) => (
-                  <a
-                    key={sec.id}
-                    href={`#${sec.id}`}
-                    onClick={() => {
-                      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-                        setIsSidebarOpen(false);
-                      }
-                    }}
-                    className="block px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-amber-300 hover:bg-[#131722] truncate transition-colors text-[11px]"
-                  >
-                    <span className="text-amber-500/70 mr-1.5 font-mono">{sec.num || '•'}</span>
-                    {sec.title}
-                  </a>
-                ))}
               </div>
             </div>
 
@@ -992,13 +1002,13 @@ export default function W3SchoolsSMCAcademy({
         )}
 
         {/* MAIN TEXTBOOK READER CONTAINER */}
-        <main className={`flex-1 p-6 sm:p-10 max-w-5xl mx-auto space-y-12 ${getFontSizeClass()}`}>
+        <main ref={readerTopRef} className={`flex-1 p-6 sm:p-10 max-w-5xl mx-auto space-y-10 ${getFontSizeClass()}`}>
           
           {/* CHAPTER HEADER HERO */}
-          <section className="space-y-4 pb-8 border-b border-[#2a2e39]">
+          <section className="space-y-4 pb-6 border-b border-[#2a2e39]">
             <div className="flex flex-wrap items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold tracking-wider uppercase">
-                {currentChapter.badge} &bull; Master Textbook
+                {currentChapter.badge} &bull; Institutional SMC Strategy
               </span>
               <span className="text-xs font-mono text-slate-500">
                 Author: {currentChapter.author} &bull; {currentChapter.date}
@@ -1012,6 +1022,32 @@ export default function W3SchoolsSMCAcademy({
             <p className="text-base sm:text-lg text-slate-300 max-w-3xl leading-relaxed">
               {currentChapter.subtitle}
             </p>
+
+            {/* Quick Interactive Sub-Topic Horizontal Ribbon */}
+            <div className="pt-2">
+              <div className="p-3.5 rounded-2xl bg-[#0d131f] border border-amber-500/30 shadow-lg space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>{currentChapter.badge} Sub-topics ({filteredSections.length} Sections)</span>
+                  </span>
+                  <span className="text-[11px] text-slate-400 hidden sm:inline">Click any topic to jump smoothly:</span>
+                </div>
+
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                  {filteredSections.map((sec, idx) => (
+                    <button
+                      key={sec.id}
+                      onClick={(e) => handleScrollToSection(e, sec.id)}
+                      className="px-3 py-1.5 rounded-xl bg-[#141d2f] hover:bg-amber-500/20 border border-[#2a364f] hover:border-amber-500/50 text-slate-300 hover:text-amber-300 text-xs font-mono font-medium whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 shadow-sm"
+                    >
+                      <span className="text-amber-400 font-bold">{sec.num || `${currentChapterIndex + 1}.${idx + 1}`}</span>
+                      <span className="truncate max-w-[170px]">{sec.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
             {/* Quick Action Bar for Chapter */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -1031,231 +1067,6 @@ export default function W3SchoolsSMCAcademy({
               </button>
             </div>
           </section>
-
-                    {/* ============================================================== */}
-          {/* CHAPTER 0: INSTITUTIONAL ORIENTATION & VIDEO MASTERCLASS HUB   */}
-          {/* ============================================================== */}
-          {activeChapterId === 'chapter-0' && (
-            <div className="space-y-12">
-              
-              {/* Orientation Hero Banner */}
-              <div className="p-8 rounded-3xl bg-gradient-to-r from-amber-500/15 via-[#0d1117] to-[#0d1117] border-l-4 border-amber-500 space-y-4 shadow-2xl">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider border border-amber-500/30">
-                    ACADEMY FOUNDATION & SYLLABUS
-                  </span>
-                </div>
-                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                  Institutional Orientation & Video Masterclass Hub
-                </h1>
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-sans max-w-4xl">
-                  Welcome to the Nexa Institutional SMC Academy. Smart Money Concepts teach you to read the footprints of central banks, hedge funds, and interbank algorithms. Study the foundational principles and access live lecture recordings below before proceeding to Chapter 1.
-                </p>
-                <div className="p-4 rounded-xl bg-[#090d16] border border-amber-500/30 text-amber-300 font-mono text-xs sm:text-sm font-semibold flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Sovereign SMC Axiom: “Retail traders put stop losses in obvious places. Those stop losses become the liquidity Smart Money uses to fill its orders.”</span>
-                </div>
-              </div>
-
-              {/* Curated Video Masterclasses Grid */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold text-white font-mono flex items-center gap-2">
-                    <Activity className="w-5 h-5 text-amber-400" />
-                    <span>Curated Video Masterclasses & Study Streams</span>
-                  </h3>
-                  <span className="text-xs font-mono text-slate-400">Stream Recordings & Live Zoom Archives</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  
-                  {/* Video 1: SMC Strategy Part 1 */}
-                  <a
-                    href="https://youtu.be/M8dQpAeqsbY?si=uXzrSITcwVsjslcZ"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
-                  >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 01</span>
-                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
-                          Watch on YouTube <ExternalLink className="w-3 h-3" />
-                        </span>
-                      </div>
-                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
-                        SMC Strategy Part 1: Foundations of Smart Money Concepts
-                      </h4>
-                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                        Introduction to algorithmic order delivery, the $10B liquidity problem, and Wyckoff accumulation mechanics.
-                      </p>
-                    </div>
-                    <div className="text-[11px] font-mono text-emerald-400">
-                      Duration: ~3 hrs &bull; Primary Topic: Introduction to SMC
-                    </div>
-                  </a>
-
-                  {/* Video 2: SMC Strategy Part 2 */}
-                  <a
-                    href="https://www.youtube.com/watch?v=NDLCZ_r58MY"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
-                  >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 02</span>
-                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
-                          Watch on YouTube <ExternalLink className="w-3 h-3" />
-                        </span>
-                      </div>
-                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
-                        SMC Strategy Part 2: Market Structure & Structural Swings
-                      </h4>
-                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                        Deep dive into 3-candle swing geometry, the Red Line confirmation rule, and Break of Structure (BOS).
-                      </p>
-                    </div>
-                    <div className="text-[11px] font-mono text-emerald-400">
-                      Duration: ~3 hrs 23 min &bull; Primary Topic: Structural Swings & BOS
-                    </div>
-                  </a>
-
-                  {/* Video 3: Sideways Market Strategies */}
-                  <a
-                    href="https://youtu.be/WBbF0HJJOYc?si=Z3O5pci91p_CTI9E"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] hover:border-amber-500/40 hover:bg-[#131722] transition-all group flex flex-col justify-between space-y-3"
-                  >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold">STREAM 03</span>
-                        <span className="text-slate-400 flex items-center gap-1 group-hover:text-amber-400 transition-colors">
-                          Watch on YouTube <ExternalLink className="w-3 h-3" />
-                        </span>
-                      </div>
-                      <h4 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
-                        Trading Strategies in Sideways Ranges & Deviations
-                      </h4>
-                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                        How to trade sideways consolidation: avoiding internal noise, reading spring deviations, and capitalizing on fakeouts.
-                      </p>
-                    </div>
-                    <div className="text-[11px] font-mono text-emerald-400">
-                      Duration: ~3 hrs 8 min &bull; Primary Topic: Range Boundaries & OTE
-                    </div>
-                  </a>
-
-                  {/* Video 4: Web Architecture & Full-Stack Clones */}
-                  <div className="p-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] flex flex-col justify-between space-y-3">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-bold">FULL-STACK TRACK</span>
-                        <span className="text-slate-400">Recorded Sessions</span>
-                      </div>
-                      <h4 className="text-base font-bold text-white">
-                        Full-Stack Trading Systems & Web Dashboard Development
-                      </h4>
-                      <p className="text-xs text-slate-400 font-sans leading-relaxed">
-                        Master HTML5 semantics, responsive CSS grids, and real-time WebSocket market tickers used to construct the Nexa platform.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 pt-1">
-                      <a href="https://youtu.be/M8dQpAeqsbY?si=uXzrSITcwVsjslcZ" target="_blank" rel="noreferrer" className="text-[11px] font-mono text-cyan-400 hover:underline">
-                        HTML Part 1 (3:14:08) &rarr;
-                      </a>
-                      <span className="text-slate-600">|</span>
-                      <a href="https://www.youtube.com/watch?v=NDLCZ_r58MY" target="_blank" rel="noreferrer" className="text-[11px] font-mono text-cyan-400 hover:underline">
-                        HTML Part 2 (3:23:53) &rarr;
-                      </a>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Orientation Syllabus Sections */}
-              {filteredSections.map((sec) => (
-                <article key={sec.id} id={sec.id} className="scroll-mt-24 space-y-5 pt-6 border-t border-[#2a2e39]/60">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                      Module {sec.num}
-                    </span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-                      {sec.title}
-                    </h2>
-                  </div>
-
-                  {sec.summary && (
-                    <p className="text-xs sm:text-sm font-mono text-slate-400 bg-[#090d16] p-3 rounded-xl border border-[#2a2e39]">
-                      <strong>Executive Summary:</strong> {sec.summary}
-                    </p>
-                  )}
-
-                  <InstitutionalContentRenderer content={sec.content} />
-
-                  {sec.table && (
-                    <div className="my-4 overflow-x-auto rounded-xl border border-[#2a2e39]">
-                      <table className="w-full text-left text-xs border-collapse">
-                        <thead>
-                          <tr className="bg-[#131722] border-b border-[#2a2e39] text-amber-400 font-mono">
-                            {sec.table.headers.map((h, i) => (
-                              <th key={i} className="p-3">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#2a2e39]/60">
-                          {sec.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx} className="hover:bg-[#131722]/60 transition-colors">
-                              {row.map((cell, cIdx) => (
-                                <td key={cIdx} className={`p-3 ${cIdx === 0 ? 'font-mono font-bold text-amber-300' : 'text-slate-300'}`}>
-                                  {cell}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  {sec.checklist && (
-                    <div className="my-4 p-4 rounded-xl bg-[#090d16] border border-emerald-500/30 space-y-2">
-                      <span className="text-xs font-mono font-bold text-emerald-400 uppercase block">Study Readiness Commitment:</span>
-                      <div className="space-y-1.5">
-                        {sec.checklist.map((item, ci) => (
-                          <div key={ci} className="flex items-center gap-2 text-xs text-slate-300">
-                            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </article>
-              ))}
-
-              {/* Next Step Call to Action */}
-              <div className="p-6 rounded-2xl bg-[#090d16] border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <h4 className="text-lg font-bold text-white font-mono">Ready to Begin Chapter 01?</h4>
-                  <p className="text-xs text-slate-400 font-sans">Start the 15-section masterclass on institutional order flow, bank liquidity sweeps, and the $10B problem.</p>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveChapterId('chapter-1');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg"
-                >
-                  <span>Enter Chapter 01</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-
-            </div>
-          )}
 
           {/* ============================================================== */}
           {/* CHAPTER 1 SPECIALIZED SECTION ENGINE (ALL 15 SECTIONS VERBATIM) */}
@@ -2185,7 +1996,7 @@ export default function W3SchoolsSMCAcademy({
           <footer className="pt-8 border-t border-[#2a2e39] flex flex-col sm:flex-row items-center justify-between gap-4">
             {prevChapterItem ? (
               <button
-                onClick={() => setActiveChapterId(prevChapterItem.id)}
+                onClick={() => handleSelectChapter(prevChapterItem.id)}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#131722] hover:bg-slate-800 border border-[#2a2e39] text-slate-300 text-xs font-bold transition-all"
               >
                 <ArrowLeft className="w-4 h-4 text-amber-400" />
@@ -2197,7 +2008,7 @@ export default function W3SchoolsSMCAcademy({
               <button
                 onClick={() => {
                   if (nextChapterItem.isReady) {
-                    setActiveChapterId(nextChapterItem.id);
+                    handleSelectChapter(nextChapterItem.id);
                   } else {
                     alert(`Chapter ${nextChapterItem.num} will unlock in the next curriculum update.`);
                   }
