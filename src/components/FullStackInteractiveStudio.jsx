@@ -15,23 +15,26 @@ import {
   Layout,
   Palette,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  HelpCircle
 } from 'lucide-react';
 
 export default function FullStackInteractiveStudio() {
   const [activeTemplateKey, setActiveTemplateKey] = useState('card');
   const [copied, setCopied] = useState(false);
   const [devicePreview, setDevicePreview] = useState('responsive'); // 'responsive', 'mobile'
+  const [activeChallengeIdx, setActiveChallengeIdx] = useState(null);
 
   const templates = {
     card: {
-      name: 'Semantic Card with Modern CSS Glow',
-      category: 'HTML & CSS Styling',
+      name: 'Modern Dev Card with Cyan Glow',
+      category: 'HTML5 & CSS3 Styling',
       html: `<div class="card">
   <div class="badge">PRO COURSE</div>
   <h2>Full-Stack Web Dev</h2>
   <p>Learn semantic HTML5, modern CSS3 Grid, Flexbox, and React state management.</p>
-  <button class="btn">Start Learning</button>
+  <button class="btn" onclick="alert('Welcome to Nexa Dev Academy!')">Start Learning</button>
 </div>`,
       css: `body {
   margin: 0;
@@ -95,6 +98,144 @@ p {
   background: #22d3ee;
 }`
     },
+    orderTicket: {
+      name: 'FinTech SMC Trading Order Ticket',
+      category: 'FinTech UI Component',
+      html: `<div class="ticket">
+  <div class="header">
+    <span class="pair">BTC / USD</span>
+    <span class="live-price">$68,450.00</span>
+  </div>
+  <div class="type-selector">
+    <button class="tab-btn buy active">BUY / LONG</button>
+    <button class="tab-btn sell">SELL / SHORT</button>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Entry (Discount OTE):</label>
+      <input type="text" value="67,200.00" readonly>
+    </div>
+    <div class="field">
+      <label>Institutional Stop (Swing Low):</label>
+      <input type="text" value="66,400.00" readonly>
+    </div>
+    <div class="field">
+      <label>Target Liquidity (BSL):</label>
+      <input type="text" value="70,500.00" readonly>
+    </div>
+  </div>
+  <div class="stats">
+    <span>Risk/Reward: <strong style="color:#10b981;">1 : 4.12</strong></span>
+    <span>SMC Setup: <strong style="color:#38bdf8;">Valid BOS</strong></span>
+  </div>
+  <button class="submit-btn" onclick="alert('Institutional Order Dispatched!')">Place Institutional Order</button>
+</div>`,
+      css: `body {
+  margin: 0;
+  padding: 20px;
+  background-color: #080c14;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.ticket {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 340px;
+  width: 100%;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  box-sizing: border-box;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.pair {
+  font-weight: 800;
+  color: #f8fafc;
+  font-size: 16px;
+}
+.live-price {
+  font-family: monospace;
+  font-weight: bold;
+  color: #10b981;
+  font-size: 14px;
+}
+.type-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #1e293b;
+  color: #94a3b8;
+}
+.tab-btn.buy.active {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.field label {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+.field input {
+  width: 100%;
+  padding: 8px 12px;
+  background: #0b0f19;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #f8fafc;
+  font-family: monospace;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #cbd5e1;
+  padding: 10px;
+  background: #0b0f19;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+}
+.submit-btn:hover {
+  background: #2563eb;
+}`
+    },
     flexbox: {
       name: 'CSS Flexbox Navigation Bar',
       category: 'Flexbox Layout',
@@ -105,7 +246,7 @@ p {
     <li><a href="#css">CSS3</a></li>
     <li><a href="#js">JavaScript</a></li>
   </ul>
-  <button class="nav-btn">Sign In</button>
+  <button class="nav-btn" onclick="alert('Signed in!')">Sign In</button>
 </nav>`,
       css: `body {
   margin: 0;
@@ -177,7 +318,7 @@ p {
 }
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
 }
 .grid-item {
@@ -222,6 +363,31 @@ p {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Micro Challenges
+  const challenges = [
+    {
+      title: 'Make Button Amber Glow',
+      hint: 'Change .btn background to #f59e0b and box-shadow to rgba(245, 158, 11, 0.4)',
+      action: () => {
+        setCurrentCss(prev => prev.replace(/background:\s*#[0-9a-fA-F]+;/g, 'background: #f59e0b;'));
+      }
+    },
+    {
+      title: 'Double Card Corner Curvature',
+      hint: 'Change border-radius to 28px in CSS',
+      action: () => {
+        setCurrentCss(prev => prev.replace(/border-radius:\s*\d+px;/g, 'border-radius: 28px;'));
+      }
+    },
+    {
+      title: 'Add Emerald Border Accent',
+      hint: 'Change border to 2px solid #10b981',
+      action: () => {
+        setCurrentCss(prev => prev.replace(/border:\s*1px solid [^;]+;/g, 'border: 2px solid #10b981;'));
+      }
+    }
+  ];
+
   const combinedSrcDoc = `
     <!DOCTYPE html>
     <html>
@@ -236,7 +402,7 @@ p {
   `;
 
   return (
-    <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-4 sm:p-7 space-y-6 shadow-2xl">
+    <div id="fullstack-interactive-studio" className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-4 sm:p-7 space-y-6 shadow-2xl">
       
       {/* Studio Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#2a2e39]">
@@ -252,7 +418,7 @@ p {
             <span>Interactive Code Sandbox & "Try It Yourself"</span>
           </h3>
           <p className="text-xs text-slate-400 mt-1 max-w-xl">
-            Edit HTML and CSS in real-time. Practice the concepts taught in the 13+ hours of Zoom recordings and inspect instant live browser rendering.
+            Edit HTML and CSS in real-time. Practice the concepts taught in the 13+ hours of curriculum and inspect instant live browser rendering.
           </p>
         </div>
 
@@ -269,7 +435,7 @@ p {
             onClick={handleCopyCode}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#131722] hover:bg-slate-800 text-cyan-400 text-xs font-mono border border-[#2a2e39] transition-colors"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-cyan-400" />}
             <span>{copied ? 'Copied!' : 'Copy Code'}</span>
           </button>
           
@@ -294,7 +460,7 @@ p {
       </div>
 
       {/* Preset Code Templates */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-mono">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-mono scrollbar-thin">
         <span className="text-slate-500 text-[11px] uppercase mr-1 shrink-0">Templates:</span>
         {Object.entries(templates).map(([key, t]) => (
           <button
@@ -328,7 +494,7 @@ p {
             <textarea
               value={currentHtml}
               onChange={(e) => setCurrentHtml(e.target.value)}
-              rows={6}
+              rows={7}
               className="w-full p-3.5 bg-transparent text-xs font-mono text-slate-200 resize-y focus:outline-none focus:ring-1 focus:ring-cyan-500"
               spellCheck="false"
             />
@@ -345,10 +511,32 @@ p {
             <textarea
               value={currentCss}
               onChange={(e) => setCurrentCss(e.target.value)}
-              rows={8}
+              rows={9}
               className="w-full p-3.5 bg-transparent text-xs font-mono text-slate-200 resize-y focus:outline-none focus:ring-1 focus:ring-cyan-500"
               spellCheck="false"
             />
+          </div>
+
+          {/* Quick Micro-Challenges */}
+          <div className="p-3.5 rounded-2xl bg-[#0d121c] border border-cyan-500/20 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5" /> Instant Style Challenges
+              </span>
+              <span className="text-[10px] text-slate-500">1-Click Apply</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {challenges.map((c, i) => (
+                <button
+                  key={i}
+                  onClick={c.action}
+                  className="px-2.5 py-1 rounded-lg bg-[#131722] border border-[#2a2e39] hover:border-cyan-500/40 text-[11px] font-mono text-slate-300 hover:text-cyan-300 transition-colors flex items-center gap-1"
+                >
+                  <span>⚡</span>
+                  <span>{c.title}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
         </div>
@@ -376,14 +564,14 @@ p {
             </div>
 
             {/* Sandbox iframe Container */}
-            <div className={`flex-1 p-2 bg-[#0b0f19] flex justify-center items-center min-h-[340px] ${
+            <div className={`flex-1 p-2 bg-[#0b0f19] flex justify-center items-center min-h-[360px] ${
               devicePreview === 'mobile' ? 'max-w-[340px] mx-auto border-x border-[#2a2e39]' : ''
             }`}>
               <iframe
                 title="Interactive Live Preview"
                 srcDoc={combinedSrcDoc}
                 sandbox="allow-scripts"
-                className="w-full h-full min-h-[340px] rounded-xl bg-transparent border-0"
+                className="w-full h-full min-h-[360px] rounded-xl bg-transparent border-0"
               />
             </div>
 

@@ -13,7 +13,12 @@ import {
   Calculator, 
   UserCheck, 
   HelpCircle,
-  ExternalLink
+  ExternalLink,
+  MessageSquare,
+  Send,
+  Check,
+  Zap,
+  Target
 } from 'lucide-react';
 
 export default function K12AcademicScholarsStudio() {
@@ -21,6 +26,11 @@ export default function K12AcademicScholarsStudio() {
   const [selectedSubject, setSelectedSubject] = useState('math');
   const [hoursPerWeek, setHoursPerWeek] = useState(4);
   const [revealedSolutions, setRevealedSolutions] = useState({});
+  const [diagnosticAnswers, setDiagnosticAnswers] = useState({});
+  const [diagnosticSubmitted, setDiagnosticSubmitted] = useState(false);
+  const [inquiryMentor, setInquiryMentor] = useState('Ermias Tadesse');
+  const [inquiryNote, setInquiryNote] = useState('');
+  const [inquirySent, setInquirySent] = useState(false);
 
   const mentors = [
     {
@@ -81,11 +91,68 @@ export default function K12AcademicScholarsStudio() {
         'Step 3: Calculate distance: s = (0)(5) + 0.5(4)(5²) = 0.5 * 4 * 25 = 50 meters.',
         'Final Solution: Acceleration = 4 m/s², Distance = 50 meters.'
       ]
+    },
+    {
+      id: 'p3',
+      grade: 'High School (Grades 10-12)',
+      subject: 'Chemistry & Stoichiometry',
+      question: 'How many moles of CO2 are produced when 44 grams of propane (C3H8, molar mass 44 g/mol) combusts completely in oxygen?',
+      hint: 'Balance the combustion equation: C3H8 + 5O2 -> 3CO2 + 4H2O, then use the molar ratio.',
+      steps: [
+        'Step 1: Convert grams to moles of propane: 44 g / 44 g/mol = 1.0 mole of C3H8.',
+        'Step 2: Balance chemical reaction: 1 C3H8 + 5 O2 -> 3 CO2 + 4 H2O.',
+        'Step 3: Apply molar ratio (1 mol C3H8 : 3 mol CO2): 1.0 mol * 3 = 3.0 moles CO2.',
+        'Final Solution: Exactly 3.0 moles of CO2 (132 grams).'
+      ]
+    }
+  ];
+
+  const diagnosticQuestions = [
+    {
+      id: 'q1',
+      question: 'What is the slope of the line passing through points (2, 3) and (6, 11)?',
+      options: ['m = 1', 'm = 2', 'm = 4', 'm = 8'],
+      correct: 1, // 'm = 2'
+      explanation: 'Slope m = (y2 - y1) / (x2 - x1) = (11 - 3) / (6 - 2) = 8 / 4 = 2.'
+    },
+    {
+      id: 'q2',
+      question: 'Which subatomic particle carries no electrical charge?',
+      options: ['Proton', 'Electron', 'Neutron', 'Positron'],
+      correct: 2, // 'Neutron'
+      explanation: 'Neutrons are neutral nucleons with net electric charge zero.'
+    },
+    {
+      id: 'q3',
+      question: 'In genetics, if both parents carry a recessive allele (Aa x Aa), what is the probability of an offspring showing the recessive trait (aa)?',
+      options: ['0% (0/4)', '25% (1/4)', '50% (2/4)', '75% (3/4)'],
+      correct: 1, // '25%'
+      explanation: 'Punnett square yields: AA (25%), Aa (50%), and aa (25%).'
     }
   ];
 
   const toggleSolution = (id) => {
     setRevealedSolutions(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleSelectDiagnostic = (qId, optIdx) => {
+    setDiagnosticAnswers(prev => ({ ...prev, [qId]: optIdx }));
+  };
+
+  const calculateScore = () => {
+    let score = 0;
+    diagnosticQuestions.forEach(q => {
+      if (diagnosticAnswers[q.id] === q.correct) score++;
+    });
+    return score;
+  };
+
+  const handleSendInquiry = (e) => {
+    e.preventDefault();
+    setInquirySent(true);
+    setTimeout(() => {
+      setInquiryNote('');
+    }, 3000);
   };
 
   return (
@@ -253,7 +320,87 @@ export default function K12AcademicScholarsStudio() {
         </div>
       </div>
 
-      {/* 3. INTERACTIVE STEM PRACTICE PROBLEMS */}
+      {/* 3. INTERACTIVE 3-QUESTION DIAGNOSTIC ASSESSMENT */}
+      <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-7 space-y-5 shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-indigo-400" />
+              <h4 className="text-lg sm:text-xl font-bold text-white">
+                Live 3-Question Diagnostic Benchmark
+              </h4>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Test foundational STEM concepts to assess current proficiency and receive an instant learning pace suggestion.
+            </p>
+          </div>
+          <span className="text-[11px] font-mono text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg border border-indigo-500/20 self-start sm:self-auto">
+            Answer all 3 to view diagnostic score
+          </span>
+        </div>
+
+        <div className="space-y-4">
+          {diagnosticQuestions.map((q, qIdx) => (
+            <div key={q.id} className="p-4 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
+              <div className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  {qIdx + 1}
+                </span>
+                <p className="text-xs sm:text-sm font-semibold text-white">
+                  {q.question}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-7">
+                {q.options.map((opt, oIdx) => {
+                  const isSelected = diagnosticAnswers[q.id] === oIdx;
+                  return (
+                    <button
+                      key={oIdx}
+                      onClick={() => handleSelectDiagnostic(q.id, oIdx)}
+                      className={`p-2.5 rounded-xl text-left text-xs font-mono transition-all border ${
+                        isSelected
+                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 font-bold'
+                          : 'bg-[#090d16] border-[#2a2e39] text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {diagnosticSubmitted && (
+                <div className={`mt-2 p-3 rounded-xl text-xs font-mono ml-7 ${
+                  diagnosticAnswers[q.id] === q.correct
+                    ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300'
+                    : 'bg-rose-500/10 border border-rose-500/30 text-rose-300'
+                }`}>
+                  <strong>{diagnosticAnswers[q.id] === q.correct ? '✓ Correct:' : '✗ Incorrect:'}</strong> {q.explanation}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[#2a2e39]">
+          <button
+            onClick={() => setDiagnosticSubmitted(true)}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs font-mono shadow transition-all"
+          >
+            Submit Diagnostic & Evaluate
+          </button>
+
+          {diagnosticSubmitted && (
+            <div className="text-xs font-mono text-emerald-400 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Score: {calculateScore()} / 3 Correct — Recommended: {calculateScore() >= 2 ? 'Accelerated Honors Track (4 hrs/wk)' : 'Foundational Reinforcement Track (6 hrs/wk)'}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 4. INTERACTIVE STEM PRACTICE PROBLEMS */}
       <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-7 space-y-5 shadow-2xl">
         <div className="flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-indigo-400" />
@@ -265,34 +412,36 @@ export default function K12AcademicScholarsStudio() {
           See how AAU Scholar Mentors break down complex curriculum problems into intuitive, step-by-step principles.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {practiceProblems.map((prob) => {
             const isRevealed = revealedSolutions[prob.id];
 
             return (
-              <div key={prob.id} className="p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
-                <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                  <span className="text-indigo-400 font-bold">{prob.grade}</span>
-                  <span className="text-slate-500">{prob.subject}</span>
-                </div>
+              <div key={prob.id} className="p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+                    <span className="text-indigo-400 font-bold">{prob.subject}</span>
+                    <span className="text-slate-500 text-[10px]">{prob.grade}</span>
+                  </div>
 
-                <p className="text-sm font-bold text-white leading-snug">
-                  {prob.question}
-                </p>
-                <p className="text-xs text-slate-400 italic">
-                  <strong>Mentor Hint:</strong> {prob.hint}
-                </p>
+                  <p className="text-xs sm:text-sm font-bold text-white leading-snug">
+                    {prob.question}
+                  </p>
+                  <p className="text-[11px] text-slate-400 italic mt-2">
+                    <strong>Hint:</strong> {prob.hint}
+                  </p>
+                </div>
 
                 <div className="pt-2 border-t border-[#2a2e39]">
                   <button
                     onClick={() => toggleSolution(prob.id)}
                     className="text-xs font-mono font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
                   >
-                    <span>{isRevealed ? 'Hide Step-by-Step Solution' : 'Show Step-by-Step Solution →'}</span>
+                    <span>{isRevealed ? 'Hide Solution' : 'Show Step-by-Step Solution →'}</span>
                   </button>
 
                   {isRevealed && (
-                    <div className="mt-3 p-3.5 rounded-xl bg-[#090d16] border border-indigo-500/30 text-xs font-mono space-y-1.5 text-slate-200 animate-fade-in">
+                    <div className="mt-3 p-3 rounded-xl bg-[#090d16] border border-indigo-500/30 text-[11px] font-mono space-y-1.5 text-slate-200">
                       {prob.steps.map((st, sIdx) => (
                         <div key={sIdx} className="flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />

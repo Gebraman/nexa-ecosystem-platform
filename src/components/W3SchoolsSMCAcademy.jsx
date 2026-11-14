@@ -44,6 +44,9 @@ import SMCPuzzleGame from './SMCPuzzleGame';
 import SMCChapter1BacktestingGame from './SMCChapter1BacktestingGame';
 import SMCChapter3BacktestingGame from './SMCChapter3BacktestingGame';
 import InstitutionalVsRetailShowdown from './InstitutionalVsRetailShowdown';
+import WickVsBodyShowdown from './WickVsBodyShowdown';
+import MarketStateShowdown from './MarketStateShowdown';
+import EquilibriumZoneCalculator from './EquilibriumZoneCalculator';
 
 export default function W3SchoolsSMCAcademy({ 
   initialChapterId = 'chapter-1',
@@ -1296,7 +1299,7 @@ export default function W3SchoolsSMCAcademy({
                     <InstitutionalVsRetailShowdown />
                   )}
 
-                  {/* Structured Table (if present and not section 3) */}
+                  {/* Structured Table */}
                   {sec.table && sec.id !== 'ch1-sec3' && (
                     <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
                       <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
@@ -1563,13 +1566,13 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* SECTION 3 SPECIAL: INSTITUTIONAL VS RETAIL DIFFERENTIAL MATRIX */}
-                  {sec.id === 'ch1-sec3' && (
-                    <InstitutionalVsRetailShowdown />
+                  {/* SECTION 9 SPECIAL: WICK VS BODY DIFFERENTIAL SHOWDOWN */}
+                  {(sec.id === 'ch2-sec9' || sec.num === '09') && (
+                    <WickVsBodyShowdown />
                   )}
 
-                  {/* Structured Table (if present and not section 3) */}
-                  {sec.table && sec.id !== 'ch1-sec3' && (
+                  {/* Structured Table */}
+                  {sec.table && (
                     <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
                       <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
                         <span className="text-amber-400 font-bold flex items-center gap-1.5">
@@ -1836,13 +1839,22 @@ export default function W3SchoolsSMCAcademy({
                   {/* PRO FORMATTED INSTITUTIONAL CONTENT */}
                   <InstitutionalContentRenderer content={sec.content} />
 
-                  {/* SECTION 3 SPECIAL: INSTITUTIONAL VS RETAIL DIFFERENTIAL MATRIX */}
-                  {sec.id === 'ch1-sec3' && (
-                    <InstitutionalVsRetailShowdown />
+                  {/* CHAPTER 3 SPECIAL INTERACTIVE SHOWDOWNS */}
+                  {(sec.id === 'ch3-sec2' || sec.num === '02') && (
+                    <MarketStateShowdown />
+                  )}
+                  {(sec.id === 'ch3-sec5' || sec.num === '05') && (
+                    <MarketStateShowdown />
+                  )}
+                  {(sec.id === 'ch3-sec6' || sec.num === '06') && (
+                    <WickVsBodyShowdown />
+                  )}
+                  {(sec.id === 'ch3-sec9' || sec.num === '09') && (
+                    <EquilibriumZoneCalculator />
                   )}
 
-                  {/* Structured Table (if present and not section 3) */}
-                  {sec.table && sec.id !== 'ch1-sec3' && (
+                  {/* Structured Table */}
+                  {sec.table && (
                     <div className="my-5 rounded-2xl bg-[#090d16] border border-[#2a2e39] overflow-hidden shadow-xl">
                       <div className="px-4 py-2 bg-[#131722] border-b border-[#2a2e39] flex items-center justify-between text-[11px] font-mono text-slate-400">
                         <span className="text-amber-400 font-bold flex items-center gap-1.5">
