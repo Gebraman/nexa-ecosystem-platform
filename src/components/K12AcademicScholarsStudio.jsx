@@ -20,6 +20,7 @@ import {
   Zap,
   Target
 } from 'lucide-react';
+import PreplyTutorBookingHub from './PreplyTutorBookingHub';
 
 export default function K12AcademicScholarsStudio() {
   const [selectedGradeBand, setSelectedGradeBand] = useState('high-school');
@@ -158,6 +159,9 @@ export default function K12AcademicScholarsStudio() {
   return (
     <div className="space-y-8">
       
+      {/* 0. PREPLY-STYLE 1-ON-1 TUTOR BOOKING & VIRTUAL CLASSROOM SUITE */}
+      <PreplyTutorBookingHub />
+
       {/* 1. INTERACTIVE TUTORING PLAN CALCULATOR */}
       <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-8 space-y-6 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#2a2e39]">
