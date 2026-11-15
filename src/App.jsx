@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
 import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
 import ContactSection from './components/ContactSection';
@@ -55,10 +54,7 @@ export default function App() {
         {/* VIEW 1: HOME */}
         {currentView === 'home' && (
           <div className="animate-fade-in">
-            <Hero 
-              onSelectView={handleNavigateView}
-            />
-            <AboutSection />
+            <AboutSection onNavigateView={handleNavigateView} />
             <ProjectsSection />
             <ContactSection />
           </div>
