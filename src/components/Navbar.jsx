@@ -83,7 +83,7 @@ export default function Navbar({ activeSection, onNavigate, onOpenService }) {
               className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 shadow-md shadow-amber-500/20 transition-all"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>AI Tech Academy</span>
+              <span>Full-Stack Academy</span>
             </button>
 
             <a
@@ -146,7 +146,7 @@ export default function Navbar({ activeSection, onNavigate, onOpenService }) {
               className="w-full text-center py-2.5 rounded-xl bg-amber-500 text-dark-950 text-sm font-bold shadow-md shadow-amber-500/20 flex items-center justify-center gap-2"
             >
               <Sparkles className="w-4 h-4 text-dark-950" />
-              <span>AI Tech Academy & Launchpad</span>
+              <span>Full-Stack Academy & Launchpad</span>
             </button>
 
             <a

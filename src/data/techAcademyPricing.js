@@ -29,8 +29,8 @@ export const techAcademyPricing = {
             "Dedicated Teaching Assistants & Daily Office Hours",
             "Weekday Peer Discussion Groups (Choose from 4 shifts)",
             "1-on-1 Code Debugging & Homework Reviews",
-            "Phase 4 AI Application Engineering & RAG Systems",
-            "Abe Garage Full-Stack & AI Capstone Project",
+            "Phase 4 React SPAs, Cloud Deployment & Security",
+            "Nexa Full-Stack Production Q&A Capstone Project",
             "Professional Resume Review & Technical Mock Interviews",
             "Lifetime Access to Alumni Community & Job Referral Network"
           ],
@@ -86,8 +86,8 @@ export const techAcademyPricing = {
             "Local Telegram & Zoom Mentorship Channels in Amharic & English",
             "Dedicated Teaching Assistants in Addis Ababa",
             "Phase-by-Phase Payment Options via CBE / Telebirr",
-            "Phase 4 AI Application Development & OpenAI Integration",
-            "Abe Garage Full-Stack Real-World Capstone Project",
+            "Phase 4 React Single-Page Application & API Integration",
+            "Nexa Full-Stack Production Capstone Project",
             "Job Placement Support with Ethiopian Tech Firms & Remote Roles",
             "Official Certificate of Completion"
           ],
@@ -111,7 +111,7 @@ export const techAcademyPricing = {
             "Complete 32-Week Curriculum & Lecture Recordings",
             "Curriculum Slides, Starter Code & GitHub Repositories",
             "Access to Local Student Telegram Group",
-            "Abe Garage Project Architecture & Specs",
+            "Nexa Full-Stack Project Architecture & Starter Code",
             "Certificate of Completion upon Project Submission"
           ],
           cta: "Enroll Self-Paced (ETB)",

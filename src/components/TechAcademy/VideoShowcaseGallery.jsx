@@ -28,7 +28,7 @@ export default function VideoShowcaseGallery() {
     },
     {
       id: 'v2',
-      title: "Complete Curriculum Walkthrough: AI-Powered Full-Stack Engineering",
+      title: "Complete Curriculum Walkthrough: Full-Stack Web Development",
       category: "Course Deep Dive",
       duration: "22:45",
       speaker: "Senior Curriculum Architect",
@@ -36,7 +36,7 @@ export default function VideoShowcaseGallery() {
       badgeColor: "bg-cyan-950 text-cyan-400 border-cyan-800",
       thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
       videoId: "M8dQpAeqsbY",
-      description: "Phase 1 to Phase 4 detailed roadmap: HTML5, CSS3, modern JavaScript ES6+, Express REST APIs, MySQL normalization, and modern OpenAI RAG architectures."
+      description: "Phase 1 to Phase 4 detailed roadmap: HTML5, CSS3, modern JavaScript ES6+, Express REST APIs, MySQL normalization, and modern React single page applications."
     },
     {
       id: 'v3',
@@ -64,15 +64,15 @@ export default function VideoShowcaseGallery() {
     },
     {
       id: 'v5',
-      title: "Inside the Abe Garage AI Capstone: Building a Commercial SaaS",
+      title: "Inside the Production Capstone: Building a Full-Stack Web Platform",
       category: "Capstone Project",
       duration: "18:50",
       speaker: "Principal Software Engineer",
-      badge: "Phase 4 Flagship",
-      badgeColor: "bg-purple-950 text-purple-400 border-purple-800",
+      badge: "Production Capstone",
+      badgeColor: "bg-amber-950 text-amber-400 border-amber-800",
       thumbnail: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80",
       videoId: "M8dQpAeqsbY",
-      description: "Deconstructing the 10-session automotive repair shop management platform: MySQL schemas, work order status flows, and OBD-II AI vehicle diagnostics."
+      description: "Deconstructing our full-stack capstone projects: normalized MySQL schemas, Express REST controllers, React component state, and cloud hosting."
     },
     {
       id: 'v6',

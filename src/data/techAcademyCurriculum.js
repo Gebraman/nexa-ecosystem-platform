@@ -1,7 +1,7 @@
 export const techAcademyCurriculum = {
-  title: "AI-Powered Full-Stack Software Engineering",
+  title: "Full-Stack Software Engineering Academy",
   subtitle: "32-Week Career-Transforming Immersive Bootcamp",
-  tagline: "From zero coding background to building production-grade, AI-integrated web applications deployed to the cloud.",
+  tagline: "From zero coding background to building production-grade, commercial web applications deployed to the cloud with dedicated 1-on-1 mentor guidance.",
   stats: {
     totalWeeks: 32,
     phasesCount: 4,
@@ -17,8 +17,8 @@ export const techAcademyCurriculum = {
       subtitle: "Semantic HTML5, Modern CSS3, Flexbox, Grid & Bootstrap 5",
       duration: "Weeks 1 – 8 (8 Weeks)",
       badge: "Foundations",
-      badgeColor: "bg-emerald-950/80 text-emerald-400 border-emerald-800",
-      accentColor: "#10b981",
+      badgeColor: "bg-amber-950/80 text-amber-400 border-amber-800",
+      accentColor: "#f39228",
       overview: "Establish rock-solid frontend fundamentals. Learn to construct accessible, semantic web documents, master responsive design using modern CSS3 (Flexbox & Grid), and build production-ready layouts with Bootstrap 5.",
       skills: ["HTML5", "CSS3", "Flexbox", "CSS Grid", "Bootstrap 5", "Git & GitHub", "Command Line", "Responsive Design"],
       capstoneProject: "Apple Website Fully Responsive Clone",
@@ -128,7 +128,7 @@ export const techAcademyCurriculum = {
       duration: "Weeks 9 – 16 (8 Weeks)",
       badge: "Core Logic",
       badgeColor: "bg-amber-950/80 text-amber-400 border-amber-800",
-      accentColor: "#f59e0b",
+      accentColor: "#f39228",
       overview: "Transition from styling to genuine computer science and programming. Master the JavaScript runtime, variable scopes, functional programming array methods, asynchronous promises, Fetch API, and the browser DOM.",
       skills: ["JavaScript ES6+", "DOM Manipulation", "Event Loop", "Promises & Async/Await", "Fetch API", "REST APIs", "LocalStorage", "JSON"],
       capstoneProject: "Interactive Netflix Clone & Live Weather Dashboard",
@@ -237,15 +237,15 @@ export const techAcademyCurriculum = {
     {
       id: "phase-3",
       number: "Phase 3",
-      title: "Full-Stack & MERN Engineering",
-      subtitle: "Node.js, Express.js REST APIs, MySQL Database & React.js",
+      title: "Backend Engineering & Relational Databases",
+      subtitle: "Node.js, Express.js REST APIs, MySQL Database & JWT Security",
       duration: "Weeks 17 – 24 (8 Weeks)",
-      badge: "Full-Stack",
-      badgeColor: "bg-cyan-950/80 text-cyan-400 border-cyan-800",
-      accentColor: "#06b6d4",
-      overview: "Become a true full-stack engineer. Build robust, secure REST APIs with Node.js and Express, architect relational databases with MySQL, implement JWT authentication, and build dynamic single-page applications with React.",
-      skills: ["Node.js", "Express.js", "MySQL", "Relational DB", "REST APIs", "JWT Auth", "bcrypt", "React.js", "React Hooks"],
-      capstoneProject: "Evangadi / Nexa Q&A Discussion Forum (Full-Stack)",
+      badge: "Backend & DB",
+      badgeColor: "bg-amber-950/80 text-amber-400 border-amber-800",
+      accentColor: "#f39228",
+      overview: "Master backend server architecture. Build robust, secure REST APIs with Node.js and Express, architect relational schemas in MySQL, prevent SQL injection, and implement production JWT token authentication.",
+      skills: ["Node.js", "Express.js", "MySQL", "Relational DB", "REST APIs", "JWT Auth", "bcrypt", "Prepared Queries"],
+      capstoneProject: "Nexa Full-Stack Q&A Forum Backend API",
       weeks: [
         {
           week: "Week 17",
@@ -309,150 +309,150 @@ export const techAcademyCurriculum = {
         },
         {
           week: "Week 22",
-          title: "React.js Component Architecture & Props",
+          title: "Database Indexing, Transactions & Connection Optimization",
           topics: [
-            "Single Page Applications (SPAs) vs traditional multi-page websites",
-            "JSX syntax: writing HTML-like markup inside JavaScript functions",
-            "Components as pure functions: reusability, composition, and props passing",
-            "Managing reactive state with the useState hook",
-            "Conditional rendering and rendering lists of data using the map() method with unique keys"
+            "Database indexes: Clustered vs non-clustered, performance tradeoffs",
+            "SQL Transactions: ACID properties (Atomicity, Consistency, Isolation, Durability)",
+            "Handling multi-step financial operations with BEGIN, COMMIT, and ROLLBACK",
+            "Pagination patterns: LIMIT and OFFSET vs Keyset cursor-based pagination",
+            "Designing audit logs and soft delete mechanics in relational schemas"
           ],
-          exercise: "Scaffold a multi-component interactive product dashboard with filter tabs and search state."
+          exercise: "Implement transactional money transfer logic between two bank accounts in MySQL."
         },
         {
           week: "Week 23",
-          title: "React Hooks, Context API & React Router",
+          title: "API Validation, Security Headers & Rate Limiting",
           topics: [
-            "The useEffect hook: handling side effects, API fetching, dependency arrays, and cleanup functions",
-            "Client-side routing with React Router v6: BrowserRouter, Routes, Route, Link, useNavigate",
-            "Dynamic routes with useParams() and protected routes with Navigate",
-            "State management without prop drilling: React Context API (createContext, useContext, Provider)",
-            "Building custom reusable hooks (useFetch, useAuth, useLocalStorage)"
+            "Input validation middleware using Joi or Zod schemas",
+            "Sanitizing HTML payloads to protect against XSS (Cross-Site Scripting)",
+            "Protecting against brute force with express-rate-limit",
+            "Security HTTP headers with Helmet.js",
+            "Configuring CORS (Cross-Origin Resource Sharing) properly for production"
           ],
-          exercise: "Build an authenticated multi-page frontend that stores user login state in Context and redirects unauthenticated visitors."
+          exercise: "Harden your Express server against common OWASP top 10 vulnerabilities."
         },
         {
           week: "Week 24",
-          title: "Phase 3 Capstone: Evangadi / Nexa Q&A Forum",
+          title: "Phase 3 Capstone: Nexa Q&A Forum Backend API",
           topics: [
-            "Full-stack architecture: React frontend talking to Express/MySQL backend",
-            "User accounts: sign-up, sign-in, token refresh, and avatar display",
-            "Question module: post question, search by keywords, view question detail",
-            "Answer module: submit answers, upvote/downvote answers, mark accepted solution",
-            "End-to-end deployment of database and server to Render / Railway"
+            "Architecting the complete backend schema: users, questions, answers, votes",
+            "Implementing user registration, login, and profile management",
+            "CRUD operations for asking questions and submitting markdown answers",
+            "Voting system with upvote/downvote tallies and accepted answer selection",
+            "Automated API documentation with Swagger / Postman collections"
           ],
-          exercise: "Deploy the complete full-stack Q&A forum platform to production with live database."
+          exercise: "Deploy complete production-ready REST API to cloud with live MySQL database."
         }
       ]
     },
     {
       id: "phase-4",
       number: "Phase 4",
-      title: "AI-Powered Application Development & Capstone",
-      subtitle: "OpenAI API, Prompt Engineering, Vector DBs, RAG & Abe Garage",
+      title: "React.js SPAs, Full-Stack Integration & Cloud Deployment",
+      subtitle: "React Hooks, Routing, Context API, Production Deployment & Capstone",
       duration: "Weeks 25 – 32 (8 Weeks)",
-      badge: "AI Engineering",
-      badgeColor: "bg-purple-950/80 text-purple-400 border-purple-800",
-      accentColor: "#a855f7",
-      overview: "Step into the future of software engineering. Learn how to augment full-stack web applications with Large Language Models (LLMs), build semantic vector search engines, construct Retrieval-Augmented Generation (RAG) pipelines, and ship the flagship Abe Garage capstone.",
-      skills: ["OpenAI API", "Prompt Engineering", "Vector Embeddings", "RAG Systems", "Pinecone / Chroma", "LangChain basics", "AI Diagnostics", "Cloud Deployment"],
-      capstoneProject: "Abe Garage: AI-Powered Auto Repair Management Platform",
+      badge: "Full-Stack React",
+      badgeColor: "bg-amber-950/80 text-amber-400 border-amber-800",
+      accentColor: "#f39228",
+      overview: "Tie backend and frontend together into complete, production-grade web applications. Master React component architecture, client-side routing, Context API state management, cloud hosting, and graduate with your flagship full-stack capstone.",
+      skills: ["React.js", "React Hooks", "React Router", "Context API", "Axios", "Cloud Hosting", "CI/CD", "Portfolio Engineering"],
+      capstoneProject: "Nexa Full-Stack Production Q&A Web Application",
       weeks: [
         {
           week: "Week 25",
-          title: "Foundations of Modern AI & Large Language Models",
+          title: "React.js Architecture, JSX & Functional Components",
           topics: [
-            "How LLMs work: Transformer architecture, tokenization, context windows, and hallucinations",
-            "API keys, security best practices (never leak keys to client-side code), and environment variables",
-            "Calling the OpenAI API from Node.js: models (gpt-4o, gpt-4o-mini), temperature, and max_tokens",
-            "Message roles: system (instructions/personality), user (input), and assistant (history)",
-            "Streaming responses using Server-Sent Events (SSE) for ChatGPT-style real-time typewriter effects"
+            "Single Page Applications (SPAs) vs traditional server-rendered websites",
+            "JSX syntax: writing HTML-like markup inside JavaScript functions",
+            "Components as pure functions: reusability, composition, and props passing",
+            "Managing reactive state with the useState hook",
+            "Conditional rendering and rendering lists of data using map() with keys"
           ],
-          exercise: "Build a backend endpoint that streams AI code explanation responses directly to a React frontend."
+          exercise: "Scaffold a multi-component interactive dashboard with search filters."
         },
         {
           week: "Week 26",
-          title: "Structured Prompt Engineering & Function Calling",
+          title: "React Lifecycle, useEffect & API Consumption",
           topics: [
-            "Prompt engineering patterns: Few-shot prompting, Chain-of-Thought (CoT), role-based prompts",
-            "Preventing prompt injection attacks and setting strict guardrails",
-            "OpenAI Function Calling / Tool Calling: teaching LLMs to execute backend database queries",
-            "Structured Outputs with JSON Schema: guaranteeing exact JSON response contracts from AI",
-            "Handling API rate limits, backoff retry logic, and token cost budgeting"
+            "The useEffect hook: handling side effects, API fetching, dependency arrays, and cleanup functions",
+            "Consuming Express backend APIs using Axios and Fetch",
+            "Rendering loading spinners, skeleton screens, and graceful error banners",
+            "Handling user forms with controlled components and input validation",
+            "Optimizing re-renders with useMemo and useCallback"
           ],
-          exercise: "Create an AI customer service agent that extracts user intent into strict JSON and queries a mock order database."
+          exercise: "Connect a React frontend to your Phase 3 Express API to display live data."
         },
         {
           week: "Week 27",
-          title: "Vector Embeddings & Semantic Search",
+          title: "Client-Side Routing with React Router v6",
           topics: [
-            "What are embeddings? Representing text as high-dimensional numerical vectors (1536 dimensions)",
-            "Generating embeddings using OpenAI's text-embedding-3-small and text-embedding-3-large",
-            "Mathematical similarity: Cosine similarity vs Euclidean distance vs Dot product",
-            "Keyword search (SQL LIKE / Full-text) vs Semantic meaning search (understanding intent)",
-            "Storing and querying vector embeddings in vector databases (Pinecone / ChromaDB / pgvector)"
+            "Setting up BrowserRouter, Routes, and Route in modern React Router",
+            "Dynamic routes with useParams() (e.g. /questions/:questionId)",
+            "Programmatic navigation with useNavigate() and active link styling",
+            "Building Protected Routes that check JWT token existence before rendering private views",
+            "404 Not Found pages and nested layouts with Outlet"
           ],
-          exercise: "Build a semantic search engine over a knowledge base of technical manuals that finds answers even with zero matching keywords."
+          exercise: "Build a multi-page authenticated web application with protected dashboards."
         },
         {
           week: "Week 28",
-          title: "Retrieval-Augmented Generation (RAG) Pipelines",
+          title: "Global State Management with Context API",
           topics: [
-            "The RAG architecture: Retrieval -> Context Injection -> Generation",
-            "Document ingestion pipeline: parsing PDFs, markdown, and web pages",
-            "Text chunking strategies: fixed size, sentence splitting, recursive character chunking, and chunk overlap",
-            "Building a complete RAG system: fetching relevant chunks and injecting them into the LLM system prompt",
-            "Source attribution: ensuring the AI cites exact documents and line references for its answers"
+            "Prop drilling challenges in complex React component hierarchies",
+            "React Context API: createContext, Provider, and the useContext hook",
+            "Building an AuthContext to manage global login state, user tokens, and logout",
+            "Building a ThemeContext / CartContext for application-wide settings",
+            "Custom hooks: creating useAuth() and useFetch() for clean code reusability"
           ],
-          exercise: "Construct a complete RAG information bot capable of answering complex questions from an uploaded company handbook."
+          exercise: "Centralize user authentication state across all application routes using Context API."
         },
         {
           week: "Week 29",
-          title: "Abe Garage Capstone Project – Architecture & DB Modeling",
+          title: "Nexa Capstone Project: Architecture & Frontend Scaffolding",
           topics: [
-            "Abe Garage project overview: A modern full-stack auto repair shop management system",
-            "Stakeholders & user roles: Customer, Service Advisor, Mechanic, and Shop Owner / Admin",
-            "Database schema modeling in MySQL: customers, vehicles (VIN, make, model, year), repair orders, parts, and invoices",
-            "Designing REST API contracts and secure JWT role-based access control (RBAC)",
-            "Integrating the AI Vehicle Trouble Code Analyzer pipeline"
+            "Project kickoff: The Nexa Production Q&A and Knowledge Platform",
+            "Deconstructing user stories: Guest, Registered Member, and Moderator",
+            "Designing UI mockups and translating them into modular React components",
+            "Setting up global state, API service layers, and route guards",
+            "Responsive layout testing across mobile, tablet, and desktop viewports"
           ],
-          exercise: "Set up the complete Abe Garage backend schema and seed initial vehicle repair data."
+          exercise: "Complete the frontend scaffolding and routing for the full-stack capstone."
         },
         {
           week: "Week 30",
-          title: "Abe Garage Capstone – Core Management Features",
+          title: "Nexa Capstone Project: Full-Stack Integration & Testing",
           topics: [
-            "Customer intake workflow: vehicle registration, mileage log, and initial issue description",
-            "Repair order lifecycle: Pending -> In Progress -> Waiting for Parts -> Completed -> Invoiced",
-            "Mechanic task assignment and technician labor hour tracking",
-            "Parts inventory management and automated invoice generation with tax calculation",
-            "Responsive React admin dashboard with status badges and KPI metrics"
+            "Wiring React frontend to Express/MySQL backend authentication",
+            "Posting questions with tags and rich markdown preview",
+            "Submitting answers in real-time with optimistic UI updates",
+            "Interactive voting logic (preventing duplicate votes per user)",
+            "Search filtering by keyword, unanswered status, and topic tags"
           ],
-          exercise: "Implement the repair order management interface with live status updates."
+          exercise: "Connect the full frontend and backend data cycle with live MySQL database."
         },
         {
           week: "Week 31",
-          title: "Abe Garage Capstone – AI Diagnostic Integration",
+          title: "Production Deployment, HTTPS & CI/CD Pipelines",
           topics: [
-            "Building the AI OBD-II Diagnostic Assistant: analyzing mechanic symptoms and error codes (e.g. P0300)",
-            "Injecting manufacturer service bulletins into a localized RAG vector store",
-            "Generating automated plain-English repair estimates and recommended fixes for customers",
-            "Customer SMS/Email notification hooks for status updates",
-            "End-to-end integration testing of the entire Abe Garage ecosystem"
+            "Building production bundles: vite build / webpack optimization and minification",
+            "Hosting backend on Render / Railway / AWS EC2 with environment secrets",
+            "Hosting frontend on Render / Vercel with custom domain configuration",
+            "Setting up automated GitHub Actions workflow to run tests on git push",
+            "Database backups and connection pool tuning in production"
           ],
-          exercise: "Connect the AI diagnostic modal so technicians can input symptoms and receive step-by-step diagnostic procedures."
+          exercise: "Deploy your live production full-stack application with custom domain and SSL."
         },
         {
           week: "Week 32",
-          title: "Production Deployment, CI/CD & Career Readiness",
+          title: "Technical Resume, GitHub Showcase & Mock Interviews",
           topics: [
-            "Production deployment: hosting frontend on Render/Vercel and backend on Render/AWS",
-            "Setting up automated CI/CD pipelines with GitHub Actions",
-            "Environment configuration, secrets management, CORS security, and database connection pooling in production",
-            "Technical resume engineering: framing boot-camp projects as commercial software engineering experience",
-            "Mock technical interviews: data structures, live coding challenges, and behavioral STAR method coaching"
+            "Engineering your technical resume: framing bootcamp projects as commercial work",
+            "GitHub profile optimization: README documentation, architecture diagrams, live demo links",
+            "Technical whiteboard coding interviews: data structures, array algorithms, problem solving",
+            "Behavioral interview mastery: the STAR method (Situation, Task, Action, Result)",
+            "Graduation capstone presentation to alumni and tech recruiters"
           ],
-          exercise: "Deploy the final Abe Garage full-stack application with custom domain and participate in your graduation capstone presentation."
+          exercise: "Conduct your mock technical interview and present your deployed full-stack capstone."
         }
       ]
     }

@@ -20,6 +20,7 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [selectedProgram, setSelectedProgram] = useState('fullstack-dev');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
@@ -100,15 +101,15 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
             
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>32-WEEK IMMERSIVE BOOTCAMP WITH AI SPECIALIZATION</span>
+              <span>32-WEEK IMMERSIVE FULL-STACK ENGINEERING BOOTCAMP</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
-              Become an <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400">AI-Powered</span> Full-Stack Software Engineer
+              Become a <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">Production</span> Full-Stack Software Engineer
             </h1>
 
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
-              Master modern frontend architecture (HTML5, CSS3, Bootstrap 5, React), robust backend engineering (Node.js, Express, MySQL), and cutting-edge <strong>AI & LLM integration (OpenAI API, RAG, Vector Embeddings)</strong>. Designed specifically for working professionals in North America, Europe, and Ethiopia.
+              Master modern frontend architecture (HTML5, CSS3, Flexbox, Grid, Bootstrap 5, React), robust backend engineering (Node.js, Express, MySQL), and relational database modeling. Taught live 1-on-1 with dedicated senior engineer mentors for North America, Europe, and Ethiopia.
             </p>
 
             {/* Evangadi-Style 3-Card Cohort Timeline & Intake Metrics */}
@@ -309,6 +310,21 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
                         <AlertCircle className="w-3 h-3" /> {errors.phone}
                       </p>
                     )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                      Select Nexa Program / Track <span className="text-amber-400">*</span>
+                    </label>
+                    <select
+                      value={selectedProgram}
+                      onChange={(e) => setSelectedProgram(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none"
+                    >
+                      <option value="fullstack-dev">Full-Stack Web Development Academy (32-Week Immersive)</option>
+                      <option value="forex-trading">Nexa Forex Trading Academy (Institutional SMC)</option>
+                      <option value="k12-scholars">K-12 Academic Scholars Tutoring Network (Grades 1–12)</option>
+                    </select>
                   </div>
 
                   <button

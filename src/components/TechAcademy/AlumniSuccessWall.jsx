@@ -17,7 +17,7 @@ export default function AlumniSuccessWall() {
       company: "Deloitte Digital",
       location: "Washington, DC (US)",
       previousRole: "Former Logistics Coordinator",
-      quote: "Before joining the Academy, I had zero coding knowledge. The step-by-step scaffolding from HTML to React and MySQL gave me real confidence. Building the Abe Garage full-stack capstone was the exact reason I aced my technical interview.",
+      quote: "Before joining the Academy, I had zero coding knowledge. The step-by-step scaffolding from HTML to React and MySQL gave me real confidence. Building the production full-stack Q&A capstone was the exact reason I aced my technical interview.",
       salaryIncrease: "140% Compensation Increase",
       avatar: "ET",
       rating: 5
@@ -28,7 +28,7 @@ export default function AlumniSuccessWall() {
       company: "Safaricom Telecommunications",
       location: "Addis Ababa, Ethiopia",
       previousRole: "Former Science Graduate",
-      quote: "The ability to attend live weekend lectures in East Africa Time and have dedicated local teaching assistants who spoke both Amharic and English made all the difference. The AI module gave me a massive edge in the local job market.",
+      quote: "The ability to attend live weekend lectures in East Africa Time and have dedicated local teaching assistants who spoke both Amharic and English made all the difference. The production React and MySQL project gave me a massive edge in the local job market.",
       salaryIncrease: "Hired within 45 Days of Graduation",
       avatar: "BW",
       rating: 5
@@ -39,18 +39,18 @@ export default function AlumniSuccessWall() {
       company: "Capital One Financial",
       location: "Richmond, VA (US)",
       previousRole: "Former Retail Associate",
-      quote: "The weekday discussion shifts allowed me to keep working my daytime job while coding every evening. When interviewers saw my GitHub repository with live deployed MERN and AI applications, they treated me as an experienced engineer.",
+      quote: "The weekday discussion shifts allowed me to keep working my daytime job while coding every evening. When interviewers saw my GitHub repository with live deployed MERN applications, they treated me as an experienced engineer.",
       salaryIncrease: "$95,000 Starting Salary",
       avatar: "NM",
       rating: 5
     },
     {
       name: "Sara Kassa",
-      currentRole: "AI Application Specialist",
+      currentRole: "Full-Stack Software Engineer",
       company: "FinTech Innovation Lab",
       location: "Toronto, Canada",
       previousRole: "Former Healthcare Worker",
-      quote: "Phase 4 on OpenAI Function Calling and RAG was genuinely mind-blowing. Most bootcamps only teach basic CRUD apps, but Nexa gave us hands-on experience building vector search engines and AI assistants.",
+      quote: "The live Zoom classes and 1-on-1 mentor code reviews were invaluable. We deployed our full-stack apps to the cloud and learned how real engineering teams build, test, and ship software.",
       salaryIncrease: "Double Career Pivot Success",
       avatar: "SK",
       rating: 5

@@ -34,8 +34,8 @@ export default function TechAcademyFAQ() {
       a: "Students physically residing in Ethiopia qualify for heavily subsidized local tuition ($600 for In-Class Live or $300 for Self-Paced) payable in Ethiopian Birr via Commercial Bank of Ethiopia (CBE) or Telebirr at the prevailing official bank rate. Eligibility is verified via Ethiopian National ID or Kebele card."
     },
     {
-      q: "What is the Phase 4 Abe Garage AI Capstone Project?",
-      a: "Abe Garage is our flagship commercial SaaS project spanning 10 intensive sessions. Students build a complete auto repair shop management system connecting MySQL relational databases, JWT authenticated mechanic dashboards, parts inventory deduction, and an OpenAI OBD-II diagnostic trouble code assistant."
+      q: "What is the Phase 4 Full-Stack Capstone Project?",
+      a: "The final capstone is a production-grade full-stack web application (such as the Nexa Community Q&A Knowledge Forum) connecting normalized MySQL relational databases, Express.js REST APIs with JWT authentication, and modern React 19 single-page application interfaces deployed live to the cloud."
     },
     {
       q: "Does the Academy provide career placement coaching and mock interviews?",

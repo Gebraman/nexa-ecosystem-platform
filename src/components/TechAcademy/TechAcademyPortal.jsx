@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import TechAcademyHero from './TechAcademyHero';
 import CurriculumAccordion from './CurriculumAccordion';
-import AbeGarageShowcase from './AbeGarageShowcase';
+import NexaFullStackCapstoneShowcase from './NexaFullStackCapstoneShowcase';
 import TuitionCalculator from './TuitionCalculator';
 import CohortScheduleMatrix from './CohortScheduleMatrix';
 import VideoShowcaseGallery from './VideoShowcaseGallery';
@@ -103,10 +103,10 @@ export default function TechAcademyPortal({ onClose }) {
               Curriculum
             </button>
             <button 
-              onClick={() => scrollToSection('abe-garage')}
-              className="hover:text-amber-400 transition-colors text-purple-400"
+              onClick={() => scrollToSection('fullstack-projects')}
+              className="hover:text-amber-400 transition-colors text-amber-400"
             >
-              Abe Garage AI
+              Capstone Projects
             </button>
             <button 
               onClick={() => scrollToSection('pricing')}
@@ -185,8 +185,8 @@ export default function TechAcademyPortal({ onClose }) {
           {/* 2. 4-Phase Curriculum Accordion */}
           <CurriculumAccordion />
 
-          {/* 3. Phase 4 Flagship Capstone: Abe Garage AI Auto Repair Platform */}
-          <AbeGarageShowcase />
+          {/* 3. Phase 4 Flagship Capstone: Nexa Full-Stack Commercial Applications */}
+          <NexaFullStackCapstoneShowcase />
 
           {/* 4. Dual-Region Tuition Calculator (with Add to Cart hook) */}
           <TuitionCalculator onAddToCart={handleAddToCart} />

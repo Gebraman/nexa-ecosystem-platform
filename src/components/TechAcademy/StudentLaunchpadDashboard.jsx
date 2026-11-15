@@ -30,35 +30,35 @@ export default function StudentLaunchpadDashboard() {
     {
       id: 'week-28',
       week: 'Week 28',
-      title: 'Retrieval-Augmented Generation (RAG) Pipelines & Vector DBs',
-      phase: 'Phase 4: AI Engineering',
-      videoId: 'M8dQpAeqsbY', // Default placeholder or lecture video
+      title: 'Global State Management with React Context API & Custom Hooks',
+      phase: 'Phase 4: Full-Stack React',
+      videoId: 'M8dQpAeqsbY',
       duration: '2h 15m',
-      instructor: 'Lead AI Engineer',
+      instructor: 'Senior Frontend Architect',
       resources: [
-        { name: 'Starter Code: Pinecone RAG Repo', link: 'https://github.com' },
+        { name: 'Starter Code: React Context & Reducer Repo', link: 'https://github.com' },
         { name: 'Lecture Slides & Notes (PDF)', link: '#' },
-        { name: 'OpenAI Embeddings Cheatsheet', link: '#' }
+        { name: 'React Hooks Cheatsheet', link: '#' }
       ]
     },
     {
       id: 'week-27',
       week: 'Week 27',
-      title: 'Vector Embeddings, High-Dimensional Spaces & Semantic Search',
-      phase: 'Phase 4: AI Engineering',
-      videoId: 'M8dQpAeqsbY',
+      title: 'Client-Side Routing with React Router v6 & Protected Routes',
+      phase: 'Phase 4: Full-Stack React',
+      videoId: 'NDLCZ_r58MY',
       duration: '1h 50m',
-      instructor: 'Lead AI Engineer',
+      instructor: 'Senior Frontend Architect',
       resources: [
-        { name: 'Cosine Similarity Demo Script', link: 'https://github.com' },
-        { name: 'Embedding Math Visualizer', link: '#' }
+        { name: 'Protected Route Boilerplate', link: 'https://github.com' },
+        { name: 'React Router v6 Architecture Guide', link: '#' }
       ]
     },
     {
       id: 'week-24',
       week: 'Week 24',
-      title: 'Evangadi / Nexa Q&A Full-Stack Forum Deployment',
-      phase: 'Phase 3: MERN Stack',
+      title: 'Nexa Full-Stack Q&A Forum Backend API & Express Deployment',
+      phase: 'Phase 3: Backend & Relational DB',
       videoId: 'M8dQpAeqsbY',
       duration: '2h 45m',
       instructor: 'Senior Full-Stack Mentor',
@@ -72,9 +72,9 @@ export default function StudentLaunchpadDashboard() {
       week: 'Week 16',
       title: 'Netflix Clone: TMDB API Integration & Video Trailer Modals',
       phase: 'Phase 2: JavaScript ES6+',
-      videoId: 'M8dQpAeqsbY',
+      videoId: 'NDLCZ_r58MY',
       duration: '2h 10m',
-      instructor: 'Frontend Specialist',
+      instructor: 'JavaScript Specialist',
       resources: [
         { name: 'TMDB API Key Setup Guide', link: '#' },
         { name: 'YouTube Embed Hook Repository', link: 'https://github.com' }
@@ -115,7 +115,7 @@ export default function StudentLaunchpadDashboard() {
                 Welcome to Student Launchpad, Ermias
               </h2>
               <p className="text-xs text-slate-400 mt-1">
-                Track: <strong className="text-amber-400">AI-Powered Full-Stack Application Development</strong> • Week 28 of 32
+                Track: <strong className="text-amber-400">Full-Stack Web Development & Cloud Engineering</strong> • Week 28 of 32
               </p>
             </div>
           </div>
@@ -262,10 +262,10 @@ export default function StudentLaunchpadDashboard() {
               </div>
 
               <h4 className="text-lg font-bold text-white">
-                Capstone Submission: Abe Garage AI Vehicle Diagnostic Module
+                Capstone Submission: Nexa Production Full-Stack Q&A Forum
               </h4>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Connect your GitHub repository and live deployment link. Your assigned Teaching Assistant will provide automated lint checks and personal code feedback within 48 hours.
+                Connect your GitHub repository and live deployment link. Your assigned Teaching Assistant will provide automated code checks and personal architectural feedback within 48 hours.
               </p>
 
               {submissionStatus === 'submitted' ? (
@@ -298,7 +298,7 @@ export default function StudentLaunchpadDashboard() {
                       type="url"
                       value={githubUrl}
                       onChange={(e) => setGithubUrl(e.target.value)}
-                      placeholder="https://github.com/your-username/abe-garage-ai"
+                      placeholder="https://github.com/your-username/nexa-fullstack-forum"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
                       required
                     />
@@ -312,7 +312,7 @@ export default function StudentLaunchpadDashboard() {
                       type="url"
                       value={deployedUrl}
                       onChange={(e) => setDeployedUrl(e.target.value)}
-                      placeholder="https://abe-garage-ai.onrender.com"
+                      placeholder="https://nexa-forum-app.onrender.com"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none"
                     />
                   </div>
@@ -320,11 +320,11 @@ export default function StudentLaunchpadDashboard() {
                   <button
                     type="submit"
                     disabled={submissionStatus === 'submitting'}
-                    className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-600/20"
+                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
                   >
                     {submissionStatus === 'submitting' ? (
                       <>
-                        <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span className="w-3.5 h-3.5 border-2 border-dark-950 border-t-transparent rounded-full animate-spin" />
                         <span>Validating Repo...</span>
                       </>
                     ) : (
@@ -355,11 +355,11 @@ export default function StudentLaunchpadDashboard() {
                     <span className="text-slate-500 font-mono">15m ago</span>
                   </div>
                   <p className="text-xs text-slate-300">
-                    "Question on Week 28: Should we use chunk overlap of 50 tokens or 100 tokens when parsing the vehicle service manuals for the Pinecone vector index?"
+                    "Question on Week 28: Should we store the JWT token in LocalStorage or an HttpOnly cookie when connecting our React frontend with the Express backend?"
                   </p>
-                  <div className="flex items-center gap-3 pt-1 text-[11px] font-mono text-cyan-400">
+                  <div className="flex items-center gap-3 pt-1 text-[11px] font-mono text-amber-400">
                     <span className="text-emerald-400 font-bold">Answered by Mentor Bethlehem:</span>
-                    <span className="text-slate-400">100 tokens recommended for technical specs to preserve context.</span>
+                    <span className="text-slate-400">HttpOnly cookie is best practice for production to prevent XSS token theft.</span>
                   </div>
                 </div>
 
