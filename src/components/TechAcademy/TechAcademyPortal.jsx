@@ -28,10 +28,11 @@ import AlumniSuccessWall from './AlumniSuccessWall';
 import TechAcademyFAQ from './TechAcademyFAQ';
 import StudentLaunchpadDashboard from './StudentLaunchpadDashboard';
 import CartDrawer from './CartDrawer';
+import EvangadiFullStackCurriculumViewer from './EvangadiFullStackCurriculumViewer';
 
 export default function TechAcademyPortal({ onClose, onBackToHome }) {
-  // View mode: 'admissions' (Public landing page with 32-week curriculum & pricing) or 'launchpad' (Student LMS Dashboard)
-  const [activeViewMode, setActiveViewMode] = useState('admissions');
+  // View mode: 'curriculum' (Evangadi 4-Phase Course Outline & Video Studio - Default) | 'admissions' (Landing page & Tuition) | 'launchpad' (LMS)
+  const [activeViewMode, setActiveViewMode] = useState('curriculum');
 
   // Shopping Cart state
   const [cartItem, setCartItem] = useState(null);
@@ -80,6 +81,17 @@ export default function TechAcademyPortal({ onClose, onBackToHome }) {
 
           <div className="flex items-center p-1 rounded-xl bg-dark-950 border border-slate-700 text-xs">
             <button
+              onClick={() => setActiveViewMode('curriculum')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 ${
+                activeViewMode === 'curriculum'
+                  ? 'bg-amber-500 text-dark-950 shadow-md shadow-amber-500/20'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Course Outline (4 Phases)</span>
+            </button>
+            <button
               onClick={() => setActiveViewMode('admissions')}
               className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                 activeViewMode === 'admissions'
@@ -87,7 +99,7 @@ export default function TechAcademyPortal({ onClose, onBackToHome }) {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              Admissions & Curriculum
+              Admissions & Tuition
             </button>
             <button
               onClick={() => setActiveViewMode('launchpad')}
@@ -98,7 +110,7 @@ export default function TechAcademyPortal({ onClose, onBackToHome }) {
               }`}
             >
               <MonitorPlay className="w-3.5 h-3.5" />
-              <span>Student Launchpad</span>
+              <span>Launchpad</span>
             </button>
           </div>
         </div>
@@ -183,17 +195,22 @@ export default function TechAcademyPortal({ onClose, onBackToHome }) {
       </div>
 
       {/* Main Content Area */}
-      {activeViewMode === 'admissions' ? (
+      {activeViewMode === 'curriculum' ? (
+        /* Evangadi Course Outline & Interactive Video Studio */
+        <EvangadiFullStackCurriculumViewer 
+          onBackToOverview={() => setActiveViewMode('admissions')}
+        />
+      ) : activeViewMode === 'admissions' ? (
         <div className="space-y-0">
           
           {/* 1. Hero with Admissions Lead Capture Card & 3 Cohort Metrics */}
           <TechAcademyHero 
-            onExploreCurriculum={() => scrollToSection('curriculum')}
+            onExploreCurriculum={() => setActiveViewMode('curriculum')}
             onBookDiagnostic={() => window.open('https://calendar.app.google/NqgKSXoBhqz163hG9', '_blank')}
           />
 
           {/* 2. 4-Phase Curriculum Accordion */}
-          <CurriculumAccordion />
+          <CurriculumAccordion onOpenVideoStudio={() => setActiveViewMode('curriculum')} />
 
           {/* 3. Phase 4 Flagship Capstone: Nexa Full-Stack Commercial Applications */}
           <NexaFullStackCapstoneShowcase />

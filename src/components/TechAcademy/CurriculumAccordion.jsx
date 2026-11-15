@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { techAcademyCurriculum } from '../../data/techAcademyCurriculum';
 
-export default function CurriculumAccordion() {
+export default function CurriculumAccordion({ onOpenVideoStudio }) {
   // Allow multiple phases to be open or single open. Default to Phase 1 and Phase 4 open for maximum impact.
   const [openPhases, setOpenPhases] = useState({
     'phase-1': true,
@@ -69,13 +69,21 @@ export default function CurriculumAccordion() {
             </p>
           </div>
 
-          {/* Quick Expand / Collapse Controls */}
-          <div className="flex items-center gap-3">
+          {/* Quick Expand / Collapse Controls & Interactive Studio Launcher */}
+          <div className="flex flex-wrap items-center gap-3">
+            {onOpenVideoStudio && (
+              <button
+                onClick={onOpenVideoStudio}
+                className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5"
+              >
+                <span>Course Outline & Video Studio →</span>
+              </button>
+            )}
             <button
               onClick={expandAll}
               className="px-3.5 py-1.5 rounded-lg bg-dark-900 border border-slate-700 hover:border-slate-600 text-xs text-slate-300 hover:text-white transition-colors"
             >
-              Expand All Phases
+              Expand All
             </button>
             <button
               onClick={collapseAll}
@@ -180,7 +188,7 @@ export default function CurriculumAccordion() {
                     </div>
 
                     {/* Capstone Project Card */}
-                    <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-dark-950 to-dark-950 border border-amber-500/30 flex items-center justify-between gap-4">
+                    <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-dark-950 to-dark-950 border border-amber-500/30 flex flex-wrap items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <Award className="w-6 h-6 text-amber-400 shrink-0" />
                         <div>
@@ -188,9 +196,19 @@ export default function CurriculumAccordion() {
                           <h5 className="text-sm font-bold text-white">{phase.capstoneProject}</h5>
                         </div>
                       </div>
-                      <span className="text-xs font-mono px-2.5 py-1 rounded bg-dark-900 text-amber-400 border border-amber-500/30 font-bold shrink-0">
-                        Evaluated for Graduation
-                      </span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {onOpenVideoStudio && (
+                          <button
+                            onClick={onOpenVideoStudio}
+                            className="text-xs font-mono px-3 py-1 rounded bg-[#f39228] text-dark-950 font-bold hover:bg-amber-400 transition-colors"
+                          >
+                            Open Video Studio & Sub-topics →
+                          </button>
+                        )}
+                        <span className="text-xs font-mono px-2.5 py-1 rounded bg-dark-900 text-amber-400 border border-amber-500/30 font-bold hidden sm:inline">
+                          Evaluated for Graduation
+                        </span>
+                      </div>
                     </div>
 
                     {/* Weeks Grid */}

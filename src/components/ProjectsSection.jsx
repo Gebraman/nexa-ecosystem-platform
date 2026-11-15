@@ -377,7 +377,7 @@ export default function ProjectsSection() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. AI-Powered Medical Appointment Booking System"
+                      placeholder="e.g. Enterprise Medical Appointment Booking System"
                       value={customProjectTitle}
                       onChange={e => setCustomProjectTitle(e.target.value)}
                       className="mt-1 w-full px-3 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-white text-xs focus:border-emerald-400 focus:outline-none"
