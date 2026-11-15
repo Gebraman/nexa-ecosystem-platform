@@ -35,7 +35,12 @@ import {
   BookOpen,
   ChevronRight,
   TrendingUp,
-  Cpu
+  Cpu,
+  Globe,
+  RotateCw,
+  Lock,
+  Star,
+  ExternalLink
 } from 'lucide-react';
 
 export default function PreplyVirtualClassroom({ 
@@ -64,6 +69,7 @@ export default function PreplyVirtualClassroom({
   const screenVideoRef = useRef(null);
   const [activeLayout, setActiveLayout] = useState('split'); // 'blackboard', 'screenshare', 'split'
   const [screenShareSourceType, setScreenShareSourceType] = useState('chrome-window'); // 'chrome-window', 'slides', 'grapher'
+  const [chromeActiveTab, setChromeActiveTab] = useState('desmos'); // 'desmos', 'wolfram', 'curriculum'
   const [selectedSlideIndex, setSelectedSlideIndex] = useState(0);
 
   // Grapher Simulation Parameters
@@ -713,65 +719,110 @@ Assigned Practice:
           {/* Active Work Area: Supports Split Studio, Full Blackboard, or Full Screen Share */}
           <div className="relative flex-1 min-h-[500px] w-full h-full overflow-hidden flex flex-col md:flex-row">
             
-            {/* STAGE PANE A: CHROME SCREEN SHARE & ACADEMIC SLIDES (Visible in 'screenshare' or 'split') */}
+            {/* STAGE PANE A: REALISTIC CHROME SCREEN SHARE & STEM SIMULATION WINDOW */}
             {(activeLayout === 'screenshare' || activeLayout === 'split') && (
-              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full min-h-[460px] flex flex-col bg-[#050914] overflow-hidden`}>
+              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full min-h-[480px] flex flex-col bg-[#070b16] overflow-hidden`}>
                 
-                {/* Screen Share Stage Navigation Header */}
-                <div className="px-3 py-2 bg-[#0a1124] border-b border-[#1e293b] flex items-center justify-between text-xs font-mono">
-                  <div className="flex items-center gap-2">
-                    {/* Live streaming status pill */}
-                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800/80 text-cyan-300 font-bold text-[10px]">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                      <span>{isScreenSharing && screenStream ? 'LIVE CHROME TAB STREAM' : 'ACADEMIC SLIDE DECK'}</span>
+                {/* 1. Realistic macOS / Chrome Window Top Frame */}
+                <div className="bg-[#1a202c] border-b border-[#2d3748] px-3 pt-2.5 pb-1.5 flex flex-col gap-1.5 shadow-md">
+                  {/* Top Tab Bar */}
+                  <div className="flex items-center justify-between gap-2">
+                    {/* Window Controls (Red, Yellow, Green) */}
+                    <div className="flex items-center gap-1.5 pr-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block shadow-sm" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block shadow-sm" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block shadow-sm" />
                     </div>
 
-                    {isScreenSharing && screenStream && (
-                      <span className="text-[9px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800">
-                        1080p 60fps
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Sub-view switcher tabs for the presentation area */}
-                  <div className="flex items-center gap-1 text-[10px]">
-                    <button
-                      onClick={() => setScreenShareSourceType('slides')}
-                      className={`px-2 py-0.5 rounded transition-all ${
-                        screenShareSourceType === 'slides'
-                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      Problem Slides
-                    </button>
-                    <button
-                      onClick={() => setScreenShareSourceType('grapher')}
-                      className={`px-2 py-0.5 rounded transition-all ${
-                        screenShareSourceType === 'grapher'
-                          ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40'
-                          : 'text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      STEM Grapher
-                    </button>
-                    {screenStream && (
+                    {/* Interactive Chrome Tabs */}
+                    <div className="flex-1 flex items-center gap-1 overflow-x-auto scrollbar-none">
                       <button
-                        onClick={() => setScreenShareSourceType('chrome-window')}
-                        className={`px-2 py-0.5 rounded transition-all ${
-                          screenShareSourceType === 'chrome-window'
-                            ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40'
-                            : 'text-slate-400 hover:text-white'
+                        onClick={() => { setChromeActiveTab('desmos'); setScreenShareSourceType('chrome-window'); }}
+                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
+                          chromeActiveTab === 'desmos'
+                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
+                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
                         }`}
                       >
-                        Chrome Window
+                        <TrendingUp className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                        <span>Desmos Grapher</span>
                       </button>
-                    )}
+
+                      <button
+                        onClick={() => { setChromeActiveTab('wolfram'); setScreenShareSourceType('chrome-window'); }}
+                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
+                          chromeActiveTab === 'wolfram'
+                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
+                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Cpu className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>Wolfram Solver</span>
+                      </button>
+
+                      <button
+                        onClick={() => { setChromeActiveTab('curriculum'); setScreenShareSourceType('chrome-window'); }}
+                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
+                          chromeActiveTab === 'curriculum'
+                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
+                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span>Problem Deck</span>
+                      </button>
+                    </div>
+
+                    {/* Stream Status Badge */}
+                    <div className="pl-1 shrink-0">
+                      {screenStream ? (
+                        <span className="flex items-center gap-1 text-[9px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800 font-bold animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                          <span>LIVE STREAM</span>
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-mono text-[#f39228] bg-amber-950/70 px-2 py-0.5 rounded-full border border-amber-800 font-bold">
+                          CHROME SCREEN
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Chrome Navigation & Omnibox Address Bar */}
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-1 text-slate-400">
+                      <button className="px-1.5 py-0.5 rounded hover:bg-slate-700 hover:text-white text-xs">←</button>
+                      <button className="px-1.5 py-0.5 rounded hover:bg-slate-700 hover:text-white text-xs">→</button>
+                      <button className="p-1 rounded hover:bg-slate-700 hover:text-white">
+                        <RotateCw className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* Omnibox URL Bar */}
+                    <div className="flex-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0f172a] border border-[#334155] text-slate-300 font-mono text-[10px] sm:text-[11px]">
+                      <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <span className="text-emerald-400">https://</span>
+                      <span className="text-white truncate">scholar.nexa.edu/classroom/{chromeActiveTab}</span>
+                    </div>
+
+                    {/* Quick Trigger to Stream Real Display */}
+                    <button
+                      onClick={toggleScreenShare}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 transition-all shrink-0 ${
+                        screenStream
+                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 hover:bg-rose-500/30'
+                          : 'bg-[#f39228] text-dark-950 hover:bg-amber-400 shadow-sm'
+                      }`}
+                    >
+                      <ScreenShare className="w-3 h-3" />
+                      <span>{screenStream ? 'Stop Live Screen' : 'Stream Real Tab'}</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* Sub-View 1: Real Chrome Screen Feed Video */}
-                {screenShareSourceType === 'chrome-window' && screenStream ? (
+                {/* 2. Chrome Viewport Content */}
+                {screenStream ? (
+                  /* Live WebRTC Display Feed */
                   <div className="flex-1 w-full h-full bg-black flex flex-col items-center justify-center relative p-2">
                     <video
                       ref={screenVideoRef}
@@ -782,11 +833,11 @@ Assigned Practice:
                     />
                     <div className="absolute top-4 left-4 bg-[#0a1124]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300 flex items-center gap-2">
                       <ScreenShare className="w-3.5 h-3.5" />
-                      <span>Streaming Chrome Window • Click "Chalkboard" to annotate</span>
+                      <span>Streaming Live Chrome Screen • Annotate on Chalkboard</span>
                     </div>
                   </div>
-                ) : screenShareSourceType === 'grapher' ? (
-                  /* Sub-View 2: Interactive Dynamic STEM Function Plotter */
+                ) : chromeActiveTab === 'desmos' ? (
+                  /* TAB 1: DESMOS INTERACTIVE STEM FUNCTION PLOTTER */
                   <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#060b18]">
                     <div className="p-4 rounded-2xl bg-[#0a1124] border border-cyan-500/30 space-y-3">
                       <div className="flex items-center justify-between">
@@ -794,22 +845,22 @@ Assigned Practice:
                           <TrendingUp className="w-4 h-4" />
                           Interactive Parabolic Plotter: f(x) = ax² + bx + c
                         </span>
-                        <span className="text-[10px] font-mono text-slate-400">Vertex: ({-graphB / (2 * graphA || 1)}, {graphC - (graphB * graphB) / (4 * graphA || 1)})</span>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          Vertex: ({-graphB / (2 * graphA || 1)}, {graphC - (graphB * graphB) / (4 * graphA || 1)})
+                        </span>
                       </div>
 
                       {/* Dynamic SVG Plot */}
                       <div className="w-full h-44 rounded-xl bg-[#040711] border border-slate-800 relative flex items-center justify-center overflow-hidden">
                         <svg className="w-full h-full" viewBox="-10 -10 20 20">
-                          {/* Grid Lines */}
                           <line x1="-10" y1="0" x2="10" y2="0" stroke="#1e293b" strokeWidth="0.3" />
                           <line x1="0" y1="-10" x2="0" y2="10" stroke="#1e293b" strokeWidth="0.3" />
                           
-                          {/* Parabola Curve Points */}
                           <path
                             d={(() => {
                               const points = [];
                               for (let x = -5; x <= 5; x += 0.2) {
-                                const y = -(graphA * x * x + graphB * x + graphC); // inverted for SVG coordinate space
+                                const y = -(graphA * x * x + graphB * x + graphC);
                                 points.push(`${x === -5 ? 'M' : 'L'} ${x * 1.8} ${y * 0.8}`);
                               }
                               return points.join(' ');
@@ -819,7 +870,7 @@ Assigned Practice:
                             strokeWidth="0.6"
                           />
                         </svg>
-                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-500">
+                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-400">
                           Formula: f(x) = {graphA}x² {graphB >= 0 ? `+ ${graphB}x` : `${graphB}x`} {graphC >= 0 ? `+ ${graphC}` : `${graphC}`}
                         </div>
                       </div>
@@ -865,10 +916,74 @@ Assigned Practice:
                       </div>
                     </div>
                   </div>
+                ) : chromeActiveTab === 'wolfram' ? (
+                  /* TAB 2: WOLFRAM STEP-BY-STEP EQUATION SOLVER */
+                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#060b18]">
+                    {(() => {
+                      const d = (graphB * graphB) - (4 * graphA * graphC);
+                      const isReal = d >= 0;
+                      return (
+                        <div className="p-5 rounded-2xl bg-[#0a1124] border border-amber-500/30 space-y-4 shadow-xl">
+                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span className="text-xs font-mono text-amber-400 font-bold uppercase flex items-center gap-1.5">
+                              <Cpu className="w-4 h-4" />
+                              Wolfram Step-by-Step Algebraic Solver
+                            </span>
+                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
+                              d > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
+                              d === 0 ? 'bg-cyan-950 text-cyan-400 border border-cyan-800' :
+                              'bg-purple-950 text-purple-400 border border-purple-800'
+                            }`}>
+                              {d > 0 ? 'Two Real Roots' : d === 0 ? 'One Double Root' : 'Complex Conjugate Roots'}
+                            </span>
+                          </div>
+
+                          {/* Equation Form */}
+                          <div className="p-3.5 rounded-xl bg-dark-950 border border-slate-800 font-mono text-xs sm:text-sm text-center text-white">
+                            <span className="text-amber-400 font-bold">{graphA}x²</span> {graphB >= 0 ? `+ ${graphB}x` : `${graphB}x`} {graphC >= 0 ? `+ ${graphC}` : `${graphC}`} = 0
+                          </div>
+
+                          {/* Step 1: Quadratic Formula */}
+                          <div className="space-y-1.5 text-xs font-mono">
+                            <span className="text-slate-400 uppercase text-[10px] block">Step 1: Apply Quadratic Formula</span>
+                            <p className="p-2.5 rounded-lg bg-[#050914] border border-slate-800 text-slate-300">
+                              x = (-b ± √(b² - 4ac)) / 2a
+                            </p>
+                          </div>
+
+                          {/* Step 2: Discriminant Calculation */}
+                          <div className="space-y-1.5 text-xs font-mono">
+                            <span className="text-slate-400 uppercase text-[10px] block">Step 2: Calculate Discriminant (Δ)</span>
+                            <div className="p-2.5 rounded-lg bg-[#050914] border border-slate-800 space-y-1 text-slate-300">
+                              <p>Δ = ({graphB})² - 4({graphA})({graphC})</p>
+                              <p className="text-amber-400 font-bold">Δ = {graphB * graphB} - ({4 * graphA * graphC}) = {d}</p>
+                            </div>
+                          </div>
+
+                          {/* Step 3: Exact Roots Solution */}
+                          <div className="space-y-1.5 text-xs font-mono">
+                            <span className="text-slate-400 uppercase text-[10px] block">Step 3: Computed Roots</span>
+                            <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-800 text-emerald-300 space-y-1 font-bold">
+                              {isReal ? (
+                                <>
+                                  <p>x₁ = {((-graphB + Math.sqrt(d)) / (2 * graphA)).toFixed(3)}</p>
+                                  <p>x₂ = {((-graphB - Math.sqrt(d)) / (2 * graphA)).toFixed(3)}</p>
+                                </>
+                              ) : (
+                                <>
+                                  <p>x₁ = {(-graphB / (2 * graphA)).toFixed(3)} + {(Math.sqrt(-d) / (2 * Math.abs(graphA))).toFixed(3)} i</p>
+                                  <p>x₂ = {(-graphB / (2 * graphA)).toFixed(3)} - {(Math.sqrt(-d) / (2 * Math.abs(graphA))).toFixed(3)} i</p>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
                 ) : (
-                  /* Sub-View 3: Curated Academic Problem Slides Bank */
+                  /* TAB 3: ACADEMIC PROBLEM SLIDES BANK */
                   <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#050914] scrollbar-thin">
-                    {/* Slide Selector Buttons */}
                     <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
                       {academicSlides.map((sl, idx) => (
                         <button
@@ -885,7 +1000,6 @@ Assigned Practice:
                       ))}
                     </div>
 
-                    {/* Active Slide Card */}
                     {(() => {
                       const slide = academicSlides[selectedSlideIndex];
                       return (

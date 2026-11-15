@@ -163,16 +163,16 @@ export default function K12AcademicScholarsStudio() {
       <PreplyTutorBookingHub />
 
       {/* 1. INTERACTIVE TUTORING PLAN CALCULATOR */}
-      <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-8 space-y-6 shadow-2xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#2a2e39]">
+      <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-8 space-y-6 shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
           <div>
-            <span className="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span className="text-xs font-mono font-bold text-[#f39228] uppercase tracking-widest flex items-center gap-1.5">
               <Calculator className="w-4 h-4" /> Customized Learning Plan Estimator
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-white mt-1">
               Design Your Scholar's 1-on-1 Academic Roadmap
             </h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-xl">
+            <p className="text-xs text-slate-300 mt-1 max-w-xl">
               Select your student's grade level and target subjects to calculate recommended weekly mentorship frequency.
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function K12AcademicScholarsStudio() {
             href="https://calendar.app.google/NqgKSXoBhqz163hG9"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition-all self-start sm:self-auto shrink-0"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all self-start sm:self-auto shrink-0"
           >
             <Calendar className="w-4 h-4" />
             <span>Book Free 30-Min Diagnostic</span>
@@ -193,7 +193,7 @@ export default function K12AcademicScholarsStudio() {
           
           {/* Grade Band */}
           <div className="space-y-2">
-            <label className="text-xs font-mono text-slate-400 uppercase">1. Grade Level Band:</label>
+            <label className="text-xs font-mono text-slate-300 uppercase font-semibold">1. Grade Level Band:</label>
             <div className="space-y-2">
               {[
                 { id: 'elementary', label: 'Grades 1–6 (Elementary Foundations)' },
@@ -205,8 +205,8 @@ export default function K12AcademicScholarsStudio() {
                   onClick={() => setSelectedGradeBand(b.id)}
                   className={`w-full p-3 rounded-xl border text-left text-xs font-semibold transition-all ${
                     selectedGradeBand === b.id 
-                      ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' 
-                      : 'bg-[#131722] border-[#2a2e39] text-slate-400 hover:text-white'
+                      ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-sm' 
+                      : 'bg-dark-950 border-slate-800 text-slate-300 hover:text-white'
                   }`}
                 >
                   {b.label}
@@ -217,7 +217,7 @@ export default function K12AcademicScholarsStudio() {
 
           {/* Subject Focus */}
           <div className="space-y-2">
-            <label className="text-xs font-mono text-slate-400 uppercase">2. Core Subject Focus:</label>
+            <label className="text-xs font-mono text-slate-300 uppercase font-semibold">2. Core Subject Focus:</label>
             <div className="space-y-2">
               {[
                 { id: 'math', label: 'Mathematics & Advanced Calculus' },
@@ -230,8 +230,8 @@ export default function K12AcademicScholarsStudio() {
                   onClick={() => setSelectedSubject(s.id)}
                   className={`w-full p-3 rounded-xl border text-left text-xs font-semibold transition-all ${
                     selectedSubject === s.id 
-                      ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' 
-                      : 'bg-[#131722] border-[#2a2e39] text-slate-400 hover:text-white'
+                      ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-sm' 
+                      : 'bg-dark-950 border-slate-800 text-slate-300 hover:text-white'
                   }`}
                 >
                   {s.label}
@@ -242,11 +242,11 @@ export default function K12AcademicScholarsStudio() {
 
           {/* Weekly Hours Recommendation */}
           <div className="space-y-2">
-            <label className="text-xs font-mono text-slate-400 uppercase">3. Weekly Tutoring Intensity:</label>
-            <div className="p-4 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-4">
+            <label className="text-xs font-mono text-slate-300 uppercase font-semibold">3. Weekly Tutoring Intensity:</label>
+            <div className="p-4 rounded-2xl bg-dark-950 border border-slate-800 space-y-4">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-slate-400">Paced Hours:</span>
-                <span className="text-indigo-400 font-bold text-sm">{hoursPerWeek} Hours / Week</span>
+                <span className="text-[#f39228] font-bold text-sm">{hoursPerWeek} Hours / Week</span>
               </div>
               <input
                 type="range"
@@ -255,7 +255,7 @@ export default function K12AcademicScholarsStudio() {
                 step="2"
                 value={hoursPerWeek}
                 onChange={(e) => setHoursPerWeek(Number(e.target.value))}
-                className="w-full accent-indigo-500 cursor-pointer"
+                className="w-full accent-[#f39228] cursor-pointer"
               />
               <div className="flex justify-between text-[10px] font-mono text-slate-500">
                 <span>2 hrs (Paced)</span>
@@ -263,9 +263,9 @@ export default function K12AcademicScholarsStudio() {
                 <span>8 hrs (Intensive)</span>
               </div>
 
-              <div className="pt-3 border-t border-[#2a2e39] text-xs space-y-1">
+              <div className="pt-3 border-t border-slate-800 text-xs space-y-1">
                 <div className="text-white font-bold font-mono">Included in Roadmap:</div>
-                <div className="text-slate-400 text-[11px] leading-relaxed">
+                <div className="text-slate-300 text-[11px] leading-relaxed">
                   • 1-on-1 Dedicated Nexa Honors Teacher<br />
                   • Weekly Written Diagnostic Progress Report<br />
                   • Homework Assistance + Competition Math Prep
@@ -281,33 +281,33 @@ export default function K12AcademicScholarsStudio() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h4 className="text-xl font-serif font-bold text-white flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-amber-400" />
+            <GraduationCap className="w-5 h-5 text-[#f39228]" />
             Verified Nexa Teachers & Academic Scholar Mentors
           </h4>
-          <span className="text-xs font-mono text-amber-400 hidden sm:inline">100% Background-Checked Academic Leaders</span>
+          <span className="text-xs font-mono text-[#f39228] hidden sm:inline">100% Background-Checked Academic Leaders</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {mentors.map((m) => (
             <div 
               key={m.id}
-              className="p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] hover:border-indigo-500/50 transition-all flex flex-col justify-between space-y-4 group"
+              className="p-5 rounded-2xl bg-[#212529] border border-slate-800 hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group shadow-lg"
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 uppercase font-bold">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 uppercase font-bold">
                     {m.badge}
                   </span>
-                  <div className="flex items-center gap-1 text-amber-400 text-xs font-bold font-mono">
-                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                  <div className="flex items-center gap-1 text-[#f39228] text-xs font-bold font-mono">
+                    <Star className="w-3.5 h-3.5 fill-[#f39228]" />
                     <span>{m.rating}</span>
                   </div>
                 </div>
 
-                <h5 className="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+                <h5 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
                   {m.name}
                 </h5>
-                <p className="text-xs text-indigo-400 font-mono mt-0.5">
+                <p className="text-xs text-[#f39228] font-mono mt-0.5">
                   {m.credentials}
                 </p>
                 <p className="text-xs text-slate-300 mt-2 leading-relaxed">
@@ -315,9 +315,9 @@ export default function K12AcademicScholarsStudio() {
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[#2a2e39] text-[11px] font-mono text-slate-400 flex items-center justify-between">
+              <div className="pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
                 <span>{m.sessions}</span>
-                <span className="text-emerald-400">{m.languages}</span>
+                <span className="text-emerald-400 font-bold">{m.languages}</span>
               </div>
             </div>
           ))}
@@ -325,29 +325,29 @@ export default function K12AcademicScholarsStudio() {
       </div>
 
       {/* 3. INTERACTIVE 3-QUESTION DIAGNOSTIC ASSESSMENT */}
-      <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-7 space-y-5 shadow-2xl">
+      <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-7 space-y-5 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-indigo-400" />
+              <Target className="w-5 h-5 text-[#f39228]" />
               <h4 className="text-lg sm:text-xl font-bold text-white">
                 Live 3-Question Diagnostic Benchmark
               </h4>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-300 mt-1">
               Test foundational STEM concepts to assess current proficiency and receive an instant learning pace suggestion.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-lg border border-indigo-500/20 self-start sm:self-auto">
+          <span className="text-[11px] font-mono text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20 self-start sm:self-auto font-bold">
             Answer all 3 to view diagnostic score
           </span>
         </div>
 
         <div className="space-y-4">
           {diagnosticQuestions.map((q, qIdx) => (
-            <div key={q.id} className="p-4 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3">
+            <div key={q.id} className="p-4 rounded-2xl bg-dark-950 border border-slate-800 space-y-3">
               <div className="flex items-start gap-2.5">
-                <span className="w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
                   {qIdx + 1}
                 </span>
                 <p className="text-xs sm:text-sm font-semibold text-white">
@@ -364,8 +364,8 @@ export default function K12AcademicScholarsStudio() {
                       onClick={() => handleSelectDiagnostic(q.id, oIdx)}
                       className={`p-2.5 rounded-xl text-left text-xs font-mono transition-all border ${
                         isSelected
-                          ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 font-bold'
-                          : 'bg-[#090d16] border-[#2a2e39] text-slate-400 hover:text-white'
+                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
+                          : 'bg-[#1a202c] border-slate-800 text-slate-300 hover:text-white'
                       }`}
                     >
                       {opt}
@@ -387,10 +387,10 @@ export default function K12AcademicScholarsStudio() {
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[#2a2e39]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-800">
           <button
             onClick={() => setDiagnosticSubmitted(true)}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs font-mono shadow transition-all"
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs font-mono shadow transition-all"
           >
             Submit Diagnostic & Evaluate
           </button>
@@ -405,14 +405,14 @@ export default function K12AcademicScholarsStudio() {
       </div>
 
       {/* 4. INTERACTIVE STEM PRACTICE PROBLEMS */}
-      <div className="rounded-3xl bg-[#090d16] border border-[#2a2e39] p-5 sm:p-7 space-y-5 shadow-2xl">
+      <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-7 space-y-5 shadow-2xl">
         <div className="flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-indigo-400" />
+          <BookOpen className="w-5 h-5 text-[#f39228]" />
           <h4 className="text-lg sm:text-xl font-bold text-white">
             Interactive Scholar Practice Problem Sandbox
           </h4>
         </div>
-        <p className="text-xs text-slate-400 max-w-2xl">
+        <p className="text-xs text-slate-300 max-w-2xl">
           See how Nexa Scholar Teachers break down complex curriculum problems into intuitive, step-by-step principles.
         </p>
 
@@ -421,10 +421,10 @@ export default function K12AcademicScholarsStudio() {
             const isRevealed = revealedSolutions[prob.id];
 
             return (
-              <div key={prob.id} className="p-5 rounded-2xl bg-[#131722] border border-[#2a2e39] space-y-3 flex flex-col justify-between">
+              <div key={prob.id} className="p-5 rounded-2xl bg-dark-950 border border-slate-800 space-y-3 flex flex-col justify-between shadow-md">
                 <div>
                   <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
-                    <span className="text-indigo-400 font-bold">{prob.subject}</span>
+                    <span className="text-[#f39228] font-bold">{prob.subject}</span>
                     <span className="text-slate-500 text-[10px]">{prob.grade}</span>
                   </div>
 
@@ -436,16 +436,16 @@ export default function K12AcademicScholarsStudio() {
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-[#2a2e39]">
+                <div className="pt-2 border-t border-slate-800">
                   <button
                     onClick={() => toggleSolution(prob.id)}
-                    className="text-xs font-mono font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors"
+                    className="text-xs font-mono font-bold text-[#f39228] hover:text-amber-300 flex items-center gap-1 transition-colors"
                   >
                     <span>{isRevealed ? 'Hide Solution' : 'Show Step-by-Step Solution →'}</span>
                   </button>
 
                   {isRevealed && (
-                    <div className="mt-3 p-3 rounded-xl bg-[#090d16] border border-indigo-500/30 text-[11px] font-mono space-y-1.5 text-slate-200">
+                    <div className="mt-3 p-3 rounded-xl bg-[#1a202c] border border-amber-500/30 text-[11px] font-mono space-y-1.5 text-slate-200">
                       {prob.steps.map((st, sIdx) => (
                         <div key={sIdx} className="flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
