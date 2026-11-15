@@ -15,14 +15,18 @@ import {
 } from 'lucide-react';
 import { techAcademyPricing } from '../../data/techAcademyPricing';
 
-export default function TuitionCalculator({ onOpenEnrollModal }) {
+export default function TuitionCalculator({ onAddToCart }) {
   const [selectedRegionKey, setSelectedRegionKey] = useState('outsideEthiopia');
   const [selectedPlanForModal, setSelectedPlanForModal] = useState(null);
 
   const activeRegionData = techAcademyPricing.regions[selectedRegionKey];
 
   const handleEnrollClick = (plan) => {
-    setSelectedPlanForModal(plan);
+    if (onAddToCart) {
+      onAddToCart({ ...plan, currency: activeRegionData.currency });
+    } else {
+      setSelectedPlanForModal(plan);
+    }
   };
 
   const closeEnrollModal = () => {

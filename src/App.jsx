@@ -34,6 +34,7 @@ export default function App() {
       <Navbar 
         activeSection={activeSection} 
         onNavigate={handleNavigate} 
+        onOpenService={handleOpenService}
       />
       
       <main className="flex-1">

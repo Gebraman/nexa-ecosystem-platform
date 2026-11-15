@@ -11,17 +11,40 @@ import {
   ShieldCheck,
   CheckCircle2,
   Calendar,
-  ExternalLink
+  ExternalLink,
+  ShoppingBag,
+  Wrench,
+  HelpCircle,
+  Award,
+  Video
 } from 'lucide-react';
 import TechAcademyHero from './TechAcademyHero';
 import CurriculumAccordion from './CurriculumAccordion';
+import AbeGarageShowcase from './AbeGarageShowcase';
 import TuitionCalculator from './TuitionCalculator';
 import CohortScheduleMatrix from './CohortScheduleMatrix';
+import VideoShowcaseGallery from './VideoShowcaseGallery';
+import AlumniSuccessWall from './AlumniSuccessWall';
+import TechAcademyFAQ from './TechAcademyFAQ';
 import StudentLaunchpadDashboard from './StudentLaunchpadDashboard';
+import CartDrawer from './CartDrawer';
 
 export default function TechAcademyPortal({ onClose }) {
   // View mode: 'admissions' (Public landing page with 32-week curriculum & pricing) or 'launchpad' (Student LMS Dashboard)
   const [activeViewMode, setActiveViewMode] = useState('admissions');
+
+  // Shopping Cart state
+  const [cartItem, setCartItem] = useState(null);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+
+  const handleAddToCart = (plan) => {
+    setCartItem(plan);
+    setCartDrawerOpen(true);
+  };
+
+  const handleClearCart = () => {
+    setCartItem(null);
+  };
 
   const scrollToSection = (id) => {
     setActiveViewMode('admissions');
@@ -36,7 +59,7 @@ export default function TechAcademyPortal({ onClose }) {
   return (
     <div className="w-full bg-dark-950 text-slate-100 min-h-screen">
       
-      {/* Sticky Secondary Navigation Header for Tech Academy */}
+      {/* Sticky Secondary Navigation Header for Tech Academy (Evangadi Style) */}
       <div className="sticky top-0 z-30 bg-dark-900/95 border-b border-slate-800 backdrop-blur-md px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
         
         {/* Brand & Mode Switcher */}
@@ -72,30 +95,69 @@ export default function TechAcademyPortal({ onClose }) {
 
         {/* Section Quick Jump Anchors (Visible when in Admissions view) */}
         {activeViewMode === 'admissions' && (
-          <div className="hidden md:flex items-center gap-4 text-xs font-medium text-slate-300">
+          <div className="hidden lg:flex items-center gap-4 text-xs font-medium text-slate-300">
             <button 
               onClick={() => scrollToSection('curriculum')}
               className="hover:text-amber-400 transition-colors"
             >
-              Curriculum (Phases 1-4)
+              Curriculum
+            </button>
+            <button 
+              onClick={() => scrollToSection('abe-garage')}
+              className="hover:text-amber-400 transition-colors text-purple-400"
+            >
+              Abe Garage AI
             </button>
             <button 
               onClick={() => scrollToSection('pricing')}
               className="hover:text-amber-400 transition-colors"
             >
-              Tuition (USD / Birr)
+              Tuition (USD/Birr)
             </button>
             <button 
               onClick={() => scrollToSection('schedule')}
               className="hover:text-amber-400 transition-colors"
             >
-              Class Schedule & Shifts
+              Schedule & Shifts
+            </button>
+            <button 
+              onClick={() => scrollToSection('video-lessons')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Video Masterclasses
+            </button>
+            <button 
+              onClick={() => scrollToSection('alumni')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              Alumni
+            </button>
+            <button 
+              onClick={() => scrollToSection('faq')}
+              className="hover:text-amber-400 transition-colors"
+            >
+              FAQ
             </button>
           </div>
         )}
 
-        {/* Diagnostic Booking CTA */}
+        {/* Header Right Actions: Cart Widget + Diagnostic Booking */}
         <div className="flex items-center gap-3">
+          {/* Evangadi Cart Widget with Dynamic Counter */}
+          <button
+            onClick={() => setCartDrawerOpen(true)}
+            className="relative p-2 rounded-xl bg-dark-950 border border-slate-700 hover:border-amber-500/60 text-slate-300 hover:text-white transition-all flex items-center gap-1.5 text-xs font-mono font-bold"
+            title="View Enrollment Cart"
+          >
+            <ShoppingBag className="w-4 h-4 text-amber-400" />
+            <span className="hidden sm:inline">Cart</span>
+            {cartItem && (
+              <span className="w-4 h-4 rounded-full bg-amber-500 text-dark-950 text-[10px] font-extrabold flex items-center justify-center">
+                1
+              </span>
+            )}
+          </button>
+
           <a
             href="https://calendar.app.google/NqgKSXoBhqz163hG9"
             target="_blank"
@@ -103,7 +165,8 @@ export default function TechAcademyPortal({ onClose }) {
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs shadow-md shadow-amber-500/20 transition-all"
           >
             <Calendar className="w-3.5 h-3.5" />
-            <span>Book Diagnostic</span>
+            <span className="hidden sm:inline">Book Diagnostic</span>
+            <span className="sm:hidden">Book</span>
           </a>
         </div>
 
@@ -113,7 +176,7 @@ export default function TechAcademyPortal({ onClose }) {
       {activeViewMode === 'admissions' ? (
         <div className="space-y-0">
           
-          {/* 1. Hero with Admissions Lead Capture Card */}
+          {/* 1. Hero with Admissions Lead Capture Card & 3 Cohort Metrics */}
           <TechAcademyHero 
             onExploreCurriculum={() => scrollToSection('curriculum')}
             onBookDiagnostic={() => window.open('https://calendar.app.google/NqgKSXoBhqz163hG9', '_blank')}
@@ -122,23 +185,35 @@ export default function TechAcademyPortal({ onClose }) {
           {/* 2. 4-Phase Curriculum Accordion */}
           <CurriculumAccordion />
 
-          {/* 3. Dual-Region Tuition Calculator */}
-          <TuitionCalculator />
+          {/* 3. Phase 4 Flagship Capstone: Abe Garage AI Auto Repair Platform */}
+          <AbeGarageShowcase />
 
-          {/* 4. Multi-Timezone Cohort Schedule Matrix */}
+          {/* 4. Dual-Region Tuition Calculator (with Add to Cart hook) */}
+          <TuitionCalculator onAddToCart={handleAddToCart} />
+
+          {/* 5. Multi-Timezone Cohort Schedule Matrix & 4 Shifts */}
           <CohortScheduleMatrix />
 
-          {/* 5. Bottom Admissions CTA Strip */}
+          {/* 6. Video Masterclass Gallery with Lightbox Player */}
+          <VideoShowcaseGallery />
+
+          {/* 7. Alumni Success Outcomes & Reviews Wall */}
+          <AlumniSuccessWall />
+
+          {/* 8. Frequently Asked Questions Accordion & Admissions Hotline */}
+          <TechAcademyFAQ />
+
+          {/* 9. Bottom Admissions CTA Strip */}
           <div className="py-16 bg-gradient-to-t from-dark-950 via-dark-900 to-dark-950 text-center border-t border-slate-800">
             <div className="max-w-3xl mx-auto px-4 space-y-6">
               <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-950 text-amber-400 border border-amber-800 uppercase font-bold">
-                Limited Cohort Seats
+                Cohort Seats Capped at 100
               </span>
               <h3 className="text-3xl font-extrabold text-white">
                 Ready to Accelerate Your Engineering Career?
               </h3>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Schedule a 30-minute diagnostic session with our academic advisory team to review your baseline experience and reserve your seat.
+                Schedule a complimentary 30-minute diagnostic session with our academic advisory team to review your baseline experience and reserve your seat.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
                 <a
@@ -166,6 +241,14 @@ export default function TechAcademyPortal({ onClose }) {
         /* Student Launchpad LMS Dashboard View */
         <StudentLaunchpadDashboard />
       )}
+
+      {/* Slide-out Enrollment Cart Drawer */}
+      <CartDrawer 
+        isOpen={cartDrawerOpen}
+        onClose={() => setCartDrawerOpen(false)}
+        cartItem={cartItem}
+        onClearCart={handleClearCart}
+      />
 
     </div>
   );

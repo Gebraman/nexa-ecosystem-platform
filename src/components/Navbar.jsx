@@ -10,7 +10,7 @@ import {
   GraduationCap
 } from 'lucide-react';
 
-export default function Navbar({ activeSection, onNavigate }) {
+export default function Navbar({ activeSection, onNavigate, onOpenService }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -78,6 +78,14 @@ export default function Navbar({ activeSection, onNavigate }) {
 
           {/* Call to Action Buttons */}
           <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={() => onOpenService ? onOpenService('fullstack-dev') : onNavigate('services')}
+              className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 shadow-md shadow-amber-500/20 transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Tech Academy</span>
+            </button>
+
             <a
               href="https://calendar.app.google/NqgKSXoBhqz163hG9"
               target="_blank"
@@ -129,6 +137,18 @@ export default function Navbar({ activeSection, onNavigate }) {
           })}
           
           <div className="pt-3 flex flex-col gap-2">
+            <button
+              onClick={() => {
+                if (onOpenService) onOpenService('fullstack-dev');
+                else onNavigate('services');
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-center py-2.5 rounded-xl bg-amber-500 text-dark-950 text-sm font-bold shadow-md shadow-amber-500/20 flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-dark-950" />
+              <span>AI Tech Academy & Launchpad</span>
+            </button>
+
             <a
               href="https://calendar.app.google/NqgKSXoBhqz163hG9"
               target="_blank"

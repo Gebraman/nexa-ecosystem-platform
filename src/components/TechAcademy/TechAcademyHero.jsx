@@ -111,8 +111,27 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
               Master modern frontend architecture (HTML5, CSS3, Bootstrap 5, React), robust backend engineering (Node.js, Express, MySQL), and cutting-edge <strong>AI & LLM integration (OpenAI API, RAG, Vector Embeddings)</strong>. Designed specifically for working professionals in North America, Europe, and Ethiopia.
             </p>
 
+            {/* Evangadi-Style 3-Card Cohort Timeline & Intake Metrics */}
+            <div className="grid grid-cols-3 gap-3 p-3.5 rounded-2xl bg-dark-950/80 border border-amber-500/30">
+              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
+                <span className="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono block">Dec 5</span>
+                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Class Starts</span>
+                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">10:00am EST live</span>
+              </div>
+              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
+                <span className="text-lg sm:text-2xl font-extrabold text-cyan-400 font-mono block">July 25</span>
+                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Early-Bird Cutoff</span>
+                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Scholarship lock</span>
+              </div>
+              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
+                <span className="text-lg sm:text-2xl font-extrabold text-purple-400 font-mono block">100</span>
+                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Student Cap</span>
+                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Per cohort intake</span>
+              </div>
+            </div>
+
             {/* Core Pillars Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
               <div className="p-3.5 rounded-xl bg-dark-900/80 border border-slate-800 flex items-start gap-3">
                 <Users className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                 <div>
