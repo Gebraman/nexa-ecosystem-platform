@@ -89,8 +89,6 @@ export default function ServicesSection({ selectedServiceId, onSelectService }) 
        Sideways Markets, Premium/Discount Zones & 10-Step Execution
 ================================================================================
 
-Orientation Video: https://youtu.be/Bl8oljJwgZ4
-
 --------------------------------------------------------------------------------
 LESSON 1: TRADING STRATEGIES IN A SIDEWAYS MARKET (MEMORY NOTES)
 --------------------------------------------------------------------------------

@@ -29,7 +29,7 @@ import TechAcademyFAQ from './TechAcademyFAQ';
 import StudentLaunchpadDashboard from './StudentLaunchpadDashboard';
 import CartDrawer from './CartDrawer';
 
-export default function TechAcademyPortal({ onClose }) {
+export default function TechAcademyPortal({ onClose, onBackToHome }) {
   // View mode: 'admissions' (Public landing page with 32-week curriculum & pricing) or 'launchpad' (Student LMS Dashboard)
   const [activeViewMode, setActiveViewMode] = useState('admissions');
 
@@ -64,8 +64,18 @@ export default function TechAcademyPortal({ onClose }) {
         
         {/* Brand & Mode Switcher */}
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold uppercase tracking-wider">
-            Nexa Tech Academy
+          {onBackToHome && (
+            <button
+              onClick={onBackToHome}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-dark-950 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 text-xs font-bold transition-all"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-[#f39228]" />
+              <span>← Back to Home / Services</span>
+            </button>
+          )}
+
+          <span className="text-xs font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold uppercase tracking-wider hidden sm:inline">
+            Nexa Full-Stack Academy
           </span>
 
           <div className="flex items-center p-1 rounded-xl bg-dark-950 border border-slate-700 text-xs">

@@ -48,27 +48,26 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    // Simulate lead capture API submission
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 1000);
+    }, 700);
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950 pt-8 pb-16 border-b border-slate-800">
+    <div className="relative overflow-hidden bg-gradient-to-b from-dark-950 via-[#212529]/60 to-dark-950 pt-8 pb-16 border-b border-slate-800">
       {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-amber-500/10 via-cyan-500/10 to-transparent blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-tr from-amber-500/10 via-amber-600/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
       {/* Top Admissions Hotline Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 p-3.5 rounded-2xl bg-dark-900/90 border border-amber-500/30 backdrop-blur-md shadow-lg shadow-amber-500/5">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-3.5 rounded-2xl bg-[#212529] border border-amber-500/30 backdrop-blur-md shadow-lg shadow-amber-500/5">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-[#f39228] uppercase tracking-wider">
               Cohort Enrollment Open
             </span>
-            <span className="text-slate-400 text-xs hidden sm:inline">•</span>
+            <span className="text-slate-500 text-xs hidden sm:inline">•</span>
             <span className="text-slate-300 text-xs hidden sm:inline">
               Zero coding experience required to start.
             </span>
@@ -77,7 +76,7 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
           <div className="flex items-center gap-4 text-xs font-mono">
             <a 
               href="tel:+12023862702" 
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors font-bold"
+              className="flex items-center gap-1.5 text-[#f39228] hover:text-amber-300 transition-colors font-bold"
             >
               <PhoneCall className="w-3.5 h-3.5" />
               <span>US Hotline: (202) 386 2702</span>
@@ -99,58 +98,39 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
           {/* Left Column: Value Proposition & Copy */}
           <div className="lg:col-span-7 space-y-6">
             
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[#f39228] text-xs font-mono font-bold">
               <Sparkles className="w-3.5 h-3.5" />
               <span>32-WEEK IMMERSIVE FULL-STACK ENGINEERING BOOTCAMP</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
-              Become a <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">Production</span> Full-Stack Software Engineer
+              Become a <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#f39228] to-amber-500">Production</span> Full-Stack Software Engineer
             </h1>
 
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
               Master modern frontend architecture (HTML5, CSS3, Flexbox, Grid, Bootstrap 5, React), robust backend engineering (Node.js, Express, MySQL), and relational database modeling. Taught live 1-on-1 with dedicated senior engineer mentors for North America, Europe, and Ethiopia.
             </p>
 
-            {/* Evangadi-Style 3-Card Cohort Timeline & Intake Metrics */}
-            <div className="grid grid-cols-3 gap-3 p-3.5 rounded-2xl bg-dark-950/80 border border-amber-500/30">
-              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono block">Dec 5</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Class Starts</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">10:00am EST live</span>
-              </div>
-              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-cyan-400 font-mono block">July 25</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Early-Bird Cutoff</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Scholarship lock</span>
-              </div>
-              <div className="text-center p-2 rounded-xl bg-dark-900 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-purple-400 font-mono block">100</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Student Cap</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Per cohort intake</span>
-              </div>
-            </div>
-
             {/* Core Pillars Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-              <div className="p-3.5 rounded-xl bg-dark-900/80 border border-slate-800 flex items-start gap-3">
-                <Users className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div className="p-4 rounded-2xl bg-[#212529] border border-slate-800 flex items-start gap-3 shadow-md">
+                <Users className="w-5 h-5 text-[#f39228] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-white">100% Live Instruction</h4>
                   <p className="text-[11px] text-slate-400 mt-0.5">Real-time weekend classes + daily office hours</p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-dark-900/80 border border-slate-800 flex items-start gap-3">
-                <Code2 className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="p-4 rounded-2xl bg-[#212529] border border-slate-800 flex items-start gap-3 shadow-md">
+                <Code2 className="w-5 h-5 text-[#f39228] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-white">Real-World Projects</h4>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Apple Clone, Netflix Clone & Abe Garage AI</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Apple Clone, Netflix Clone & Full-Stack Capstone</p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-dark-900/80 border border-slate-800 flex items-start gap-3">
-                <GraduationCap className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
+              <div className="p-4 rounded-2xl bg-[#212529] border border-slate-800 flex items-start gap-3 shadow-md">
+                <GraduationCap className="w-5 h-5 text-[#f39228] shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-xs font-bold text-white">Career Placement</h4>
                   <p className="text-[11px] text-slate-400 mt-0.5">Resume polish & technical mock interviews</p>
@@ -158,62 +138,60 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
               </div>
             </div>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-4 pt-4">
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-3">
               <button
                 onClick={onExploreCurriculum}
-                className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-sm shadow-xl shadow-amber-500/20 transition-all flex items-center gap-2"
+                className="px-6 py-3.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2"
               >
                 <span>Explore 32-Week Curriculum</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <a
-                href="https://calendar.app.google/NqgKSXoBhqz163hG9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-2xl bg-dark-900 hover:bg-dark-800 text-white font-semibold text-sm border border-slate-700 hover:border-slate-600 transition-all flex items-center gap-2"
+              <button
+                onClick={onBookDiagnostic}
+                className="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 transition-all flex items-center gap-2"
               >
-                <Calendar className="w-4 h-4 text-cyan-400" />
-                <span>Book Free Diagnostic Interview</span>
-              </a>
+                <Calendar className="w-4 h-4 text-[#f39228]" />
+                <span>Book 30-Min Diagnostic</span>
+              </button>
             </div>
 
           </div>
 
-          {/* Right Column: Interactive Lead Acquisition Card */}
+          {/* Right Column: Lead Form Card */}
           <div className="lg:col-span-5">
-            <div className="relative rounded-3xl bg-dark-900/95 border border-amber-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+            <div className="relative rounded-3xl bg-[#212529]/95 border border-amber-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
               
               <div className="mb-6">
                 <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold uppercase tracking-wider">
-                  Admissions Application
+                  Full-Stack Admissions
                 </span>
                 <h3 className="text-xl sm:text-2xl font-bold text-white mt-2">
-                  Start Your Tech Journey Today
+                  Apply for the Upcoming Cohort
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Fill out the 4-step inquiry below. <strong className="text-amber-400">No payment is required</strong> at this stage.
+                  Fill out the 4-step inquiry below. <strong className="text-[#f39228]">No payment is required</strong> at this stage.
                 </p>
               </div>
 
               {isSubmitted ? (
-                <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-800/60 text-center space-y-4 animate-fade-in">
+                <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-800 text-center space-y-4 animate-fade-in">
                   <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                     <Check className="w-6 h-6" />
                   </div>
                   <h4 className="text-lg font-bold text-white">Application Received!</h4>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Thank you, <strong>{firstName}</strong>! Our admissions team has registered your interest and will reach out via phone/WhatsApp and email within 24 hours.
+                    Thank you, <strong>{firstName}</strong>! Our academic admissions team has received your registration for the <strong>Nexa Full-Stack Web Development Academy</strong>.
                   </p>
                   <a
                     href="https://calendar.app.google/NqgKSXoBhqz163hG9"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-dark-950 font-bold text-xs shadow-lg transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs shadow-lg transition-all"
                   >
                     <Calendar className="w-4 h-4" />
-                    <span>Select Google Meet Slot Now</span>
+                    <span>Select Free Diagnostic Slot</span>
                   </a>
                   <button
                     onClick={() => {
@@ -225,23 +203,23 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
                     }}
                     className="block mx-auto text-[11px] text-slate-400 hover:text-white underline pt-2"
                   >
-                    Submit another application
+                    Submit another inquiry
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3.5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1">
-                        First Name <span className="text-amber-400">*</span>
+                        First Name <span className="text-[#f39228]">*</span>
                       </label>
                       <input
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="e.g. Ermias"
-                        className={`w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                          errors.firstName ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                        className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
+                          errors.firstName ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                         }`}
                       />
                       {errors.firstName && (
@@ -253,15 +231,15 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
 
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1">
-                        Last Name <span className="text-amber-400">*</span>
+                        Last Name <span className="text-[#f39228]">*</span>
                       </label>
                       <input
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="e.g. Tadesse"
-                        className={`w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                          errors.lastName ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                        className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
+                          errors.lastName ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                         }`}
                       />
                       {errors.lastName && (
@@ -274,15 +252,15 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
 
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Email Address <span className="text-amber-400">*</span>
+                      Email Address <span className="text-[#f39228]">*</span>
                     </label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. scholar@example.com"
-                      className={`w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                        errors.email ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                      className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
+                        errors.email ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                       }`}
                     />
                     {errors.email && (
@@ -294,15 +272,15 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
 
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Phone Number (WhatsApp Ready) <span className="text-amber-400">*</span>
+                      Phone Number (WhatsApp Ready) <span className="text-[#f39228]">*</span>
                     </label>
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="e.g. +1 202 386 2702 or +251 911 234 567"
-                      className={`w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                        errors.phone ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                      className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
+                        errors.phone ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                       }`}
                     />
                     {errors.phone && (
@@ -312,25 +290,10 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Select Nexa Program / Track <span className="text-amber-400">*</span>
-                    </label>
-                    <select
-                      value={selectedProgram}
-                      onChange={(e) => setSelectedProgram(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none"
-                    >
-                      <option value="fullstack-dev">Full-Stack Web Development Academy (32-Week Immersive)</option>
-                      <option value="forex-trading">Nexa Forex Trading Academy (Institutional SMC)</option>
-                      <option value="k12-scholars">K-12 Academic Scholars Tutoring Network (Grades 1–12)</option>
-                    </select>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-amber-600 text-dark-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-2"
+                    className="w-full py-3 px-4 rounded-xl bg-[#f39228] hover:bg-[#e0821e] disabled:bg-amber-700 text-dark-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-2"
                   >
                     {isSubmitting ? (
                       <>
@@ -345,9 +308,9 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
                     )}
                   </button>
 
-                  <div className="pt-2 flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
+                  <div className="pt-1 flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>100% Privacy. Zero Spam. Admissions diagnostic guaranteed.</span>
+                    <span>No upfront payment. Free 30-min diagnostic included.</span>
                   </div>
                 </form>
               )}
@@ -356,6 +319,7 @@ export default function TechAcademyHero({ onBookDiagnostic, onExploreCurriculum 
           </div>
 
         </div>
+
       </div>
     </div>
   );

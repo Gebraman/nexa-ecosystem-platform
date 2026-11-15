@@ -190,42 +190,11 @@ export const ecosystemData = {
 
   // 3. FOREX TRADING ACADEMY DATA
   forexAcademy: {
-    overview: "A structured, institutional-grade curriculum covering Forex Market Foundations, Currency Mechanics, Sideways Range Strategies, Premium & Discount Zones, and Complete Smart Money Concepts (SMC) Execution.",
-    featuredVideo: {
-      title: "Orientation & Introduction to Forex Trading",
-      subtitle: "Official Nexa Academy Introductory Masterclass",
-      url: "https://youtu.be/Bl8oljJwgZ4",
-      embedUrl: "https://www.youtube.com/embed/Bl8oljJwgZ4",
-      duration: "Orientation Lecture",
-      access: "Unlisted Exclusive",
-      topics: [
-        "What is the Forex Market & How Currencies Move",
-        "Understanding Leverage, Margin & Lot Sizing",
-        "Risk vs Reward & Capital Preservation Rules",
-        "The Nexa Structured Learning Pathway",
-      ],
-    },
+    overview: "A structured, institutional-grade curriculum covering Complete Smart Money Concepts (SMC) Strategy, Market Structure, Liquidity Pools & Sweeps, Dealing Ranges, and Interbank Execution.",
 
     // 8-CHAPTER SMART MONEY CONCEPTS (SMC) MASTER CURRICULUM
     // Based on official Altrady SMC Course Syllabus & Institutional Order Flow Framework
     smcChapters: [
-      {
-        chapterNumber: 0,
-        id: "chapter-0",
-        title: "0. Institutional Orientation & Video Hub",
-        subtitle: "Full-Stack Zoom Recordings, Roman Live Stream Archives & SMC 8-Chapter Roadmap",
-        referenceUrl: "https://www.youtube.com/watch?v=NDLCZ_r58MY",
-        badge: "Chapter 00",
-        mode: "orientation-hub",
-        mainIdea: "Ground-up institutional orientation combining Zoom masterclasses, Roman live streams, and complete curriculum roadmap.",
-        overview: "Orientation master hub integrating HTML/CSS full-stack Zoom recordings (Parts 1 & 2), CSS properties masterclasses (3+ hrs), Roman live streams, and sideways range mechanics before Chapter 1.",
-        subtitles: [
-          "Full-Stack HTML/CSS Zoom Archives (6+ Hours)",
-          "Roman Live Stream YouTube Sessions",
-          "Sideways Range & Consolidation Liquidity Traps",
-          "The 8-Chapter SMC Master Curriculum Roadmap"
-        ]
-      },
       {
         chapterNumber: 1,
         id: "chapter-1",

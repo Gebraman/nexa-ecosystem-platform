@@ -108,12 +108,13 @@ export default function W3SchoolsSMCAcademy({
   const prevChapterItem = currentChapterIndex > 0 ? courseChapters[currentChapterIndex - 1] : null;
   const nextChapterItem = currentChapterIndex < courseChapters.length - 1 ? courseChapters[currentChapterIndex + 1] : null;
 
-  // Smooth, non-jarring chapter switcher that retains focus on reader
+  // Smooth, non-jarring chapter switcher that retains focus and scrolls to top of reader
   const handleSelectChapter = (chapterId) => {
     setActiveChapterId(chapterId);
     if (readerTopRef.current) {
-      readerTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      readerTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Smooth sub-topic anchor navigator
@@ -1821,33 +1822,6 @@ export default function W3SchoolsSMCAcademy({
                     <FileDown className="w-4 h-4" />
                     <span>{isExportingWord ? 'Generating Manual...' : 'Export Chapter 4 Manual (.doc)'}</span>
                   </button>
-                </div>
-
-                {/* Unlisted Video Player Embed */}
-                <div className="rounded-2xl bg-[#07090e] border border-[#2a2e39] overflow-hidden space-y-3 p-4">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-rose-400 font-bold flex items-center gap-1.5">
-                      <Play className="w-3.5 h-3.5 fill-rose-400" /> {smcChapter4FullData.videoTitle}
-                    </span>
-                    <a
-                      href="https://www.youtube.com/watch?v=XVTWQ8b2M9A"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-slate-400 hover:text-white flex items-center gap-1 text-[11px]"
-                    >
-                      <span>Open in YouTube</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                  <div className="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-[#1b202c]">
-                    <iframe
-                      src={smcChapter4FullData.videoUrl}
-                      title={smcChapter4FullData.videoTitle}
-                      className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
                 </div>
 
                 {/* Executive Thesis Card */}

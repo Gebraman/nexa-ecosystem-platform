@@ -12,15 +12,16 @@ import {
   Calendar,
   AlertCircle,
   Check,
-  ArrowRight
+  ArrowRight,
+  Globe,
+  Layers
 } from 'lucide-react';
 import { ecosystemData } from '../data/ecosystemData';
 
-export default function Hero({ onNavigate, onOpenService, customBgImage }) {
-  // Uses customBgImage if provided by user, otherwise uses high-end default tech wallpaper
+export default function Hero({ onSelectView, customBgImage }) {
   const bgImage = customBgImage || ecosystemData.hero.backgroundImage;
 
-  // Evangadi-style Hero Registration Form State
+  // Evangadi-style Lead & Diagnostic Registration Form State
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -56,43 +57,43 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 900);
+    }, 700);
   };
 
   return (
-    <section id="home" className="relative min-h-[92vh] flex items-center justify-center overflow-hidden border-b border-slate-800/80 bg-dark-950">
+    <section id="home" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden border-b border-slate-800/80 bg-dark-950">
       
-      {/* Background Image Container with Deep Evangadi Dark Gradients */}
+      {/* Background Image Container with Deep Evangadi Gradients */}
       <div className="absolute inset-0 z-0">
         <img
           src={bgImage}
           alt="Nexa Ecosystem Background"
-          className="w-full h-full object-cover object-center scale-105 filter brightness-40 contrast-125"
+          className="w-full h-full object-cover object-center filter brightness-35 contrast-125"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/90 to-dark-950/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-dark-950/95 via-dark-950/60 to-dark-950/95" />
+        <div className="absolute inset-0 bg-gradient-to-r from-dark-950/95 via-dark-950/70 to-dark-950/95" />
       </div>
 
       {/* Foreground Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 w-full">
         
         {/* Evangadi Admissions Hotline Banner */}
-        <div className="mb-8 p-3 rounded-2xl bg-dark-900/90 border border-amber-500/30 backdrop-blur-md shadow-lg shadow-amber-500/5 flex flex-wrap items-center justify-between gap-4">
+        <div className="mb-8 p-3.5 rounded-2xl bg-[#212529]/90 border border-amber-500/30 backdrop-blur-md shadow-xl flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-[#f39228] uppercase tracking-wider">
               Cohort Enrollment Open
             </span>
-            <span className="text-slate-400 text-xs hidden sm:inline">•</span>
+            <span className="text-slate-500 text-xs hidden sm:inline">•</span>
             <span className="text-slate-300 text-xs hidden sm:inline">
-              Forex SMC, Full-Stack Web Dev & K-12 Scholars
+              Forex SMC, Full-Stack Web Dev & K-12 Scholars Mentorship
             </span>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono">
             <a 
               href="tel:+12023862702" 
-              className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors font-bold"
+              className="flex items-center gap-1.5 text-[#f39228] hover:text-amber-300 transition-colors font-bold"
             >
               <PhoneCall className="w-3.5 h-3.5" />
               <span>US Hotline: (202) 386 2702</span>
@@ -107,22 +108,22 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
           </div>
         </div>
 
-        {/* 2-Column Responsive Layout (Evangadi Style) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        {/* 2-Column Responsive Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
-          {/* Left Column: Headlines, Metrics & Service Cards (7 cols) */}
+          {/* Left Column: Headlines & 4 Service Navigation Cards (7 cols) */}
           <div className="lg:col-span-7 space-y-6 text-left">
             
             {/* Eyebrow Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[#f39228] text-xs font-mono font-bold">
               <Sparkles className="w-3.5 h-3.5" />
               <span>NEXA ACADEMY & 1-ON-1 SCHOLAR MENTORSHIP NETWORK</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.14]">
               Empowering Futures Through High-Impact{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-[#f39228] to-amber-500">
                 Education & Mentorship
               </span>
             </h1>
@@ -132,73 +133,84 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
               Nexa connects institutional financial market trading (Forex SMC), full-stack software development, and K-12 academic excellence—led by verified university honors scholars and senior engineers.
             </p>
 
-            {/* Evangadi-Style 3-Card Cohort Intake Metrics */}
-            <div className="grid grid-cols-3 gap-3 p-3.5 rounded-2xl bg-dark-900/90 border border-amber-500/30 max-w-xl">
-              <div className="text-center p-2 rounded-xl bg-dark-950 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono block">Dec 5</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Next Intake</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">10:00am EST live</span>
-              </div>
-              <div className="text-center p-2 rounded-xl bg-dark-950 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono block">1-on-1</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Dedicated Mentor</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Diagnostic included</span>
-              </div>
-              <div className="text-center p-2 rounded-xl bg-dark-950 border border-slate-800">
-                <span className="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono block">3 Tracks</span>
-                <span className="text-[10px] text-slate-300 font-semibold block leading-tight mt-0.5">Core Verticals</span>
-                <span className="text-[9px] text-slate-500 font-mono hidden sm:block">Forex, Web, K-12</span>
-              </div>
-            </div>
+            {/* 4 Interactive Service Entry Cards (Isolated View Triggers) */}
+            <div className="pt-2">
+              <p className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-3 font-semibold">
+                Explore Dedicated Academies & Verticals:
+              </p>
 
-            {/* 3 Quick-Launch Interactive Service Pills */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl pt-2">
-              <div
-                onClick={() => onOpenService('forex-trading')}
-                className="cursor-pointer p-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 hover:border-amber-500/60 transition-all group flex items-center justify-between shadow-lg"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                    <TrendingUp className="w-4 h-4" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl">
+                {/* 1. Forex SMC */}
+                <div
+                  onClick={() => onSelectView('forex-trading')}
+                  className="cursor-pointer p-4 rounded-2xl bg-[#212529] border border-slate-800 hover:border-[#f39228] transition-all group flex items-center justify-between shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#f39228] group-hover:scale-105 transition-transform">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono text-[#f39228] font-bold uppercase">Vertical 01</p>
+                      <h4 className="text-xs font-bold text-white group-hover:text-amber-300">Forex SMC Trading</h4>
+                      <p className="text-[10px] text-slate-400">Institutional Strategy & Chapters</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-amber-400 font-bold uppercase">Track 01</p>
-                    <h4 className="text-xs font-bold text-white group-hover:text-amber-300">Forex SMC Trading</h4>
-                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#f39228] transition-colors" />
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-400 transition-colors" />
-              </div>
 
-              <div
-                onClick={() => onOpenService('fullstack-dev')}
-                className="cursor-pointer p-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 hover:border-amber-500/60 transition-all group flex items-center justify-between shadow-lg"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                    <Code2 className="w-4 h-4" />
+                {/* 2. Full-Stack Web Dev */}
+                <div
+                  onClick={() => onSelectView('fullstack-dev')}
+                  className="cursor-pointer p-4 rounded-2xl bg-[#212529] border border-slate-800 hover:border-[#f39228] transition-all group flex items-center justify-between shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#f39228] group-hover:scale-105 transition-transform">
+                      <Code2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono text-[#f39228] font-bold uppercase">Vertical 02</p>
+                      <h4 className="text-xs font-bold text-white group-hover:text-amber-300">Full-Stack Web Dev</h4>
+                      <p className="text-[10px] text-slate-400">32-Week Immersive & Zoom Labs</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-amber-400 font-bold uppercase">Track 02</p>
-                    <h4 className="text-xs font-bold text-white group-hover:text-amber-300">Full-Stack Web Dev</h4>
-                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#f39228] transition-colors" />
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-400 transition-colors" />
-              </div>
 
-              <div
-                onClick={() => onOpenService('k12-scholars')}
-                className="cursor-pointer p-3.5 rounded-2xl bg-dark-900/90 border border-slate-800 hover:border-amber-500/60 transition-all group flex items-center justify-between shadow-lg"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                    <GraduationCap className="w-4 h-4" />
+                {/* 3. K-12 Scholars Tutoring */}
+                <div
+                  onClick={() => onSelectView('k12-scholars')}
+                  className="cursor-pointer p-4 rounded-2xl bg-[#212529] border border-slate-800 hover:border-[#f39228] transition-all group flex items-center justify-between shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#f39228] group-hover:scale-105 transition-transform">
+                      <GraduationCap className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono text-[#f39228] font-bold uppercase">Vertical 03</p>
+                      <h4 className="text-xs font-bold text-white group-hover:text-amber-300">K-12 Scholars Tutoring</h4>
+                      <p className="text-[10px] text-slate-400">1-on-1 Preply-Style Mentorship</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-amber-400 font-bold uppercase">Track 03</p>
-                    <h4 className="text-xs font-bold text-white group-hover:text-amber-300">K-12 Scholars Tutoring</h4>
-                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#f39228] transition-colors" />
                 </div>
-                <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-amber-400 transition-colors" />
+
+                {/* 4. Web Lab & Clones */}
+                <div
+                  onClick={() => onSelectView('projects')}
+                  className="cursor-pointer p-4 rounded-2xl bg-[#212529] border border-slate-800 hover:border-[#f39228] transition-all group flex items-center justify-between shadow-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-[#f39228] group-hover:scale-105 transition-transform">
+                      <Layers className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-mono text-[#f39228] font-bold uppercase">Vertical 04</p>
+                      <h4 className="text-xs font-bold text-white group-hover:text-amber-300">Web Lab & Clones</h4>
+                      <p className="text-[10px] text-slate-400">Production SaaS & Software Portfolio</p>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#f39228] transition-colors" />
+                </div>
               </div>
             </div>
 
@@ -206,7 +218,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
 
           {/* Right Column: Evangadi-Style Floating Lead Acquisition Card (5 cols) */}
           <div className="lg:col-span-5 text-left">
-            <div className="relative rounded-3xl bg-dark-900/95 border border-amber-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+            <div className="relative rounded-3xl bg-[#212529]/95 border border-amber-500/40 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
               
               <div className="mb-6">
                 <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-400 border border-amber-800 font-bold uppercase tracking-wider">
@@ -216,7 +228,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                   Start Your Journey Today
                 </h3>
                 <p className="text-xs text-slate-400 mt-1">
-                  Fill out the 4-step inquiry below. <strong className="text-amber-400">No payment is required</strong> at this stage.
+                  Fill out the 4-step inquiry below. <strong className="text-[#f39228]">No payment is required</strong> at this stage.
                 </p>
               </div>
 
@@ -233,7 +245,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                     href="https://calendar.app.google/NqgKSXoBhqz163hG9"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs shadow-lg transition-all"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs shadow-lg transition-all"
                   >
                     <Calendar className="w-4 h-4" />
                     <span>Select Free Diagnostic Slot</span>
@@ -256,7 +268,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1">
-                        First Name <span className="text-amber-400">*</span>
+                        First Name <span className="text-[#f39228]">*</span>
                       </label>
                       <input
                         type="text"
@@ -264,7 +276,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="e.g. Ermias"
                         className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                          errors.firstName ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                          errors.firstName ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                         }`}
                       />
                       {errors.firstName && (
@@ -276,7 +288,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
 
                     <div>
                       <label className="block text-xs font-medium text-slate-300 mb-1">
-                        Last Name <span className="text-amber-400">*</span>
+                        Last Name <span className="text-[#f39228]">*</span>
                       </label>
                       <input
                         type="text"
@@ -284,7 +296,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="e.g. Tadesse"
                         className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                          errors.lastName ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                          errors.lastName ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                         }`}
                       />
                       {errors.lastName && (
@@ -297,7 +309,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
 
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Email Address <span className="text-amber-400">*</span>
+                      Email Address <span className="text-[#f39228]">*</span>
                     </label>
                     <input
                       type="email"
@@ -305,7 +317,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="e.g. scholar@example.com"
                       className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                        errors.email ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                        errors.email ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                       }`}
                     />
                     {errors.email && (
@@ -317,7 +329,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
 
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Phone Number (WhatsApp Ready) <span className="text-amber-400">*</span>
+                      Phone Number (WhatsApp Ready) <span className="text-[#f39228]">*</span>
                     </label>
                     <input
                       type="tel"
@@ -325,7 +337,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="e.g. +1 202 386 2702 or +251 911 234 567"
                       className={`w-full px-3.5 py-2 rounded-xl bg-dark-950 border text-xs text-white placeholder-slate-500 focus:outline-none transition-colors ${
-                        errors.phone ? 'border-red-500' : 'border-slate-700 focus:border-amber-400'
+                        errors.phone ? 'border-red-500' : 'border-slate-700 focus:border-[#f39228]'
                       }`}
                     />
                     {errors.phone && (
@@ -337,12 +349,12 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
 
                   <div>
                     <label className="block text-xs font-medium text-slate-300 mb-1">
-                      Select Desired Track <span className="text-amber-400">*</span>
+                      Select Desired Track <span className="text-[#f39228]">*</span>
                     </label>
                     <select
                       value={selectedProgram}
                       onChange={(e) => setSelectedProgram(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white focus:border-amber-400 focus:outline-none"
+                      className="w-full px-3.5 py-2 rounded-xl bg-dark-950 border border-slate-700 text-xs text-white focus:border-[#f39228] focus:outline-none"
                     >
                       <option value="fullstack-dev">Full-Stack Web Development Academy (32-Week Immersive)</option>
                       <option value="forex-trading">Nexa Forex Trading Academy (Institutional SMC)</option>
@@ -353,7 +365,7 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-amber-600 text-dark-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-2"
+                    className="w-full py-3 px-4 rounded-xl bg-[#f39228] hover:bg-[#e0821e] disabled:bg-amber-700 text-dark-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 mt-2"
                   >
                     {isSubmitting ? (
                       <>

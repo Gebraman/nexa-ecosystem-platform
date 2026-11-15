@@ -206,12 +206,12 @@ export default function TuitionCalculator({ onAddToCart }) {
                   <td className="py-3.5 px-4 text-center text-slate-500">Community Forum</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-medium text-white">Phase 4 AI Application & RAG Specialization</td>
+                  <td className="py-3.5 px-4 font-medium text-white">Phase 4 Enterprise React SPAs & Cloud Deployment</td>
                   <td className="py-3.5 px-4 text-center text-emerald-400 font-bold">Full Live Training</td>
                   <td className="py-3.5 px-4 text-center text-emerald-400 font-bold">Full Video Access</td>
                 </tr>
                 <tr>
-                  <td className="py-3.5 px-4 font-medium text-white">Abe Garage Full-Stack Real-World Capstone</td>
+                  <td className="py-3.5 px-4 font-medium text-white">Production Full-Stack Web Application Capstone</td>
                   <td className="py-3.5 px-4 text-center text-emerald-400 font-bold">Instructor Graded</td>
                   <td className="py-3.5 px-4 text-center text-slate-400">Self-Evaluated</td>
                 </tr>
