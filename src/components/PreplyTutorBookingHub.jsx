@@ -3,34 +3,14 @@ import {
   Calendar, 
   Clock, 
   User, 
-  GraduationCap, 
   CheckCircle2, 
-  Star, 
-  ArrowRight, 
-  ChevronRight, 
   Video, 
-  ScreenShare, 
-  PenTool, 
   Sparkles, 
-  BookOpen, 
-  Check, 
-  HelpCircle, 
-  ExternalLink, 
-  Award, 
-  ShieldCheck,
-  Download,
-  Phone,
-  Mail,
-  FileText,
-  FileCheck2,
-  BookCheck,
-  AlertCircle,
-  Bell,
+  Download, 
+  UploadCloud, 
+  Bell, 
   Timer,
-  UploadCloud,
-  ChevronDown,
-  Layers,
-  RotateCcw
+  ChevronDown
 } from 'lucide-react';
 import PreplyVirtualClassroom from './PreplyVirtualClassroom';
 
@@ -44,24 +24,57 @@ export default function PreplyTutorBookingHub() {
   const [email, setEmail] = useState('yohannes.scholar@nexa.edu');
   const [phone, setPhone] = useState('+251 911 234 567');
   
-  // Academic Selection (Grades 1 – 12)
+  // Academic Selection (Clean Grade 1 – 12 numbers only & Free-text subject)
   const [selectedGrade, setSelectedGrade] = useState('Grade 7');
-  const [selectedSubject, setSelectedSubject] = useState('Mathematics & Advanced Calculus');
-  const [customTopic, setCustomTopic] = useState('Grade 7 Mathematics — Fractions, Decimals & Pre-Algebra');
-  const [selectedTeacherId, setSelectedTeacherId] = useState('m1');
+  const [subject, setSubject] = useState('Mathematics');
+  const [customTopic, setCustomTopic] = useState('Fractions, Decimals & Linear Equations');
   
-  // 24/7 Scheduling
-  const [selectedDate, setSelectedDate] = useState('Today');
+  // Assigned Teacher (Name Only)
+  const [selectedTeacherName, setSelectedTeacherName] = useState('Ermias Tadesse');
+  
+  // Real Day and Date calculation
+  const generateRealCalendarDays = () => {
+    const days = [];
+    const baseDate = new Date(); // Current date
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(baseDate);
+      d.setDate(baseDate.getDate() + i);
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      const monthName = d.toLocaleDateString('en-US', { month: 'short' });
+      const dayNum = d.getDate();
+      days.push({
+        id: `day-${i}`,
+        fullDateStr: d.toISOString().split('T')[0],
+        label: i === 0 ? `Today (${dayName}, ${monthName} ${dayNum})` : `${dayName}, ${monthName} ${dayNum}`
+      });
+    }
+    return days;
+  };
+
+  const realDays = generateRealCalendarDays();
+  const [selectedDayObj, setSelectedDayObj] = useState(realDays[0]);
+  const [customDatePicker, setCustomDatePicker] = useState(realDays[0].fullDateStr);
+
+  // 24/7 Round-the-Clock Time Slots
+  const timeSlots247 = [
+    '08:00 AM EAT (01:00 AM EST)',
+    '10:00 AM EAT (03:00 AM EST)',
+    '12:00 PM EAT (05:00 AM EST)',
+    '02:00 PM EAT (07:00 AM EST)',
+    '04:00 PM EAT (09:00 AM EST)',
+    '06:30 PM EAT (11:30 AM EST)',
+    '08:30 PM EAT (01:30 PM EST)',
+    '11:00 PM EAT (04:00 PM EST)',
+    '02:00 AM EAT (07:00 PM EST - Late Night 24/7)'
+  ];
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('04:00 PM EAT (09:00 AM EST)');
 
-  // Materials & Upload
+  // Shared Material File
   const [attachedFileName, setAttachedFileName] = useState('Grade7_Math_Unit4_Fractions_Homework.pdf');
-  const [studyNotes, setStudyNotes] = useState('Please review chapter 4 homework problems and pre-algebra diagnostic test.');
   
   // Confirmed Booking State & Real-time Countdown
   const [isBooked, setIsBooked] = useState(true);
   const [bookingRef, setBookingRef] = useState('NEXA-SCHOLAR-892415');
-  const [downloadNotice, setDownloadNotice] = useState(null);
 
   // Countdown Timer State (Default to 14 mins 35 secs so <15 min alert is immediately visible & testable)
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(14 * 60 + 35);
@@ -89,92 +102,19 @@ export default function PreplyTutorBookingHub() {
   const seconds = timeLeftSeconds % 60;
   const isFifteenMinAlert = timeLeftSeconds <= 15 * 60 && timeLeftSeconds > 0;
 
-  // Grade Options covering Grade 1 through Grade 12
-  const allGrades = [
-    { label: 'Grade 1 (Elementary Foundations)', value: 'Grade 1' },
-    { label: 'Grade 2 (Elementary Foundations)', value: 'Grade 2' },
-    { label: 'Grade 3 (Elementary Foundations)', value: 'Grade 3' },
-    { label: 'Grade 4 (Elementary Foundations)', value: 'Grade 4' },
-    { label: 'Grade 5 (Elementary Foundations)', value: 'Grade 5' },
-    { label: 'Grade 6 (Middle School Pre-Algebra)', value: 'Grade 6' },
-    { label: 'Grade 7 (Middle School Pre-Algebra)', value: 'Grade 7' },
-    { label: 'Grade 8 (Middle School Pre-Algebra)', value: 'Grade 8' },
-    { label: 'Grade 9 (High School Mastery)', value: 'Grade 9' },
-    { label: 'Grade 10 (High School Mastery)', value: 'Grade 10' },
-    { label: 'Grade 11 (High School & Pre-Calculus)', value: 'Grade 11' },
-    { label: 'Grade 12 (High School & Calculus)', value: 'Grade 12' },
-    { label: 'SAT Math & College Board Prep', value: 'SAT Math Prep' }
+  // Grade Options: Numbers only! (Grade 1 through Grade 12)
+  const gradeOptions = [
+    'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6',
+    'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'
   ];
 
-  // Core Subjects
-  const allSubjects = [
-    'Mathematics & Advanced Calculus',
-    'Physics (Mechanics & Electromagnetism)',
-    'Chemistry (Stoichiometry & Reactions)',
-    'Biology & Life Sciences (Genetics)',
-    'English Literature & SAT Reading',
-    'Introductory Python & Web Coding'
+  // Teacher Names Only
+  const teacherNames = [
+    'Ermias Tadesse',
+    'Bethlehem Wolde',
+    'Natnael Mesfin',
+    'Selamawit Bekele'
   ];
-
-  // Nexa Certified Scholar Mentors
-  const mentors = [
-    {
-      id: 'm1',
-      name: 'Ermias Tadesse',
-      credentials: 'B.Sc. Electrical & Computer Engineering (Honors Graduate)',
-      specialty: 'High School Calculus, Physics, SAT Math & Grades 6–8 Pre-Algebra',
-      rating: '4.95',
-      sessions: '140+ Hours Taught',
-      languages: 'English & Amharic',
-      badge: 'Nexa Senior Academic Fellow'
-    },
-    {
-      id: 'm2',
-      name: 'Dr. Bethlehem Wolde',
-      credentials: 'MD Candidate & Medical Science Scholar',
-      specialty: 'Biology, Chemistry & Middle School Integrated Sciences',
-      rating: '4.98',
-      sessions: '180+ Hours Taught',
-      languages: 'English & Amharic',
-      badge: 'Nexa Medical Science Fellow'
-    },
-    {
-      id: 'm3',
-      name: 'Natnael Mesfin',
-      credentials: 'B.Sc. Computer Science & Software Engineering',
-      specialty: 'Middle & High School Pre-Algebra, Geometry & Python Coding',
-      rating: '4.90',
-      sessions: '95+ Hours Taught',
-      languages: 'English & Amharic',
-      badge: 'Nexa STEM Lead'
-    },
-    {
-      id: 'm4',
-      name: 'Selamawit Bekele',
-      credentials: 'B.Sc. Chemical Engineering (Honors Graduate)',
-      specialty: 'Organic Chemistry, General Science & Grades 1–8 Foundations',
-      rating: '4.96',
-      sessions: '120+ Hours Taught',
-      languages: 'English & Amharic',
-      badge: 'Nexa Chemistry Fellow'
-    }
-  ];
-
-  // 24/7 Round-the-Clock Time Slots
-  const timeSlots247 = [
-    '08:00 AM EAT (01:00 AM EST)',
-    '10:00 AM EAT (03:00 AM EST)',
-    '01:00 PM EAT (06:00 AM EST)',
-    '04:00 PM EAT (09:00 AM EST)',
-    '06:30 PM EAT (11:30 AM EST)',
-    '08:30 PM EAT (01:30 PM EST)',
-    '11:00 PM EAT (04:00 PM EST)',
-    '02:00 AM EAT (07:00 PM EST - Late Night 24/7)'
-  ];
-
-  const availableDays = ['Today', 'Tomorrow', 'Saturday', 'Sunday', 'Next Tuesday', 'Next Thursday'];
-
-  const selectedTeacher = mentors.find(m => m.id === selectedTeacherId) || mentors[0];
 
   // Handle Form Submission / Re-booking
   const handleBookingSubmit = (e) => {
@@ -185,6 +125,9 @@ export default function PreplyTutorBookingHub() {
     // Reset timer to 14m 30s to demonstrate the countdown & 15m alert
     setTimeLeftSeconds(14 * 60 + 30);
     setIsTimerRunning(true);
+    if (classroomSectionRef.current) {
+      classroomSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleScrollToClassroom = () => {
@@ -193,133 +136,11 @@ export default function PreplyTutorBookingHub() {
     }
   };
 
-  // Mock file attachment
+  // File Upload Simulator
   const handleFileUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
       setAttachedFileName(e.target.files[0].name);
     }
-  };
-
-  // Downloadable Teacher Lesson Pack generator
-  const handleDownloadCurriculumPack = (level) => {
-    let packTitle = '';
-    let content = '';
-
-    if (level === 'elementary') {
-      packTitle = 'Nexa_Academic_Grades_1-5_Foundations_Pack.txt';
-      content = `
-================================================================================
-          NEXA ACADEMIC SCHOLARS NETWORK • GRADES 1 – 5 CURRICULUM PACK
-               FOUNDATIONAL MATHEMATICS, READING & SCIENCE EXPLORATION
-================================================================================
-
-Target Audience: Elementary Scholars (Grades 1 to 5)
-Prepared by: Nexa Academic Faculty & Certified Elementary Mentors
-Contact & Tutoring Hotline: US (202) 386 2702 | Addis Ababa +251 911 234 567
-
---------------------------------------------------------------------------------
-PART 1: MATHEMATICS & NUMBER SENSE ROADMAP
---------------------------------------------------------------------------------
-1. Grade 1 – 2 Foundations:
-   - Place value mastery (Ones, Tens, Hundreds)
-   - Addition & Subtraction fact fluency (Sums within 20)
-   - Introduction to skip counting (2s, 5s, 10s) and measurement units
-2. Grade 3 – 5 Multiplication & Fractions:
-   - Conceptual multiplication (arrays, equal groups, times tables 1-12)
-   - Division as fair sharing and inverse operation
-   - Fractions introduction: Numerator, denominator, visual pizza slices
-   - Comparing and adding fractions with common denominators
-
---------------------------------------------------------------------------------
-TRIAL LESSON PRACTICE WORKSHEET:
---------------------------------------------------------------------------------
-Problem 1: Sarah has 24 colored pencils. She wants to divide them equally among 4 friends.
-           How many pencils does each friend receive?
-           Solution: 24 ÷ 4 = 6 pencils each.
-
-Problem 2: Convert the mixed number 2 and 3/4 into an improper fraction.
-           Solution: (2 × 4 + 3) / 4 = 11/4.
-
-================================================================================
-Nexa Academic Mentorship • Book Free 30-Min Diagnostic at https://nexa-ecosystem-platform.onrender.com/
-================================================================================
-      `;
-    } else if (level === 'middle') {
-      packTitle = 'Nexa_Academic_Grades_6-8_PreAlgebra_STEM_Pack.txt';
-      content = `
-================================================================================
-          NEXA ACADEMIC SCHOLARS NETWORK • GRADES 6 – 8 CURRICULUM PACK
-               PRE-ALGEBRA, GEOMETRY & INTEGRATED PHYSICAL SCIENCES
-================================================================================
-
-Target Audience: Junior Middle School Scholars (Grades 6 to 8)
-Prepared by: Nexa STEM Faculty & Certified Teachers
-
---------------------------------------------------------------------------------
-PART 1: PRE-ALGEBRA & RATIONAL NUMBERS
---------------------------------------------------------------------------------
-1. Integers & Absolute Value:
-   - Rules of signs: Positive and negative operations
-   - Absolute value as distance from zero: |-7| = 7
-2. Algebraic Expressions & Equations:
-   - Combining like terms: 3x + 5 - x + 2 = 2x + 7
-   - Solving one-step and two-step linear equations: 2x + 6 = 18 => x = 6
-   - Distributive property: a(b + c) = ab + ac
-
---------------------------------------------------------------------------------
-TRIAL LESSON PRACTICE WORKSHEET:
---------------------------------------------------------------------------------
-Problem 1: Solve for y in the equation: 4y - 12 = 20
-           Step 1: Add 12 to both sides: 4y = 32
-           Step 2: Divide by 4: y = 8.
-
-================================================================================
-Nexa Academic Mentorship • 1-on-1 Dedicated Virtual Classroom
-================================================================================
-      `;
-    } else {
-      packTitle = 'Nexa_Academic_Grades_9-12_Calculus_Physics_SAT_Pack.txt';
-      content = `
-================================================================================
-          NEXA ACADEMIC SCHOLARS NETWORK • GRADES 9 – 12 CURRICULUM PACK
-            DIFFERENTIAL CALCULUS, PHYSICS MECHANICS & SAT MATH PREP
-================================================================================
-
-Target Audience: High School & College Prep Scholars (Grades 9 to 12)
-Prepared by: Senior Nexa Academic Engineering & Mathematics Fellows
-
---------------------------------------------------------------------------------
-PART 1: ALGEBRA II, PRE-CALCULUS & DIFFERENTIAL CALCULUS
---------------------------------------------------------------------------------
-1. Differential Calculus Essentials:
-   - Power Rule: d/dx [x^n] = n * x^(n-1)
-   - Product Rule: (uv)' = u'v + uv'
-   - Quotient Rule: (u/v)' = (u'v - uv') / v²
-   - Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)
-
---------------------------------------------------------------------------------
-TRIAL LESSON PRACTICE WORKSHEET:
---------------------------------------------------------------------------------
-Problem 1: Find the derivative of f(x) = 3x³ - 5x² + 7x - 4
-           f'(x) = 9x² - 10x + 7.
-
-================================================================================
-Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
-================================================================================
-      `;
-    }
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', packTitle);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setDownloadNotice(packTitle);
-    setTimeout(() => setDownloadNotice(null), 5000);
   };
 
   return (
@@ -345,7 +166,7 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
             </h2>
 
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
-              We provide dedicated 1-on-1 online academic coaching for elementary, middle school, and high school students globally—with specialized curriculum support for both international and Ethiopian diaspora learners. Book your <strong>Free 30-Minute Trial Lesson & Diagnostic</strong> or register for a <strong>Full Academic Subscription</strong>. Our verified teachers review your syllabus, prepare tailored PDF materials, and meet 24/7 on our in-browser digital blackboard and Chrome screen share suite!
+              We provide dedicated 1-on-1 online academic coaching for elementary, middle school, and high school students globally—with specialized curriculum support for both international and Ethiopian diaspora learners. Book your <strong>Free 30-Minute Trial Lesson & Diagnostic</strong> or register for a <strong>Full Academic Subscription</strong>. Meet 24/7 on our split-screen laptop virtual classroom with digital blackboard and live Chrome screen share!
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-1 text-xs font-mono text-slate-300">
@@ -363,7 +184,7 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
               </div>
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Live Digital Blackboard & Chrome Share</span>
+                <span>Split Screen Laptop Classroom (Blackboard & Screen Share)</span>
               </div>
             </div>
           </div>
@@ -377,22 +198,12 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
               <Video className="w-4 h-4 text-dark-950" />
               <span>Launch Live Virtual Classroom 🟢</span>
             </button>
-
-            <a
-              href="https://calendar.app.google/NqgKSXoBhqz163hG9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-3 rounded-2xl bg-dark-950 hover:bg-slate-900 text-white font-bold text-xs border border-slate-700 transition-all flex items-center justify-center gap-2"
-            >
-              <Calendar className="w-4 h-4 text-[#f39228]" />
-              <span>Google Calendar Sync</span>
-            </a>
           </div>
         </div>
       </div>
 
       {/* ===================================================================== */}
-      {/* 2. REGISTRATION & 24/7 BOOKING CARD (TRIAL OR SUBSCRIPTION)           */}
+      {/* 2. REGISTRATION & 24/7 BOOKING CARD (SIMPLIFIED & UNCLUTTERED)        */}
       {/* ===================================================================== */}
       <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-8 space-y-6 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
@@ -404,11 +215,11 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
               Register & Schedule Your 1-on-1 Academic Session
             </h3>
             <p className="text-xs text-slate-300 mt-0.5">
-              Select your enrollment plan, student grade, core subject, assigned teacher, and flexible 24/7 schedule.
+              Fill in your student information, write down your subject, select your teacher, and choose your 24/7 date and time.
             </p>
           </div>
 
-          {/* Program Type Selector Dropdown / Toggle */}
+          {/* Program Type Selector */}
           <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-dark-950 border border-slate-800">
             <button
               type="button"
@@ -496,82 +307,73 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
             </div>
           </div>
 
-          {/* Row 2: Grade Level & Subject Selection */}
+          {/* Row 2: Grade Level (Numbers Only), Free-Text Subject, Teacher Name Only */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
-            {/* Grade Level Dropdown (Grades 1 – 12) */}
+            {/* Grade Level: Grade 1 through Grade 12 only */}
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Student Grade Level (Grades 1 – 12) <span className="text-[#f39228]">*</span>
+                Student Grade Level <span className="text-[#f39228]">*</span>
               </label>
               <select
                 value={selectedGrade}
-                onChange={(e) => {
-                  setSelectedGrade(e.target.value);
-                  setCustomTopic(`${e.target.value} ${selectedSubject}`);
-                }}
+                onChange={(e) => setSelectedGrade(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#1a202c] border border-slate-700 text-white font-mono text-xs focus:border-[#f39228] focus:outline-none"
               >
-                {allGrades.map((g) => (
-                  <option key={g.value} value={g.value} className="bg-[#1a202c] text-white">
-                    {g.label}
+                {gradeOptions.map((g) => (
+                  <option key={g} value={g} className="bg-[#1a202c] text-white">
+                    {g}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Core Subject Focus Dropdown */}
+            {/* Subject: Free text input based on what the student wants */}
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Core Subject Focus <span className="text-[#f39228]">*</span>
+                Subject You Want to Study <span className="text-[#f39228]">*</span>
               </label>
-              <select
-                value={selectedSubject}
-                onChange={(e) => {
-                  setSelectedSubject(e.target.value);
-                  setCustomTopic(`${selectedGrade} ${e.target.value}`);
-                }}
+              <input
+                type="text"
+                required
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="Write subject: e.g. Mathematics, Physics, Chemistry, English, Amharic, Python..."
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#1a202c] border border-slate-700 text-white font-mono text-xs focus:border-[#f39228] focus:outline-none"
-              >
-                {allSubjects.map((s) => (
-                  <option key={s} value={s} className="bg-[#1a202c] text-white">
-                    {s}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
-            {/* Assigned Nexa Certified Teacher */}
+            {/* Assigned Nexa Teacher: Name Only */}
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Assigned Nexa Teacher Specialist <span className="text-[#f39228]">*</span>
+                Assigned Nexa Teacher <span className="text-[#f39228]">*</span>
               </label>
               <select
-                value={selectedTeacherId}
-                onChange={(e) => setSelectedTeacherId(e.target.value)}
+                value={selectedTeacherName}
+                onChange={(e) => setSelectedTeacherName(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#1a202c] border border-slate-700 text-white font-mono text-xs focus:border-[#f39228] focus:outline-none"
               >
-                {mentors.map((m) => (
-                  <option key={m.id} value={m.id} className="bg-[#1a202c] text-white">
-                    {m.name} ({m.badge} • ★ {m.rating})
+                {teacherNames.map((name) => (
+                  <option key={name} value={name} className="bg-[#1a202c] text-white">
+                    {name}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          {/* Row 3: Specific Learning Concept & Material Upload */}
+          {/* Row 3: Specific Topic & Material Upload */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Specific Concept / Chapter to Prepare <span className="text-[#f39228]">*</span>
+                Specific Topic or Chapter to Prepare <span className="text-[#f39228]">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={customTopic}
                 onChange={(e) => setCustomTopic(e.target.value)}
-                placeholder="e.g. Grade 7 Fractions & Decimals, Grade 11 Calculus Derivatives, SAT Algebra..."
+                placeholder="e.g. Fractions & Linear Equations, Stoichiometry, Mechanics, Python loops..."
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#1a202c] border border-slate-700 text-white font-mono text-xs focus:border-[#f39228] focus:outline-none"
               />
             </div>
@@ -579,11 +381,11 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
             {/* Homework / Syllabus PDF Upload */}
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">
-                Share Student Homework / Syllabus PDF (Optional)
+                Attach Student Homework / Textbook PDF
               </label>
               <div className="flex items-center gap-2">
                 <label className="flex-1 px-3.5 py-2 rounded-xl bg-[#1a202c] border border-dashed border-slate-600 hover:border-amber-500 cursor-pointer text-xs font-mono text-slate-300 flex items-center justify-between">
-                  <span className="truncate">{attachedFileName || 'Choose PDF / Textbook Document...'}</span>
+                  <span className="truncate">{attachedFileName || 'Choose PDF / Homework Document...'}</span>
                   <UploadCloud className="w-4 h-4 text-[#f39228] shrink-0 ml-2" />
                   <input type="file" accept=".pdf,.doc,.docx,.png,.jpg" onChange={handleFileUpload} className="hidden" />
                 </label>
@@ -591,42 +393,66 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
             </div>
           </div>
 
-          {/* Row 4: 24/7 Scheduling (Day & Round-the-Clock Time Slots) */}
+          {/* Row 4: 24/7 Scheduling (Real Day and Date + 24/7 Slots) */}
           <div className="p-4 rounded-2xl bg-dark-950 border border-slate-800 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="text-xs font-mono font-bold text-[#f39228] uppercase flex items-center gap-1.5">
-                <Clock className="w-4 h-4" /> 24/7 Round-the-Clock Flexible Schedule
+                <Clock className="w-4 h-4" /> 24/7 Round-the-Clock Schedule (Real Day & Date)
               </span>
               <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded border border-emerald-800">
-                ● 24/7 Live Teacher Availability
+                ● 24/7 Teacher Availability
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-              {/* Day selection */}
-              <div className="md:col-span-5 space-y-1.5">
-                <label className="text-[11px] font-mono text-slate-400">Select Date:</label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {availableDays.map((d) => (
+              {/* Day & Date selection */}
+              <div className="md:col-span-6 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-mono text-slate-400">Select Day & Date:</label>
+                  <input 
+                    type="date"
+                    value={customDatePicker}
+                    onChange={(e) => {
+                      setCustomDatePicker(e.target.value);
+                      const d = new Date(e.target.value);
+                      if (!isNaN(d.getTime())) {
+                        const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+                        const monthName = d.toLocaleDateString('en-US', { month: 'short' });
+                        setSelectedDayObj({
+                          id: 'custom-date',
+                          fullDateStr: e.target.value,
+                          label: `${dayName}, ${monthName} ${d.getDate()}`
+                        });
+                      }
+                    }}
+                    className="text-[11px] font-mono bg-[#1a202c] text-amber-300 px-2 py-0.5 rounded border border-slate-700"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {realDays.map((d) => (
                     <button
-                      key={d}
+                      key={d.id}
                       type="button"
-                      onClick={() => setSelectedDate(d)}
-                      className={`p-2 rounded-xl text-xs font-mono font-bold border transition-all text-center ${
-                        selectedDate === d
+                      onClick={() => {
+                        setSelectedDayObj(d);
+                        setCustomDatePicker(d.fullDateStr);
+                      }}
+                      className={`p-2 rounded-xl text-xs font-mono font-bold border transition-all text-center truncate ${
+                        selectedDayObj.fullDateStr === d.fullDateStr
                           ? 'bg-[#f39228] border-amber-400 text-dark-950 shadow'
                           : 'bg-[#1a202c] border-slate-800 text-slate-300 hover:text-white'
                       }`}
                     >
-                      {d}
+                      {d.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Time slot selection */}
-              <div className="md:col-span-7 space-y-1.5">
-                <label className="text-[11px] font-mono text-slate-400">Available 24/7 Slot (50-Min Session):</label>
+              {/* 24/7 Time Slots */}
+              <div className="md:col-span-6 space-y-1.5">
+                <label className="text-[11px] font-mono text-slate-400">Available 24/7 Time Slot:</label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {timeSlots247.map((slot) => (
                     <button
@@ -656,14 +482,14 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
               <CheckCircle2 className="w-4 h-4 text-dark-950" />
               <span>
                 {bookingType === 'trial' 
-                  ? `Confirm Free 30-Min Trial Lesson with ${selectedTeacher.name}` 
-                  : `Confirm Academic Term Subscription with ${selectedTeacher.name}`}
+                  ? `Confirm Free 30-Min Trial Lesson with ${selectedTeacherName}` 
+                  : `Confirm Academic Term Subscription with ${selectedTeacherName}`}
               </span>
             </button>
             <p className="text-center text-[11px] text-slate-400 font-mono mt-2">
               {bookingType === 'trial' 
-                ? '✓ 100% Free Trial Lesson • Diagnostic Included • Teacher reviews materials before session' 
-                : '✓ Dedicated Weekly 1-on-1 Mentorship • Flexible Rescheduling • Diagnostic Progress Reports'}
+                ? '✓ 100% Free Trial Lesson • Teacher prepares lesson based on your subject' 
+                : '✓ Dedicated Weekly 1-on-1 Mentorship • 24/7 Flexible Rescheduling'}
             </p>
           </div>
         </form>
@@ -689,7 +515,7 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
                   <span className="text-xs font-mono text-slate-400">Pass #{bookingRef}</span>
                 </div>
                 <h3 className="text-lg sm:text-2xl font-bold text-white mt-0.5">
-                  {selectedGrade} {selectedSubject} • 1-on-1 with {selectedTeacher.name}
+                  {selectedGrade} {subject} • 1-on-1 with {selectedTeacherName}
                 </h3>
               </div>
             </div>
@@ -712,28 +538,27 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
             </div>
 
             <div>
-              <span className="text-slate-400 block text-[10px] uppercase">Assigned Nexa Mentor:</span>
-              <span className="text-amber-300 font-bold">{selectedTeacher.name}</span>
-              <span className="text-slate-400 block text-[11px] mt-0.5">{selectedTeacher.badge}</span>
+              <span className="text-slate-400 block text-[10px] uppercase">Assigned Nexa Teacher:</span>
+              <span className="text-amber-300 font-bold">{selectedTeacherName}</span>
+              <span className="text-slate-400 block text-[11px] mt-0.5">1-on-1 Dedicated Mentor</span>
             </div>
 
             <div>
-              <span className="text-slate-400 block text-[10px] uppercase">Confirmed 24/7 Time Slot:</span>
-              <span className="text-emerald-400 font-bold">{selectedDate}</span>
+              <span className="text-slate-400 block text-[10px] uppercase">Confirmed 24/7 Schedule:</span>
+              <span className="text-emerald-400 font-bold">{selectedDayObj.label}</span>
               <span className="text-slate-300 block text-[11px] mt-0.5">{selectedTimeSlot}</span>
             </div>
 
             <div>
-              <span className="text-slate-400 block text-[10px] uppercase">Shared Curriculum Material:</span>
+              <span className="text-slate-400 block text-[10px] uppercase">Shared Homework PDF:</span>
               <span className="text-[#f39228] font-bold truncate block">{attachedFileName}</span>
-              <span className="text-emerald-400 text-[10px] block mt-0.5">✓ Ready for Teacher Prep</span>
+              <span className="text-emerald-400 text-[10px] block mt-0.5">✓ Ready on Screen Share</span>
             </div>
           </div>
 
           {/* Specific Topic Focus Bar */}
           <div className="p-3.5 rounded-xl bg-[#1a202c] border border-amber-500/20 text-xs font-mono flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 truncate">
-              <BookOpen className="w-4 h-4 text-[#f39228] shrink-0" />
               <span className="text-slate-400">Class Topic:</span>
               <span className="text-amber-300 font-bold truncate">"{customTopic}"</span>
             </div>
@@ -776,7 +601,7 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
                   <Timer className="w-4 h-4 text-[#f39228]" />
-                  <span>Real-Time Session Countdown to Live Class:</span>
+                  <span>Real-Time Countdown to Live Class:</span>
                 </div>
                 <div className="flex items-center gap-2 font-mono font-black text-2xl sm:text-3xl text-white">
                   <div className="px-3 py-1.5 rounded-xl bg-[#1a202c] border border-slate-700 text-[#f39228]">
@@ -824,153 +649,33 @@ Nexa Academic Mentorship • Interactive Digital Blackboard & Screen Share Suite
       )}
 
       {/* ===================================================================== */}
-      {/* 4. LIVE VIRTUAL CLASSROOM (DIGITAL BLACKBOARD + CHROME SCREEN SHARE)    */}
+      {/* 4. LIVE VIRTUAL CLASSROOM (SPLIT SCREEN LAPTOP VIEW)                  */}
       {/* ===================================================================== */}
       <div ref={classroomSectionRef} className="space-y-4 pt-4">
-        <div className="p-4 rounded-2xl bg-[#212529] border border-amber-500/30 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs sm:text-sm font-mono font-bold text-white">
-              Nexa Live Virtual Classroom Studio • Connected with {selectedTeacher.name} ({selectedGrade} {selectedSubject})
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span className="text-[10px] font-mono text-[#f39228] font-bold uppercase tracking-wider">
+              Nexa 1-on-1 Virtual Classroom
             </span>
+            <h3 className="text-xl sm:text-2xl font-bold text-white mt-0.5">
+              Live Session with {selectedTeacherName} ({selectedGrade} • {subject})
+            </h3>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-            <span className="text-emerald-400">● Live Audio & Video Ready</span>
+            <span className="text-emerald-400">● 50% Blackboard</span>
             <span className="text-slate-600">|</span>
-            <span className="text-amber-400">Blackboard & Desmos Synced</span>
+            <span className="text-amber-400">50% Screen & Material Share</span>
           </div>
         </div>
 
         <PreplyVirtualClassroom
-          mentorName={selectedTeacher.name}
-          mentorRole={selectedTeacher.credentials}
-          mentorBadge={selectedTeacher.badge}
-          subject={customTopic || selectedSubject}
+          mentorName={selectedTeacherName}
+          subject={subject}
           gradeLevel={selectedGrade}
+          sharedDocumentName={attachedFileName}
           onCloseClassroom={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         />
-      </div>
-
-      {/* ===================================================================== */}
-      {/* 5. CURRICULUM MATERIAL SHARE & TEACHER PDF LESSON PACKS               */}
-      {/* ===================================================================== */}
-      <div className="space-y-6 pt-4">
-        <div className="p-6 rounded-3xl bg-[#212529] border border-amber-500/30">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <BookCheck className="w-5 h-5 text-[#f39228]" />
-                Curriculum Material Share & Teacher-Prepared PDF Packs
-              </h3>
-              <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                Nexa teachers prepare structured worksheets, formula reference cheat sheets, and trial lesson decks before every session. Download your student's grade-specific pack below:
-              </p>
-            </div>
-
-            {/* Uploaded Material Pill */}
-            {attachedFileName && (
-              <div className="p-3 rounded-2xl bg-dark-950 border border-slate-800 text-xs font-mono text-slate-300 flex items-center gap-2 self-start sm:self-auto shrink-0">
-                <FileCheck2 className="w-4 h-4 text-emerald-400" />
-                <span>Shared: <strong>{attachedFileName}</strong></span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {downloadNotice && (
-          <div className="p-4 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2 animate-fade-in">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span><strong>{downloadNotice}</strong> generated and downloaded to your device successfully!</span>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Elementary Pack */}
-          <div className="p-6 rounded-3xl bg-[#212529] border border-slate-800 flex flex-col justify-between space-y-4 shadow-xl">
-            <div>
-              <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold uppercase">
-                Grades 1 – 5
-              </span>
-              <h4 className="text-base font-bold text-white mt-2">
-                Elementary Foundations Pack
-              </h4>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Includes Number Sense, Fact Fluency, Multiplication Tables (1-12), Visual Fractions, Reading Comprehension questions, and Science Explorers unit.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-xs font-mono text-slate-400 space-y-1">
-                <div>• Practice Worksheet with Solutions</div>
-                <div>• Visual Fraction Bar Cheat Sheet</div>
-                <div>• Reading Comprehension Rubric</div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => handleDownloadCurriculumPack('elementary')}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs uppercase font-mono shadow transition-all flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4 text-dark-950" />
-              <span>Download Grades 1–5 Pack</span>
-            </button>
-          </div>
-
-          {/* Middle School Pack */}
-          <div className="p-6 rounded-3xl bg-[#212529] border border-slate-800 flex flex-col justify-between space-y-4 shadow-xl">
-            <div>
-              <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold uppercase">
-                Grades 6 – 8
-              </span>
-              <h4 className="text-base font-bold text-white mt-2">
-                Middle School Pre-Algebra & STEM Pack
-              </h4>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Includes Rational Numbers, Distributive Property, Multi-Step Linear Equations, Ratios & Rates, and Newton's Laws of Motion with kinematics exercises.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-xs font-mono text-slate-400 space-y-1">
-                <div>• 20 Pre-Algebra Diagnostic Exercises</div>
-                <div>• Newton's 3 Laws Summary Sheet</div>
-                <div>• Step-by-Step Equation Solving Guide</div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => handleDownloadCurriculumPack('middle')}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs uppercase font-mono shadow transition-all flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4 text-dark-950" />
-              <span>Download Grades 6–8 Pack</span>
-            </button>
-          </div>
-
-          {/* High School & SAT Pack */}
-          <div className="p-6 rounded-3xl bg-[#212529] border border-slate-800 flex flex-col justify-between space-y-4 shadow-xl">
-            <div>
-              <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold uppercase">
-                Grades 9 – 12
-              </span>
-              <h4 className="text-base font-bold text-white mt-2">
-                High School & SAT Mastery Pack
-              </h4>
-              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Includes Differential Calculus derivative rules (Power, Product, Chain Rules), Quadratic Optimization, Kinematic Formulas, and SAT Math tricks.
-              </p>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-xs font-mono text-slate-400 space-y-1">
-                <div>• Complete Calculus Derivative Sheet</div>
-                <div>• Kinematics & Energy Master Table</div>
-                <div>• SAT Math High-Frequency Formula Pack</div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => handleDownloadCurriculumPack('high')}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs uppercase font-mono shadow transition-all flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4 text-dark-950" />
-              <span>Download Grades 9–12 Pack</span>
-            </button>
-          </div>
-        </div>
       </div>
 
     </div>

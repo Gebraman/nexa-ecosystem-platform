@@ -3,176 +3,57 @@ import {
   PenTool, 
   Eraser, 
   RotateCcw, 
-  Download, 
   Trash2, 
-  Grid, 
   Video, 
   VideoOff, 
   Mic, 
   MicOff, 
   ScreenShare, 
-  Monitor, 
   Maximize2, 
   Minimize2, 
-  MessageSquare, 
-  Send, 
-  FileText, 
   CheckCircle2, 
-  Clock, 
-  User, 
-  Sparkles, 
-  X, 
-  Share2, 
-  HelpCircle,
-  Square,
-  Circle,
-  Minus,
-  Palette,
-  Columns,
-  Layers,
-  GraduationCap,
-  Award,
-  BookOpen,
+  FileText, 
+  Sliders, 
+  Layers, 
+  ExternalLink,
+  ZoomIn,
+  ZoomOut,
+  ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  Cpu,
-  Globe,
-  RotateCw,
-  Lock,
-  Star,
-  ExternalLink
+  Sparkles
 } from 'lucide-react';
 
 export default function PreplyVirtualClassroom({ 
   mentorName = 'Ermias Tadesse', 
-  mentorRole = 'B.Sc. Electrical & Computer Engineering (Honors Graduate)',
-  mentorBadge = 'Nexa Senior Academic Fellow',
-  subject = 'Mathematics & Advanced Calculus', 
-  gradeLevel = 'Grades 9–12 (High School & Prep)',
+  subject = 'Mathematics', 
+  gradeLevel = 'Grade 7',
+  sharedDocumentName = 'Grade7_Math_Unit4_Fractions_Homework.pdf',
   onCloseClassroom 
 }) {
-  // Canvas State
+  // Canvas State (Left Screen: Digital Blackboard)
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [tool, setTool] = useState('pen'); // 'pen', 'highlighter', 'line', 'rectangle', 'circle', 'eraser'
+  const [tool, setTool] = useState('pen'); // 'pen', 'eraser'
   const [color, setColor] = useState('#ffffff');
   const [lineWidth, setLineWidth] = useState(3);
-  const [boardTheme, setBoardTheme] = useState('chalkboard-green'); // 'chalkboard-green', 'chalkboard-slate', 'grid'
   const [history, setHistory] = useState([]);
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
 
-  // Media & Screen Sharing State
+  // Media Controls
   const [isMicOn, setIsMicOn] = useState(true);
   const [isVideoOn, setIsVideoOn] = useState(true);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const [screenStream, setScreenStream] = useState(null);
-  const screenVideoRef = useRef(null);
-  const [activeLayout, setActiveLayout] = useState('split'); // 'blackboard', 'screenshare', 'split'
-  const [screenShareSourceType, setScreenShareSourceType] = useState('chrome-window'); // 'chrome-window', 'slides', 'grapher'
-  const [chromeActiveTab, setChromeActiveTab] = useState('desmos'); // 'desmos', 'wolfram', 'curriculum'
-  const [selectedSlideIndex, setSelectedSlideIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Grapher Simulation Parameters
+  // Right Screen: Screen Share & Material Share State
+  const [activeShareTab, setActiveShareTab] = useState('material'); // 'material', 'desmos', 'wolfram'
+
+  // Material Viewer State
+  const [materialZoom, setMaterialZoom] = useState(100);
+  const [materialPage, setMaterialPage] = useState(1);
+
+  // Desmos Interactive Grapher Parameters
   const [graphA, setGraphA] = useState(1);
   const [graphB, setGraphB] = useState(-4);
   const [graphC, setGraphC] = useState(3);
-
-  // Timer State (50 min academic period)
-  const [timeLeft, setTimeLeft] = useState(3000); // 50 mins = 3000 sec
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
-
-  // Chat & Notes State
-  const [chatMessages, setChatMessages] = useState([
-    {
-      id: 1,
-      sender: 'mentor',
-      name: mentorName,
-      time: 'Just now',
-      text: `Welcome to your Nexa 1-on-1 Academic Session for ${subject}! I have prepared our interactive blackboard and problem curriculum sheet. Let's begin!`
-    }
-  ]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [activeSidebarTab, setActiveSidebarTab] = useState('chat'); // 'chat', 'notes', 'theorems'
-  const [sharedNotes, setSharedNotes] = useState(
-`### Nexa Academic 1-on-1 Lesson Notes
-- Student: Nexa Scholar
-- Mentor: ${mentorName} (${mentorBadge})
-- Course: ${subject} (${gradeLevel})
-
-Key Mathematical Principles:
-1. Differential Power Rule: d/dx [x^n] = n * x^(n-1)
-2. Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)
-3. Critical Points: Set f'(x) = 0 and solve for x.
-4. Second Derivative Concavity Test: f''(x) > 0 => Local Minimum; f''(x) < 0 => Local Maximum.
-
-Assigned Practice:
-- Differentiate f(x) = (2x^3 - 5x)^4 and verify local extrema on [0, 5].`
-  );
-
-  // Academic STEM Slides Bank
-  const academicSlides = [
-    {
-      id: 'calc-opt',
-      title: 'Calculus: Area Optimization & Tangents',
-      badge: 'High School & Prep Unit 3',
-      question: 'A rectangular pasture is bounded on one side by a straight river and by 2,400 feet of fencing on the other three sides. What dimensions enclose maximum area?',
-      formula: 'Area A(x) = x(2400 - 2x) = 2400x - 2x²',
-      derivative: "A'(x) = 2400 - 4x = 0  =>  x = 600 ft, Length = 1200 ft",
-      maxArea: 'Maximum Area = 600 × 1200 = 720,000 sq ft',
-      highlight: 'Notice how setting the first derivative to zero directly pinpointed the global maximum.'
-    },
-    {
-      id: 'physics-kin',
-      title: 'Physics Mechanics: Uniform Acceleration & Vectors',
-      badge: 'STEM Physical Sciences',
-      question: 'A vehicle accelerates uniformly from rest at 4.0 m/s² for 8 seconds. Determine final velocity and displacement.',
-      formula: 'Kinematics: v = u + at  and  s = ut + ½at²',
-      derivative: 'v = 0 + (4.0)(8) = 32 m/s',
-      maxArea: 'Displacement s = 0 + 0.5(4.0)(8²) = 128 meters',
-      highlight: 'Displacement is the definite integral of velocity over the time interval [0, 8].'
-    },
-    {
-      id: 'chem-stoich',
-      title: 'General Chemistry: Stoichiometry & Combustion',
-      badge: 'Chemical Sciences',
-      question: 'Calculate grams of carbon dioxide produced when 44g of propane (C3H8) undergoes complete combustion.',
-      formula: 'Balanced Reaction: C3H8 + 5O2 -> 3CO2 + 4H2O',
-      derivative: 'Molar Mass C3H8 = 44.1 g/mol  =>  44g ≈ 1.00 mol',
-      maxArea: '1 mol C3H8 yields 3 mol CO2 => 3 × 44.01g = 132g CO2',
-      highlight: 'Molar conservation guarantees mass balance across reactants and products.'
-    },
-    {
-      id: 'sat-algebra',
-      title: 'SAT Advanced Math: Parabola Vertex & Discriminant',
-      badge: 'SAT & College Prep',
-      question: 'Find the vertex and number of real roots for f(x) = 2x² - 8x + 6.',
-      formula: 'Discriminant Δ = b² - 4ac = (-8)² - 4(2)(6) = 64 - 48 = 16 > 0 (2 Real Roots)',
-      derivative: 'Vertex x-coordinate: h = -b / (2a) = 8 / 4 = 2',
-      maxArea: 'Vertex Coordinates: (2, f(2)) = (2, -2)',
-      highlight: 'Since a > 0, the vertex is an absolute minimum at (2, -2).'
-    }
-  ];
-
-  // STEM Math Stamps
-  const mathStamps = [
-    { label: 'dy/dx', symbol: 'dy/dx' },
-    { label: '∫ f(x)dx', symbol: '∫ f(x)dx' },
-    { label: 'lim(x→0)', symbol: 'lim(x→0)' },
-    { label: 'x = (-b±√Δ)/2a', symbol: 'x = (-b ± √b² - 4ac) / 2a' },
-    { label: 'F = m·a', symbol: 'F = m · a' },
-    { label: 'E = mc²', symbol: 'E = mc²' },
-    { label: 'PV = nRT', symbol: 'P · V = n · R · T' },
-    { label: 'y = mx + b', symbol: 'y = mx + b' }
-  ];
-
-  // Chalk Colors (Academic Palette)
-  const chalkPalette = [
-    { label: 'Chalk White', hex: '#ffffff' },
-    { label: 'Academic Gold', hex: '#fbbf24' },
-    { label: 'Cambridge Cyan', hex: '#67e8f9' },
-    { label: 'Ivy Emerald', hex: '#86efac' },
-    { label: 'Coral Rose', hex: '#fda4af' }
-  ];
 
   // Initialize Canvas
   useEffect(() => {
@@ -183,7 +64,7 @@ Assigned Practice:
     const updateCanvasSize = () => {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      const targetWidth = Math.max(Math.floor(rect.width), 480);
+      const targetWidth = Math.max(Math.floor(rect.width), 320);
       const targetHeight = Math.max(Math.floor(rect.height), 420);
       
       if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
@@ -193,7 +74,7 @@ Assigned Practice:
             imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           }
         } catch (e) {
-          // Ignore read error on empty canvas
+          // ignore read error
         }
         canvas.width = targetWidth;
         canvas.height = targetHeight;
@@ -206,39 +87,97 @@ Assigned Practice:
     };
 
     updateCanvasSize();
-    const timer = setTimeout(updateCanvasSize, 120);
+    const timer = setTimeout(updateCanvasSize, 100);
     window.addEventListener('resize', updateCanvasSize);
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateCanvasSize);
     };
-  }, [activeLayout, boardTheme]);
+  }, []);
 
-  // Keep screen stream attached to video element if active
+  // Redraw Grapher Curve
+  const graphCanvasRef = useRef(null);
   useEffect(() => {
-    if (screenVideoRef.current && screenStream) {
-      screenVideoRef.current.srcObject = screenStream;
+    if (activeShareTab !== 'desmos') return;
+    const canvas = graphCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width = 460;
+    const height = canvas.height = 300;
+
+    // Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, width, height);
+
+    // Grid lines
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < width; x += 30) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
     }
-  }, [screenStream, isScreenSharing, activeLayout, screenShareSourceType]);
-
-  // Timer countdown
-  useEffect(() => {
-    let interval = null;
-    if (isTimerRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft(t => t - 1);
-      }, 1000);
+    for (let y = 0; y < height; y += 30) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
     }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, timeLeft]);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+    // Axes
+    const originX = width / 2;
+    const originY = height / 2;
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, originY);
+    ctx.lineTo(width, originY);
+    ctx.moveTo(originX, 0);
+    ctx.lineTo(originX, height);
+    ctx.stroke();
 
-  // Drawing Handlers
+    // Plot Parabola: y = a*x^2 + b*x + c
+    const scale = 25;
+    ctx.strokeStyle = '#f39228';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    let started = false;
+
+    for (let px = 0; px < width; px++) {
+      const x = (px - originX) / scale;
+      const y = graphA * (x * x) + graphB * x + graphC;
+      const py = originY - (y * scale);
+
+      if (py >= 0 && py <= height) {
+        if (!started) {
+          ctx.moveTo(px, py);
+          started = true;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+    }
+    ctx.stroke();
+
+    // Plot Vertex
+    const vx = -graphB / (2 * graphA);
+    const vy = graphA * (vx * vx) + graphB * vx + graphC;
+    const pvx = originX + (vx * scale);
+    const pvy = originY - (vy * scale);
+
+    if (pvx >= 0 && pvx <= width && pvy >= 0 && pvy <= height) {
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(pvx, pvy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '10px monospace';
+      ctx.fillText(`Vertex (${vx.toFixed(1)}, ${vy.toFixed(1)})`, pvx + 8, pvy - 8);
+    }
+  }, [activeShareTab, graphA, graphB, graphC]);
+
+  // Coordinates helper
   const getCoordinates = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
@@ -255,1086 +194,498 @@ Assigned Practice:
     };
   };
 
+  // Drawing Handlers
   const startDrawing = (e) => {
     const { x, y } = getCoordinates(e);
     setIsDrawing(true);
-    setStartPos({ x, y });
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-
+    
     // Save state for undo
-    setHistory(prev => [...prev.slice(-15), canvas.toDataURL()]);
+    setHistory(prev => [...prev.slice(-15), ctx.getImageData(0, 0, canvas.width, canvas.height)]);
 
-    if (tool === 'pen' || tool === 'highlighter' || tool === 'eraser') {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-    }
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = tool === 'eraser' ? '#14231e' : color;
+    ctx.lineWidth = tool === 'eraser' ? 24 : lineWidth;
   };
 
   const draw = (e) => {
     if (!isDrawing) return;
+    e.preventDefault();
+    const { x, y } = getCoordinates(e);
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const { x, y } = getCoordinates(e);
-
-    const isGreenBoard = boardTheme === 'chalkboard-green';
-    const bgEraserColor = isGreenBoard ? '#091b15' : '#0a1020';
-
-    ctx.lineWidth = tool === 'eraser' ? lineWidth * 4 : tool === 'highlighter' ? lineWidth * 3 : lineWidth;
-    ctx.strokeStyle = tool === 'eraser' ? bgEraserColor : color;
-    ctx.globalAlpha = tool === 'highlighter' ? 0.35 : 1.0;
-
-    if (tool === 'pen' || tool === 'highlighter' || tool === 'eraser') {
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    }
+    ctx.lineTo(x, y);
+    ctx.stroke();
   };
 
-  const stopDrawing = (e) => {
+  const stopDrawing = () => {
     if (!isDrawing) return;
+    setIsDrawing(false);
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const { x, y } = getCoordinates(e);
-
-    if (tool === 'line') {
-      ctx.beginPath();
-      ctx.moveTo(startPos.x, startPos.y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    } else if (tool === 'rectangle') {
-      ctx.beginPath();
-      ctx.rect(startPos.x, startPos.y, x - startPos.x, y - startPos.y);
-      ctx.stroke();
-    } else if (tool === 'circle') {
-      const radius = Math.sqrt(Math.pow(x - startPos.x, 2) + Math.pow(y - startPos.y, 2));
-      ctx.beginPath();
-      ctx.arc(startPos.x, startPos.y, radius, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
-
     ctx.closePath();
-    ctx.globalAlpha = 1.0;
-    setIsDrawing(false);
   };
 
-  const clearBoard = () => {
+  const handleUndo = () => {
+    if (history.length === 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    const prev = history[history.length - 1];
+    ctx.putImageData(prev, 0, 0);
+    setHistory(history.slice(0, -1));
+  };
+
+  const handleClear = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    setHistory(prev => [...prev.slice(-15), ctx.getImageData(0, 0, canvas.width, canvas.height)]);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  const undoLast = () => {
-    if (history.length === 0) return;
-    const previousState = history[history.length - 1];
-    setHistory(prev => prev.slice(0, -1));
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.src = previousState;
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-    };
-  };
-
-  const stampMathSymbol = (symbol) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.font = 'bold 22px "Times New Roman", serif';
-    ctx.fillStyle = color;
-    ctx.fillText(symbol, 60 + Math.random() * 150, 80 + Math.random() * 150);
-  };
-
-  const downloadBoardImage = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const link = document.createElement('a');
-    link.download = `Nexa_Academic_Blackboard_${subject.replace(/\s+/g, '_')}.png`;
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-
-  // Real Chrome Screen Sharing Handler
-  const toggleScreenShare = async () => {
-    if (isScreenSharing && screenStream) {
-      screenStream.getTracks().forEach(track => track.stop());
-      setScreenStream(null);
-      setIsScreenSharing(false);
-      setScreenShareSourceType('slides');
-    } else {
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
-          const stream = await navigator.mediaDevices.getDisplayMedia({
-            video: {
-              cursor: 'always',
-              displaySurface: 'browser'
-            },
-            audio: false
-          });
-
-          setScreenStream(stream);
-          setIsScreenSharing(true);
-          setScreenShareSourceType('chrome-window');
-          if (activeLayout === 'blackboard') {
-            setActiveLayout('split');
-          }
-
-          if (screenVideoRef.current) {
-            screenVideoRef.current.srcObject = stream;
-          }
-
-          const videoTrack = stream.getVideoTracks()[0];
-          if (videoTrack) {
-            videoTrack.onended = () => {
-              setIsScreenSharing(false);
-              setScreenStream(null);
-              setScreenShareSourceType('slides');
-            };
-          }
-        } else {
-          // Fallback to integrated academic slide deck
-          setIsScreenSharing(true);
-          setScreenShareSourceType('slides');
-          if (activeLayout === 'blackboard') setActiveLayout('split');
-        }
-      } catch (err) {
-        console.warn('Chrome screen sharing dialog dismissed or permission not granted. Showing interactive STEM slide deck:', err);
-        setIsScreenSharing(true);
-        setScreenShareSourceType('slides');
-        if (activeLayout === 'blackboard') setActiveLayout('split');
-      }
-    }
-  };
-
-  // Chat message send
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!inputMessage.trim()) return;
-    const newMsg = {
-      id: Date.now(),
-      sender: 'student',
-      name: 'You (Nexa Scholar)',
-      time: 'Just now',
-      text: inputMessage
-    };
-    setChatMessages(prev => [...prev, newMsg]);
-    setInputMessage('');
-
-    // Simulated mentor automated pedagogical reply
-    setTimeout(() => {
-      setChatMessages(prev => [
-        ...prev,
-        {
-          id: Date.now() + 1,
-          sender: 'mentor',
-          name: mentorName,
-          time: 'Just now',
-          text: `Insightful question! Look at how we set up the derivative on the blackboard. When we compute f'(x) = 0, notice that the slope of the tangent line becomes strictly horizontal.`
-        }
-      ]);
-    }, 1400);
-  };
+  // Wolfram Solver calculations
+  const discriminant = (graphB * graphB) - (4 * graphA * graphC);
+  const root1 = discriminant >= 0 ? ((-graphB + Math.sqrt(discriminant)) / (2 * graphA)).toFixed(2) : null;
+  const root2 = discriminant >= 0 ? ((-graphB - Math.sqrt(discriminant)) / (2 * graphA)).toFixed(2) : null;
 
   return (
-    <div className="rounded-3xl bg-[#060a16] border border-[#1e293b] overflow-hidden shadow-2xl flex flex-col h-[850px] max-h-[92vh]">
+    <div className={`space-y-4 ${isFullscreen ? 'fixed inset-0 z-50 bg-[#0f172a] p-4 overflow-y-auto' : ''}`}>
       
-      {/* 1. TOP PRESTIGIOUS ACADEMIC SESSION HEADER */}
-      <div className="px-4 py-3 sm:px-6 bg-[#0a1128] border-b border-[#1e293b] flex flex-wrap items-center justify-between gap-3">
-        {/* Left: Nexa Faculty Info & Subject */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-amber-300 flex items-center justify-center text-[#0a1128] font-serif font-black text-base shadow-md shadow-amber-900/30">
-              {mentorName.split(' ').map(n => n[0]).join('')}
-            </div>
-            <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0a1128] absolute -bottom-1 -right-1" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h4 className="text-sm sm:text-base font-serif font-bold text-white leading-none tracking-wide">
-                {mentorName}
-              </h4>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-950/80 text-amber-300 border border-amber-800/80 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Award className="w-3 h-3 text-amber-400" />
-                {mentorBadge}
-              </span>
-            </div>
-            <p className="text-xs text-amber-200/80 font-mono mt-1 truncate max-w-sm">
-              {subject} • <span className="text-slate-400">{gradeLevel}</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Center: Live Collegiate Timer & Stage Layout Switcher */}
-        <div className="flex items-center gap-2">
-          {/* Active 50-Min Session Countdown */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0f172a] border border-amber-900/30 text-xs font-mono shadow-inner">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-slate-400 hidden sm:inline">Collegiate Period:</span>
-            <span className="text-amber-300 font-bold tracking-widest">{formatTime(timeLeft)}</span>
-            <button
-              onClick={() => setIsTimerRunning(!isTimerRunning)}
-              className="text-[10px] font-mono text-slate-500 hover:text-white ml-1 underline"
-            >
-              {isTimerRunning ? 'Pause' : 'Resume'}
-            </button>
-          </div>
-
-          {/* Layout Mode Selector (Blackboard / Split Dual / Screen Share) */}
-          <div className="hidden md:flex items-center bg-[#0d1527] border border-[#1e293b] rounded-xl p-0.5 text-xs font-mono">
-            <button
-              onClick={() => setActiveLayout('blackboard')}
-              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
-                activeLayout === 'blackboard'
-                  ? 'bg-amber-500/20 text-amber-300 font-bold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <PenTool className="w-3 h-3" />
-              <span>Chalkboard</span>
-            </button>
-
-            <button
-              onClick={() => setActiveLayout('split')}
-              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
-                activeLayout === 'split'
-                  ? 'bg-amber-500/20 text-amber-300 font-bold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Columns className="w-3 h-3" />
-              <span>Dual Studio</span>
-            </button>
-
-            <button
-              onClick={() => setActiveLayout('screenshare')}
-              className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 ${
-                activeLayout === 'screenshare'
-                  ? 'bg-cyan-500/20 text-cyan-300 font-bold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Monitor className="w-3 h-3" />
-              <span>Screen / Slides</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Right: Quick Action Controls & Close */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={downloadBoardImage}
-            title="Download high-resolution blackboard drawing as PNG"
-            className="p-2 rounded-xl bg-[#0f172a] border border-[#1e293b] text-slate-300 hover:text-amber-400 hover:border-amber-500/50 transition-all text-xs flex items-center gap-1"
-          >
-            <Download className="w-4 h-4 text-amber-400" />
-            <span className="hidden xl:inline text-xs font-mono">Save Board</span>
-          </button>
-
-          {onCloseClassroom && (
-            <button
-              onClick={onCloseClassroom}
-              className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold"
-              title="Leave Virtual Classroom"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 2. MAIN INTERACTIVE STAGE & COLLABORATIVE WORKSPACE */}
-      <div className="flex-1 min-h-[600px] grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+      {/* ===================================================================== */}
+      {/* LAPTOP CHASSIS & SCREEN FRAME                                         */}
+      {/* ===================================================================== */}
+      <div className="rounded-3xl bg-[#1e293b] border-2 border-slate-700 p-2 sm:p-3 shadow-2xl">
         
-        {/* LEFT / CENTER: ACTIVE STAGE (Blackboard, Chrome Screen Share, or Dual Studio) */}
-        <div className="lg:col-span-8 xl:col-span-9 flex flex-col h-full min-h-[580px] bg-[#050814] border-r border-[#1e293b] relative overflow-hidden">
+        {/* Laptop Display Top Bezel with Webcam */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700/60 bg-[#162032] rounded-t-2xl">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-mono font-bold text-white">
+              Nexa 1-on-1 Virtual Classroom Laptop View
+            </span>
+          </div>
+
+          {/* Centered Laptop Webcam Dot */}
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-slate-900 border border-slate-600 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+            <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">HD Cam Active</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+            <span>Teacher: <strong className="text-amber-400">{mentorName}</strong></span>
+            <span className="text-slate-600">|</span>
+            <span>{gradeLevel}</span>
+          </div>
+        </div>
+
+        {/* ===================================================================== */}
+        {/* 50 / 50 LAPTOP SPLIT SCREEN                                           */}
+        {/* ===================================================================== */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-2">
           
-          {/* Top Academic Toolbar: Blackboard Instruments */}
-          <div className="px-3 sm:px-5 py-2 bg-[#090f20] border-b border-[#1e293b] flex flex-wrap items-center justify-between gap-2 z-10 text-xs font-mono">
+          {/* ----------------------------------------------------------------- */}
+          {/* LEFT HALF (50%): COOL DIGITAL BLACKBOARD                          */}
+          {/* ----------------------------------------------------------------- */}
+          <div className="rounded-2xl bg-[#14231e] border border-emerald-900/60 flex flex-col justify-between overflow-hidden shadow-inner relative min-h-[460px]">
             
-            {/* Drawing Tools */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-[10px] font-bold text-amber-400/90 uppercase tracking-wider mr-1 hidden sm:inline">
-                Chalk:
-              </span>
+            {/* Blackboard Top Status Bar */}
+            <div className="p-3 bg-[#0e1915] border-b border-emerald-900/40 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Digital Blackboard
+                </span>
+                <span className="text-slate-500">•</span>
+                <span className="text-slate-300 text-[11px]">{mentorName} (Teacher) & You</span>
+              </div>
 
-              <button
-                onClick={() => setTool('pen')}
-                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
-                  tool === 'pen'
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="White/Colored Chalk Pen"
-              >
-                <PenTool className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Pen</span>
-              </button>
+              {/* Necessary Tools: Pen, Eraser, Colors, Thickness, Undo, Clear */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setTool('pen')}
+                  className={`p-1.5 rounded-lg border transition-all ${
+                    tool === 'pen' 
+                      ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold' 
+                      : 'bg-[#162923] border-emerald-900/60 text-slate-300 hover:text-white'
+                  }`}
+                  title="Pen Tool"
+                >
+                  <PenTool className="w-3.5 h-3.5" />
+                </button>
 
-              <button
-                onClick={() => setTool('highlighter')}
-                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
-                  tool === 'highlighter'
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="Luminous STEM Highlighter"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden md:inline">Highlight</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setTool('eraser')}
+                  className={`p-1.5 rounded-lg border transition-all ${
+                    tool === 'eraser' 
+                      ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold' 
+                      : 'bg-[#162923] border-emerald-900/60 text-slate-300 hover:text-white'
+                  }`}
+                  title="Eraser Tool"
+                >
+                  <Eraser className="w-3.5 h-3.5" />
+                </button>
 
-              <button
-                onClick={() => setTool('line')}
-                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
-                  tool === 'line'
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="Draw Straight Axis / Vector"
-              >
-                <Minus className="w-3.5 h-3.5" />
-              </button>
+                {/* Chalk Color Palette */}
+                <div className="flex items-center gap-1 pl-1 border-l border-emerald-900/60">
+                  {[
+                    { hex: '#ffffff', title: 'Chalk White' },
+                    { hex: '#f39228', title: 'Nexa Amber' },
+                    { hex: '#38bdf8', title: 'Cyan' },
+                    { hex: '#facc15', title: 'Yellow' }
+                  ].map((c) => (
+                    <button
+                      key={c.hex}
+                      type="button"
+                      onClick={() => {
+                        setColor(c.hex);
+                        setTool('pen');
+                      }}
+                      className={`w-4 h-4 rounded-full border transition-transform ${
+                        color === c.hex && tool === 'pen' ? 'scale-125 border-white ring-2 ring-white/40' : 'border-black/40'
+                      }`}
+                      style={{ backgroundColor: c.hex }}
+                      title={c.title}
+                    />
+                  ))}
+                </div>
 
-              <button
-                onClick={() => setTool('rectangle')}
-                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
-                  tool === 'rectangle'
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="Draw Box / Optimization Boundary"
-              >
-                <Square className="w-3.5 h-3.5" />
-              </button>
+                {/* Thickness */}
+                <div className="flex items-center gap-1 pl-1 border-l border-emerald-900/60">
+                  {[2, 4, 8].map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() => setLineWidth(size)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] font-mono border ${
+                        lineWidth === size ? 'bg-amber-500 text-dark-950 font-bold border-amber-400' : 'bg-[#162923] border-emerald-900/40 text-slate-300'
+                      }`}
+                    >
+                      {size}px
+                    </button>
+                  ))}
+                </div>
 
-              <button
-                onClick={() => setTool('circle')}
-                className={`p-1.5 sm:px-2 sm:py-1 rounded-lg border transition-all ${
-                  tool === 'circle'
-                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="Draw Circle / Orbit / Atom"
-              >
-                <Circle className="w-3.5 h-3.5" />
-              </button>
+                {/* Undo & Clear */}
+                <button
+                  type="button"
+                  onClick={handleUndo}
+                  className="p-1.5 rounded-lg bg-[#162923] border border-emerald-900/60 text-slate-300 hover:text-white"
+                  title="Undo Last Stroke"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
 
-              <button
-                onClick={() => setTool('eraser')}
-                className={`p-1.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all flex items-center gap-1 ${
-                  tool === 'eraser'
-                    ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-bold'
-                    : 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                }`}
-                title="Chalk Duster Eraser"
-              >
-                <Eraser className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Eraser</span>
-              </button>
-
-              {/* Chalk Palette Swatches */}
-              <div className="flex items-center gap-1 pl-1 ml-1 border-l border-[#1e293b]">
-                {chalkPalette.map((cp) => (
-                  <button
-                    key={cp.hex}
-                    onClick={() => setColor(cp.hex)}
-                    style={{ backgroundColor: cp.hex }}
-                    title={cp.label}
-                    className={`w-4 h-4 rounded-full transition-transform ${
-                      color === cp.hex ? 'scale-125 ring-2 ring-amber-400 ring-offset-1 ring-offset-[#090f20]' : 'hover:scale-110'
-                    }`}
-                  />
-                ))}
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="p-1.5 rounded-lg bg-[#162923] border border-emerald-900/60 text-rose-400 hover:text-rose-300"
+                  title="Clear Blackboard"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 
-            {/* Board Background Texture Selector & Clear */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setBoardTheme(boardTheme === 'chalkboard-green' ? 'chalkboard-slate' : 'chalkboard-green')}
-                className="px-2 py-1 rounded-lg bg-[#0f172a] border border-[#1e293b] text-[11px] text-slate-300 hover:text-amber-300 flex items-center gap-1"
-                title="Toggle Oxford Slate Green vs Cambridge Midnight Slate"
-              >
-                <div 
-                  className={`w-2.5 h-2.5 rounded-full ${boardTheme === 'chalkboard-green' ? 'bg-emerald-600' : 'bg-slate-700'}`} 
-                />
-                <span className="hidden sm:inline">
-                  {boardTheme === 'chalkboard-green' ? 'Oxford Green' : 'Midnight Slate'}
-                </span>
-              </button>
+            {/* Blackboard Canvas Drawing Area */}
+            <div className="flex-1 relative cursor-crosshair w-full h-full min-h-[380px]">
+              <canvas
+                ref={canvasRef}
+                onMouseDown={startDrawing}
+                onMouseMove={draw}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+                onTouchStart={startDrawing}
+                onTouchMove={draw}
+                onTouchEnd={stopDrawing}
+                className="w-full h-full block"
+              />
 
-              <button
-                onClick={undoLast}
-                disabled={history.length === 0}
-                className={`p-1 sm:px-2 sm:py-1 rounded-lg border text-[11px] flex items-center gap-1 ${
-                  history.length > 0
-                    ? 'bg-[#0f172a] border-[#1e293b] text-slate-300 hover:text-white'
-                    : 'opacity-40 border-[#1e293b] text-slate-600 cursor-not-allowed'
-                }`}
-                title="Undo last chalk stroke"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span className="hidden sm:inline">Undo</span>
-              </button>
-
-              <button
-                onClick={clearBoard}
-                className="p-1 sm:px-2 sm:py-1 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 text-[11px] flex items-center gap-1"
-                title="Clear entire blackboard"
-              >
-                <Trash2 className="w-3 h-3 text-rose-400" />
-                <span className="hidden sm:inline">Clear</span>
-              </button>
+              {/* Watermark subtle indicator */}
+              <div className="absolute bottom-3 left-3 text-[10px] font-mono text-emerald-800 pointer-events-none select-none">
+                Nexa Digital Chalkboard • Draw anywhere
+              </div>
             </div>
 
           </div>
 
-          {/* Quick Mathematical & STEM Stamp Bar */}
-          <div className="px-3 sm:px-5 py-1.5 bg-[#070b18] border-b border-[#1e293b] flex items-center gap-1.5 overflow-x-auto scrollbar-none z-10 text-[11px] font-serif">
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
-              <GraduationCap className="w-3 h-3 text-amber-400" />
-              Formula Stamps:
-            </span>
-            {mathStamps.map((st) => (
-              <button
-                key={st.label}
-                onClick={() => stampMathSymbol(st.symbol)}
-                className="px-2 py-0.5 rounded-md bg-[#0f172a] border border-[#1e293b] text-slate-300 hover:text-amber-300 hover:border-amber-500/40 shrink-0 transition-colors"
-                title={`Stamp ${st.symbol} onto board`}
-              >
-                {st.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Active Work Area: Supports Split Studio, Full Blackboard, or Full Screen Share */}
-          <div className="relative flex-1 min-h-[500px] w-full h-full overflow-hidden flex flex-col md:flex-row">
+          {/* ----------------------------------------------------------------- */}
+          {/* RIGHT HALF (50%): SCREEN SHARE & SHARED MATERIAL                  */}
+          {/* ----------------------------------------------------------------- */}
+          <div className="rounded-2xl bg-[#0f172a] border border-slate-700 flex flex-col justify-between overflow-hidden shadow-inner min-h-[460px]">
             
-            {/* STAGE PANE A: REALISTIC CHROME SCREEN SHARE & STEM SIMULATION WINDOW */}
-            {(activeLayout === 'screenshare' || activeLayout === 'split') && (
-              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2 border-b md:border-b-0 md:border-r border-[#1e293b]' : 'w-full'} h-full min-h-[480px] flex flex-col bg-[#070b16] overflow-hidden`}>
-                
-                {/* 1. Realistic macOS / Chrome Window Top Frame */}
-                <div className="bg-[#1a202c] border-b border-[#2d3748] px-3 pt-2.5 pb-1.5 flex flex-col gap-1.5 shadow-md">
-                  {/* Top Tab Bar */}
-                  <div className="flex items-center justify-between gap-2">
-                    {/* Window Controls (Red, Yellow, Green) */}
-                    <div className="flex items-center gap-1.5 pr-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56] inline-block shadow-sm" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e] inline-block shadow-sm" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f] inline-block shadow-sm" />
+            {/* Chrome Browser Bar */}
+            <div className="bg-[#1e293b] p-2.5 border-b border-slate-700 flex items-center justify-between gap-3 text-xs font-mono">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+                <span className="text-[11px] text-slate-300 font-bold ml-1.5 truncate">
+                  Chrome Screen Share: {activeShareTab === 'material' ? 'Shared Document' : activeShareTab === 'desmos' ? 'Desmos Grapher' : 'Wolfram Solver'}
+                </span>
+              </div>
+
+              {/* Tab Switcher: Shared Material, Desmos Grapher, Wolfram Solver */}
+              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setActiveShareTab('material')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                    activeShareTab === 'material'
+                      ? 'bg-[#f39228] text-dark-950 shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3 h-3" />
+                  <span>Shared PDF</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveShareTab('desmos')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                    activeShareTab === 'desmos'
+                      ? 'bg-[#f39228] text-dark-950 shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Sliders className="w-3 h-3" />
+                  <span>Desmos Graph</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveShareTab('wolfram')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                    activeShareTab === 'wolfram'
+                      ? 'bg-[#f39228] text-dark-950 shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>Wolfram</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Content Area for Right Half */}
+            <div className="flex-1 p-3 overflow-y-auto">
+              
+              {/* TAB 1: SHARED MATERIAL / PDF VIEWER */}
+              {activeShareTab === 'material' && (
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-4 text-xs font-mono">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-[#f39228]" />
+                      <span className="text-white font-bold truncate max-w-xs">{sharedDocumentName}</span>
                     </div>
 
-                    {/* Interactive Chrome Tabs */}
-                    <div className="flex-1 flex items-center gap-1 overflow-x-auto scrollbar-none">
+                    <div className="flex items-center gap-1">
                       <button
-                        onClick={() => { setChromeActiveTab('desmos'); setScreenShareSourceType('chrome-window'); }}
-                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
-                          chromeActiveTab === 'desmos'
-                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
-                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
-                        }`}
+                        type="button"
+                        onClick={() => setMaterialZoom(prev => Math.max(70, prev - 15))}
+                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                        title="Zoom Out"
                       >
-                        <TrendingUp className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                        <span>Desmos Grapher</span>
+                        <ZoomOut className="w-3 h-3" />
                       </button>
-
+                      <span className="px-1.5 text-[10px] text-slate-400">{materialZoom}%</span>
                       <button
-                        onClick={() => { setChromeActiveTab('wolfram'); setScreenShareSourceType('chrome-window'); }}
-                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
-                          chromeActiveTab === 'wolfram'
-                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
-                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
-                        }`}
+                        type="button"
+                        onClick={() => setMaterialZoom(prev => Math.min(150, prev + 15))}
+                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                        title="Zoom In"
                       >
-                        <Cpu className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                        <span>Wolfram Solver</span>
-                      </button>
-
-                      <button
-                        onClick={() => { setChromeActiveTab('curriculum'); setScreenShareSourceType('chrome-window'); }}
-                        className={`px-3 py-1 rounded-t-lg text-[11px] font-mono transition-all flex items-center gap-1.5 shrink-0 ${
-                          chromeActiveTab === 'curriculum'
-                            ? 'bg-[#0f172a] text-[#f39228] font-bold border-t border-x border-[#334155]'
-                            : 'bg-[#1e293b]/60 text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        <BookOpen className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        <span>Problem Deck</span>
+                        <ZoomIn className="w-3 h-3" />
                       </button>
                     </div>
+                  </div>
 
-                    {/* Stream Status Badge */}
-                    <div className="pl-1 shrink-0">
-                      {screenStream ? (
-                        <span className="flex items-center gap-1 text-[9px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800 font-bold animate-pulse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          <span>LIVE STREAM</span>
-                        </span>
+                  {/* Document Simulated Sheet */}
+                  <div 
+                    className="p-4 rounded-xl bg-[#090d16] border border-slate-800 space-y-3 transition-transform origin-top"
+                    style={{ transform: `scale(${materialZoom / 100})` }}
+                  >
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 pb-2 border-b border-slate-800">
+                      <span className="text-amber-300 font-bold">NEXA SCHOLAR CURRICULUM SHEET</span>
+                      <span>Page {materialPage} of 2</span>
+                    </div>
+
+                    <div className="space-y-3 text-slate-200 text-xs">
+                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
+                        <strong className="text-[#f39228] block mb-1">Problem 1: Algebraic Operations</strong>
+                        Solve for x in the equation: <code className="text-amber-300">3x + 9 = 24</code>
+                        <div className="text-[11px] text-slate-400 mt-1">Hint: Subtract 9 from both sides, then divide by 3.</div>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
+                        <strong className="text-[#f39228] block mb-1">Problem 2: Fractions & Ratios</strong>
+                        A recipe calls for <code className="text-amber-300">3/4 cup</code> of sugar. If you double the recipe, how much sugar is needed?
+                        <div className="text-[11px] text-slate-400 mt-1">Solution: 2 × (3/4) = 6/4 = 1 and 1/2 cups.</div>
+                      </div>
+
+                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
+                        <strong className="text-[#f39228] block mb-1">Problem 3: Geometry & Perimeter</strong>
+                        Calculate the perimeter of a rectangle with length <code className="text-amber-300">12 cm</code> and width <code className="text-amber-300">5 cm</code>.
+                        <div className="text-[11px] text-slate-400 mt-1">Formula: P = 2(l + w) = 2(12 + 5) = 34 cm.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 2: DESMOS STEM GRAPHER */}
+              {activeShareTab === 'desmos' && (
+                <div className="space-y-3 text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white font-bold">Desmos Parabola Plotter</span>
+                    <span className="text-[#f39228] font-bold">f(x) = {graphA}x² + ({graphB})x + ({graphC})</span>
+                  </div>
+
+                  <div className="rounded-xl overflow-hidden border border-slate-800 flex justify-center bg-[#0f172a]">
+                    <canvas ref={graphCanvasRef} className="w-full max-w-full h-auto block" />
+                  </div>
+
+                  {/* Range Sliders for a, b, c */}
+                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                    <div>
+                      <div className="flex justify-between text-[10px] text-slate-400">
+                        <span>a (Curve):</span>
+                        <span className="text-amber-300 font-bold">{graphA}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-3"
+                        max="3"
+                        step="0.5"
+                        value={graphA}
+                        onChange={(e) => setGraphA(parseFloat(e.target.value) || 1)}
+                        className="w-full accent-amber-500 mt-1"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-[10px] text-slate-400">
+                        <span>b (Shift):</span>
+                        <span className="text-amber-300 font-bold">{graphB}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-6"
+                        max="6"
+                        step="1"
+                        value={graphB}
+                        onChange={(e) => setGraphB(parseFloat(e.target.value))}
+                        className="w-full accent-amber-500 mt-1"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-[10px] text-slate-400">
+                        <span>c (Intercept):</span>
+                        <span className="text-amber-300 font-bold">{graphC}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-5"
+                        max="5"
+                        step="1"
+                        value={graphC}
+                        onChange={(e) => setGraphC(parseFloat(e.target.value))}
+                        className="w-full accent-amber-500 mt-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: WOLFRAM ALGEBRAIC SOLVER */}
+              {activeShareTab === 'wolfram' && (
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 text-xs font-mono">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <span className="text-white font-bold">Wolfram Exact Solver</span>
+                    <span className="text-emerald-400 font-bold">Equation: {graphA}x² + ({graphB})x + ({graphC}) = 0</span>
+                  </div>
+
+                  <div className="space-y-2 text-slate-300">
+                    <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60">
+                      <strong className="text-amber-300 block">Step 1: Compute Discriminant (Δ)</strong>
+                      <code>Δ = b² - 4ac = ({graphB})² - 4({graphA})({graphC}) = {discriminant}</code>
+                      <span className={`block text-[11px] mt-1 ${discriminant >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {discriminant > 0 ? '✓ Δ > 0: Two Distinct Real Roots' : discriminant === 0 ? '✓ Δ = 0: Exactly One Real Root' : '✗ Δ < 0: Complex Roots'}
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60">
+                      <strong className="text-amber-300 block">Step 2: Quadratic Formula</strong>
+                      <code>x = (-b ± √Δ) / (2a)</code>
+                      {root1 !== null ? (
+                        <div className="text-emerald-300 font-bold mt-1">
+                          Roots: x₁ = {root1}, x₂ = {root2}
+                        </div>
                       ) : (
-                        <span className="text-[9px] font-mono text-[#f39228] bg-amber-950/70 px-2 py-0.5 rounded-full border border-amber-800 font-bold">
-                          CHROME SCREEN
-                        </span>
+                        <div className="text-rose-300 mt-1">No real solutions (Δ &lt; 0).</div>
                       )}
                     </div>
                   </div>
-
-                  {/* Chrome Navigation & Omnibox Address Bar */}
-                  <div className="flex items-center gap-2 text-xs">
-                    <div className="flex items-center gap-1 text-slate-400">
-                      <button className="px-1.5 py-0.5 rounded hover:bg-slate-700 hover:text-white text-xs">←</button>
-                      <button className="px-1.5 py-0.5 rounded hover:bg-slate-700 hover:text-white text-xs">→</button>
-                      <button className="p-1 rounded hover:bg-slate-700 hover:text-white">
-                        <RotateCw className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    {/* Omnibox URL Bar */}
-                    <div className="flex-1 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0f172a] border border-[#334155] text-slate-300 font-mono text-[10px] sm:text-[11px]">
-                      <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
-                      <span className="text-emerald-400">https://</span>
-                      <span className="text-white truncate">scholar.nexa.edu/classroom/{chromeActiveTab}</span>
-                    </div>
-
-                    {/* Quick Trigger to Stream Real Display */}
-                    <button
-                      onClick={toggleScreenShare}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1 transition-all shrink-0 ${
-                        screenStream
-                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 hover:bg-rose-500/30'
-                          : 'bg-[#f39228] text-dark-950 hover:bg-amber-400 shadow-sm'
-                      }`}
-                    >
-                      <ScreenShare className="w-3 h-3" />
-                      <span>{screenStream ? 'Stop Live Screen' : 'Stream Real Tab'}</span>
-                    </button>
-                  </div>
                 </div>
-
-                {/* 2. Chrome Viewport Content */}
-                {screenStream ? (
-                  /* Live WebRTC Display Feed */
-                  <div className="flex-1 w-full h-full bg-black flex flex-col items-center justify-center relative p-2">
-                    <video
-                      ref={screenVideoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="w-full h-full object-contain rounded-xl border border-slate-800 shadow-2xl"
-                    />
-                    <div className="absolute top-4 left-4 bg-[#0a1124]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300 flex items-center gap-2">
-                      <ScreenShare className="w-3.5 h-3.5" />
-                      <span>Streaming Live Chrome Screen • Annotate on Chalkboard</span>
-                    </div>
-                  </div>
-                ) : chromeActiveTab === 'desmos' ? (
-                  /* TAB 1: DESMOS INTERACTIVE STEM FUNCTION PLOTTER */
-                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#060b18]">
-                    <div className="p-4 rounded-2xl bg-[#0a1124] border border-cyan-500/30 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono text-cyan-400 font-bold uppercase flex items-center gap-1.5">
-                          <TrendingUp className="w-4 h-4" />
-                          Interactive Parabolic Plotter: f(x) = ax² + bx + c
-                        </span>
-                        <span className="text-[10px] font-mono text-slate-400">
-                          Vertex: ({-graphB / (2 * graphA || 1)}, {graphC - (graphB * graphB) / (4 * graphA || 1)})
-                        </span>
-                      </div>
-
-                      {/* Dynamic SVG Plot */}
-                      <div className="w-full h-44 rounded-xl bg-[#040711] border border-slate-800 relative flex items-center justify-center overflow-hidden">
-                        <svg className="w-full h-full" viewBox="-10 -10 20 20">
-                          <line x1="-10" y1="0" x2="10" y2="0" stroke="#1e293b" strokeWidth="0.3" />
-                          <line x1="0" y1="-10" x2="0" y2="10" stroke="#1e293b" strokeWidth="0.3" />
-                          
-                          <path
-                            d={(() => {
-                              const points = [];
-                              for (let x = -5; x <= 5; x += 0.2) {
-                                const y = -(graphA * x * x + graphB * x + graphC);
-                                points.push(`${x === -5 ? 'M' : 'L'} ${x * 1.8} ${y * 0.8}`);
-                              }
-                              return points.join(' ');
-                            })()}
-                            fill="none"
-                            stroke="#38bdf8"
-                            strokeWidth="0.6"
-                          />
-                        </svg>
-                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-400">
-                          Formula: f(x) = {graphA}x² {graphB >= 0 ? `+ ${graphB}x` : `${graphB}x`} {graphC >= 0 ? `+ ${graphC}` : `${graphC}`}
-                        </div>
-                      </div>
-
-                      {/* Interactive Sliders */}
-                      <div className="grid grid-cols-3 gap-3 text-xs font-mono">
-                        <div>
-                          <label className="text-slate-400 text-[10px] block">Coefficient a: {graphA}</label>
-                          <input
-                            type="range"
-                            min="-3"
-                            max="3"
-                            step="0.5"
-                            value={graphA}
-                            onChange={(e) => setGraphA(parseFloat(e.target.value) || 1)}
-                            className="w-full accent-cyan-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-slate-400 text-[10px] block">Coefficient b: {graphB}</label>
-                          <input
-                            type="range"
-                            min="-8"
-                            max="8"
-                            step="1"
-                            value={graphB}
-                            onChange={(e) => setGraphB(parseFloat(e.target.value) || 0)}
-                            className="w-full accent-cyan-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-slate-400 text-[10px] block">Constant c: {graphC}</label>
-                          <input
-                            type="range"
-                            min="-10"
-                            max="10"
-                            step="1"
-                            value={graphC}
-                            onChange={(e) => setGraphC(parseFloat(e.target.value) || 0)}
-                            className="w-full accent-cyan-500"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : chromeActiveTab === 'wolfram' ? (
-                  /* TAB 2: WOLFRAM STEP-BY-STEP EQUATION SOLVER */
-                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#060b18]">
-                    {(() => {
-                      const d = (graphB * graphB) - (4 * graphA * graphC);
-                      const isReal = d >= 0;
-                      return (
-                        <div className="p-5 rounded-2xl bg-[#0a1124] border border-amber-500/30 space-y-4 shadow-xl">
-                          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                            <span className="text-xs font-mono text-amber-400 font-bold uppercase flex items-center gap-1.5">
-                              <Cpu className="w-4 h-4" />
-                              Wolfram Step-by-Step Algebraic Solver
-                            </span>
-                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
-                              d > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
-                              d === 0 ? 'bg-cyan-950 text-cyan-400 border border-cyan-800' :
-                              'bg-purple-950 text-purple-400 border border-purple-800'
-                            }`}>
-                              {d > 0 ? 'Two Real Roots' : d === 0 ? 'One Double Root' : 'Complex Conjugate Roots'}
-                            </span>
-                          </div>
-
-                          {/* Equation Form */}
-                          <div className="p-3.5 rounded-xl bg-dark-950 border border-slate-800 font-mono text-xs sm:text-sm text-center text-white">
-                            <span className="text-amber-400 font-bold">{graphA}x²</span> {graphB >= 0 ? `+ ${graphB}x` : `${graphB}x`} {graphC >= 0 ? `+ ${graphC}` : `${graphC}`} = 0
-                          </div>
-
-                          {/* Step 1: Quadratic Formula */}
-                          <div className="space-y-1.5 text-xs font-mono">
-                            <span className="text-slate-400 uppercase text-[10px] block">Step 1: Apply Quadratic Formula</span>
-                            <p className="p-2.5 rounded-lg bg-[#050914] border border-slate-800 text-slate-300">
-                              x = (-b ± √(b² - 4ac)) / 2a
-                            </p>
-                          </div>
-
-                          {/* Step 2: Discriminant Calculation */}
-                          <div className="space-y-1.5 text-xs font-mono">
-                            <span className="text-slate-400 uppercase text-[10px] block">Step 2: Calculate Discriminant (Δ)</span>
-                            <div className="p-2.5 rounded-lg bg-[#050914] border border-slate-800 space-y-1 text-slate-300">
-                              <p>Δ = ({graphB})² - 4({graphA})({graphC})</p>
-                              <p className="text-amber-400 font-bold">Δ = {graphB * graphB} - ({4 * graphA * graphC}) = {d}</p>
-                            </div>
-                          </div>
-
-                          {/* Step 3: Exact Roots Solution */}
-                          <div className="space-y-1.5 text-xs font-mono">
-                            <span className="text-slate-400 uppercase text-[10px] block">Step 3: Computed Roots</span>
-                            <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-800 text-emerald-300 space-y-1 font-bold">
-                              {isReal ? (
-                                <>
-                                  <p>x₁ = {((-graphB + Math.sqrt(d)) / (2 * graphA)).toFixed(3)}</p>
-                                  <p>x₂ = {((-graphB - Math.sqrt(d)) / (2 * graphA)).toFixed(3)}</p>
-                                </>
-                              ) : (
-                                <>
-                                  <p>x₁ = {(-graphB / (2 * graphA)).toFixed(3)} + {(Math.sqrt(-d) / (2 * Math.abs(graphA))).toFixed(3)} i</p>
-                                  <p>x₂ = {(-graphB / (2 * graphA)).toFixed(3)} - {(Math.sqrt(-d) / (2 * Math.abs(graphA))).toFixed(3)} i</p>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                ) : (
-                  /* TAB 3: ACADEMIC PROBLEM SLIDES BANK */
-                  <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#050914] scrollbar-thin">
-                    <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                      {academicSlides.map((sl, idx) => (
-                        <button
-                          key={sl.id}
-                          onClick={() => setSelectedSlideIndex(idx)}
-                          className={`px-2.5 py-1 rounded-xl text-xs font-mono whitespace-nowrap transition-all border ${
-                            selectedSlideIndex === idx
-                              ? 'bg-amber-500/20 border-amber-500/60 text-amber-300 font-bold shadow'
-                              : 'bg-[#0d1424] border-[#1e293b] text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          Slide {idx + 1}: {sl.title.split(':')[0]}
-                        </button>
-                      ))}
-                    </div>
-
-                    {(() => {
-                      const slide = academicSlides[selectedSlideIndex];
-                      return (
-                        <div className="p-5 rounded-2xl bg-gradient-to-b from-[#0c1428] to-[#070c1b] border border-amber-900/40 space-y-3.5 shadow-xl">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 font-bold">
-                              {slide.badge}
-                            </span>
-                            <span className="text-[10px] font-mono text-slate-400">
-                              Slide {selectedSlideIndex + 1} of {academicSlides.length}
-                            </span>
-                          </div>
-
-                          <h3 className="text-base sm:text-lg font-serif font-bold text-white leading-snug">
-                            {slide.title}
-                          </h3>
-
-                          <div className="p-3.5 rounded-xl bg-[#080d1e] border border-[#1e293b] text-xs text-slate-300 leading-relaxed font-sans">
-                            <span className="font-bold text-amber-300 block mb-1">Problem Statement:</span>
-                            {slide.question}
-                          </div>
-
-                          <div className="p-3 rounded-xl bg-[#050814] border border-cyan-900/30 text-xs font-mono space-y-1">
-                            <div className="text-cyan-400 font-bold">{slide.formula}</div>
-                            <div className="text-slate-300 text-[11px]">{slide.derivative}</div>
-                            <div className="text-emerald-400 font-bold text-[11px] pt-1 border-t border-slate-800">{slide.maxArea}</div>
-                          </div>
-
-                          <p className="text-[11px] text-amber-200/70 italic font-serif">
-                            ★ Nexa Mentor Tip: {slide.highlight}
-                          </p>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
-
-              </div>
-            )}
-
-            {/* STAGE PANE B: DIGITAL BLACKBOARD (Visible in 'blackboard' or 'split') */}
-            {(activeLayout === 'blackboard' || activeLayout === 'split') && (
-              <div className={`${activeLayout === 'split' ? 'w-full md:w-1/2' : 'w-full'} h-full min-h-[460px] relative flex items-center justify-center overflow-hidden`}>
-                
-                {/* Chalkboard Outer Wooden Frame Trim with Walnut Gradient */}
-                <div className="w-full h-full min-h-[440px] p-2 sm:p-3 bg-gradient-to-br from-[#2a1708] via-[#1b1007] to-[#0d0703] flex items-center justify-center">
-                  
-                  {/* Chalkboard Slate Canvas Frame */}
-                  <div className={`w-full h-full min-h-[400px] rounded-2xl relative overflow-hidden border-[3px] border-[#3d2311] shadow-[inset_0_4px_12px_rgba(0,0,0,0.8)] ${
-                    boardTheme === 'chalkboard-green' 
-                      ? 'bg-[#091b15]' 
-                      : boardTheme === 'grid'
-                      ? 'bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] bg-[#070d18]'
-                      : 'bg-[#0a1020]'
-                  }`}>
-                    
-                    <canvas
-                      ref={canvasRef}
-                      onMouseDown={startDrawing}
-                      onMouseMove={draw}
-                      onMouseUp={stopDrawing}
-                      onMouseLeave={stopDrawing}
-                      onTouchStart={startDrawing}
-                      onTouchMove={draw}
-                      onTouchEnd={stopDrawing}
-                      className="w-full h-full min-h-[400px] cursor-crosshair touch-none"
-                    />
-
-                    {/* Classic Collegiate Slate Watermark */}
-                    <div className="absolute bottom-3 left-4 pointer-events-none select-none text-[10px] font-serif text-slate-400/40 tracking-wider">
-                      NEXA ACADEMIC NETWORK • LIVE COLLABORATIVE CLASSROOM
-                    </div>
-
-                    {/* Quick Expand Toggle for Split View */}
-                    {activeLayout === 'split' && (
-                      <button
-                        onClick={() => setActiveLayout('blackboard')}
-                        className="absolute top-3 right-3 p-1.5 rounded-lg bg-black/60 hover:bg-black text-slate-400 hover:text-white transition-all text-[10px] font-mono border border-slate-700/60"
-                        title="Maximize Blackboard to Full Width"
-                      >
-                        <Maximize2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* Picture-in-Picture Floating Webcam Feeds (Teacher & Student) */}
-            <div className="absolute bottom-4 right-4 flex flex-col sm:flex-row gap-2.5 z-20 pointer-events-auto">
-              
-              {/* Nexa Faculty Mentor Video Feed */}
-              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-2xl bg-[#0a1224] border border-amber-500/40 overflow-hidden shadow-2xl relative flex flex-col justify-between p-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-amber-300 font-bold px-1.5 py-0.5 rounded bg-amber-950/90 border border-amber-800">
-                    Nexa Mentor
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[9px] font-mono text-emerald-300 font-bold">Live</span>
-                  </div>
-                </div>
-
-                {/* Animated Voice Waveform */}
-                <div className="flex items-center justify-center gap-1 my-auto">
-                  <div className="w-1 h-3.5 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                  <div className="w-1 h-6 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                  <div className="w-1 h-3 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-                  <div className="w-1 h-5 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-                  <span className="text-[10px] text-amber-200 font-mono ml-1 font-bold">Speaking</span>
-                </div>
-
-                <div className="text-[10px] font-serif text-white font-bold truncate">
-                  {mentorName}
-                </div>
-              </div>
-
-              {/* Student Self Feed */}
-              <div className="w-36 sm:w-44 h-24 sm:h-28 rounded-2xl bg-[#090f20] border border-[#1e293b] overflow-hidden shadow-xl relative flex flex-col justify-between p-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[9px] font-mono text-slate-300 font-bold px-1.5 py-0.5 rounded bg-[#131b2e]">
-                    You (Scholar)
-                  </span>
-                  <div className="flex items-center gap-1">
-                    {isMicOn ? <Mic className="w-3 h-3 text-emerald-400" /> : <MicOff className="w-3 h-3 text-rose-400" />}
-                    {isVideoOn ? <Video className="w-3 h-3 text-emerald-400" /> : <VideoOff className="w-3 h-3 text-rose-400" />}
-                  </div>
-                </div>
-
-                {/* Video Avatar */}
-                <div className="flex flex-col items-center justify-center my-auto text-slate-500">
-                  {isVideoOn ? (
-                    <User className="w-6 h-6 text-slate-300" />
-                  ) : (
-                    <span className="text-[10px] font-mono text-slate-500">Video Paused</span>
-                  )}
-                </div>
-
-                <div className="text-[10px] font-mono text-slate-400 truncate">
-                  {gradeLevel.split(' ')[0]} Active
-                </div>
-              </div>
+              )}
 
             </div>
 
-          </div>
-
-          {/* Bottom Call Controls Dock */}
-          <div className="p-2.5 sm:p-3 bg-[#080e1e] border-t border-[#1e293b] flex items-center justify-center gap-2.5 flex-wrap z-10">
-            <button
-              onClick={() => setIsMicOn(!isMicOn)}
-              className={`px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
-                isMicOn
-                  ? 'bg-[#0f172a] border-[#1e293b] text-white hover:border-slate-500'
-                  : 'bg-rose-500/20 border-rose-500 text-rose-300'
-              }`}
-            >
-              {isMicOn ? <Mic className="w-4 h-4 text-emerald-400" /> : <MicOff className="w-4 h-4 text-rose-400" />}
-              <span className="hidden sm:inline">{isMicOn ? 'Mute' : 'Unmuted'}</span>
-            </button>
-
-            <button
-              onClick={() => setIsVideoOn(!isVideoOn)}
-              className={`px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
-                isVideoOn
-                  ? 'bg-[#0f172a] border-[#1e293b] text-white hover:border-slate-500'
-                  : 'bg-rose-500/20 border-rose-500 text-rose-300'
-              }`}
-            >
-              {isVideoOn ? <Video className="w-4 h-4 text-emerald-400" /> : <VideoOff className="w-4 h-4 text-rose-400" />}
-              <span className="hidden sm:inline">{isVideoOn ? 'Stop Camera' : 'Start Camera'}</span>
-            </button>
-
-            <button
-              onClick={toggleScreenShare}
-              className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-mono font-bold ${
-                isScreenSharing
-                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/10'
-                  : 'bg-[#0f172a] border-[#1e293b] text-white hover:border-cyan-500/50'
-              }`}
-            >
-              <ScreenShare className="w-4 h-4 text-cyan-400" />
-              <span>{isScreenSharing ? 'Stop Screen Share' : 'Share Chrome Screen'}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveLayout(activeLayout === 'split' ? 'blackboard' : 'split')}
-              className="px-3.5 py-2 rounded-xl bg-[#0f172a] border border-amber-900/40 text-amber-300 hover:text-white transition-all text-xs font-mono font-bold flex items-center gap-1.5"
-            >
-              <Columns className="w-4 h-4 text-amber-400" />
-              <span className="hidden sm:inline">{activeLayout === 'split' ? 'Full Blackboard' : 'Dual Studio'}</span>
-            </button>
           </div>
 
         </div>
 
-        {/* RIGHT: PREPLY-STYLE COLLABORATIVE SIDEBAR (Chat, Lesson Notes, Quick Reference) */}
-        <div className="lg:col-span-4 xl:col-span-3 bg-[#070c1a] flex flex-col h-full border-t lg:border-t-0">
-          
-          {/* Sidebar Tabs */}
-          <div className="flex border-b border-[#1e293b] bg-[#0a1124]">
+        {/* Laptop Bottom Chin Controls (Mic, Video, Fullscreen) */}
+        <div className="flex items-center justify-between px-4 py-2.5 mt-2 bg-[#162032] border-t border-slate-700/60 rounded-b-2xl">
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveSidebarTab('chat')}
-              className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
-                activeSidebarTab === 'chat'
-                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
-                  : 'border-transparent text-slate-400 hover:text-white'
+              type="button"
+              onClick={() => setIsMicOn(!isMicOn)}
+              className={`p-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                isMicOn ? 'bg-slate-800 text-emerald-400 border border-slate-700' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
               }`}
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>In-Call Chat</span>
+              {isMicOn ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
+              <span>{isMicOn ? 'Mic On' : 'Muted'}</span>
             </button>
 
             <button
-              onClick={() => setActiveSidebarTab('notes')}
-              className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
-                activeSidebarTab === 'notes'
-                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
-                  : 'border-transparent text-slate-400 hover:text-white'
+              type="button"
+              onClick={() => setIsVideoOn(!isVideoOn)}
+              className={`p-2 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition-all ${
+                isVideoOn ? 'bg-slate-800 text-emerald-400 border border-slate-700' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
               }`}
             >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Lesson Notes</span>
-            </button>
-
-            <button
-              onClick={() => setActiveSidebarTab('theorems')}
-              className={`flex-1 py-3 text-xs font-mono font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
-                activeSidebarTab === 'theorems'
-                  ? 'border-amber-400 text-amber-300 bg-[#0f172a]'
-                  : 'border-transparent text-slate-400 hover:text-white'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Theorems</span>
+              {isVideoOn ? <Video className="w-3.5 h-3.5" /> : <VideoOff className="w-3.5 h-3.5" />}
+              <span>{isVideoOn ? 'Camera On' : 'Camera Off'}</span>
             </button>
           </div>
 
-          {/* Tab 1: Live Chat Thread */}
-          {activeSidebarTab === 'chat' && (
-            <div className="flex-1 flex flex-col justify-between p-3.5 overflow-hidden">
-              <div className="flex-1 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
-                {chatMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`p-3 rounded-2xl text-xs space-y-1 ${
-                      msg.sender === 'mentor'
-                        ? 'bg-[#0d162d] border border-amber-900/40 text-slate-200'
-                        : 'bg-[#101e38] border border-cyan-800/40 text-white ml-4'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span className={msg.sender === 'mentor' ? 'text-amber-400 font-bold' : 'text-cyan-400 font-bold'}>
-                        {msg.name}
-                      </span>
-                      <span className="text-slate-500">{msg.time}</span>
-                    </div>
-                    <p className="leading-relaxed font-sans">{msg.text}</p>
-                  </div>
-                ))}
-              </div>
+          <div className="text-xs font-mono text-slate-400 hidden sm:inline">
+            Split Screen Laptop View • 50% Blackboard | 50% Screen Share
+          </div>
 
-              {/* Message Input Form */}
-              <form onSubmit={handleSendMessage} className="mt-3 pt-2 border-t border-[#1e293b] flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Ask mentor a formula or theorem question..."
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  className="flex-1 bg-[#0a1122] border border-[#1e293b] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
-                />
-                <button
-                  type="submit"
-                  className="p-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white transition-colors"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-            </div>
-          )}
-
-          {/* Tab 2: Shared Collaborative Notes */}
-          {activeSidebarTab === 'notes' && (
-            <div className="flex-1 p-3.5 flex flex-col overflow-hidden space-y-2">
-              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-                <span>Shared Homework & Notes Pad</span>
-                <span className="text-emerald-400 flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3" /> Auto-Saved
-                </span>
-              </div>
-              <textarea
-                value={sharedNotes}
-                onChange={(e) => setSharedNotes(e.target.value)}
-                className="flex-1 w-full bg-[#0a1122] border border-[#1e293b] rounded-2xl p-3 text-xs font-mono text-slate-200 resize-none focus:outline-none focus:border-amber-500 leading-relaxed"
-                spellCheck="false"
-              />
-            </div>
-          )}
-
-          {/* Tab 3: Quick Theorem & Formula Bank */}
-          {activeSidebarTab === 'theorems' && (
-            <div className="flex-1 p-3.5 overflow-y-auto space-y-3 scrollbar-thin">
-              <div className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wide">
-                Quick Formula & Theorem Card
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
-                <div className="text-amber-300 font-bold">1. Derivative Power Rule</div>
-                <div className="text-slate-300 text-[11px]">d/dx [xⁿ] = n · xⁿ⁻¹</div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
-                <div className="text-amber-300 font-bold">2. Fundamental Theorem of Calculus</div>
-                <div className="text-slate-300 text-[11px]">∫ₐᵇ f(x)dx = F(b) - F(a)</div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
-                <div className="text-amber-300 font-bold">3. Quadratic Equation Roots</div>
-                <div className="text-slate-300 text-[11px]">x = (-b ± √(b² - 4ac)) / 2a</div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
-                <div className="text-amber-300 font-bold">4. Kinematic Motion Under Gravity</div>
-                <div className="text-slate-300 text-[11px]">v² = u² + 2as  |  s = ut + ½at²</div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#0a1122] border border-[#1e293b] text-xs font-mono space-y-1.5">
-                <div className="text-amber-300 font-bold">5. Ideal Gas Equation</div>
-                <div className="text-slate-300 text-[11px]">P · V = n · R · T (R = 8.314 J/(mol·K))</div>
-              </div>
-            </div>
-          )}
-
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono flex items-center gap-1.5 border border-slate-700"
+            >
+              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+            </button>
+          </div>
         </div>
 
       </div>
