@@ -68,14 +68,14 @@ export default function ContactSection() {
           {/* Left Column: Direct Channels */}
           <div className="lg:col-span-5 space-y-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cyan-950/80 border border-cyan-800/60 text-cyan-400 text-xs font-mono uppercase mb-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-[#f39228] text-xs font-mono font-bold uppercase tracking-wider mb-3">
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>Client Inquiries & Academy Admissions</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
                 Let's Build & Collaborate
               </h2>
-              <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+              <p className="text-slate-400 text-xs sm:text-sm mt-3 leading-relaxed">
                 Whether you want to commission a custom web application for your brand, enroll in our SMC Forex & Full-Stack academies, or book 1-on-1 academic tutoring for your student.
               </p>
             </div>
@@ -185,7 +185,7 @@ export default function ContactSection() {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-amber-500 text-dark-950 font-bold text-xs shadow-lg shadow-cyan-500/20 hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-dark-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
                 >
                   <Send className="w-4 h-4" />
                   <span>Send Project Brief to Nexa Leadership</span>
