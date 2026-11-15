@@ -11,16 +11,12 @@ import {
   ScreenShare, 
   Maximize2, 
   Minimize2, 
-  CheckCircle2, 
-  FileText, 
   Sliders, 
-  Layers, 
+  Sparkles,
   ExternalLink,
-  ZoomIn,
-  ZoomOut,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles
+  Monitor,
+  StopCircle,
+  FileText
 } from 'lucide-react';
 
 export default function PreplyVirtualClassroom({ 
@@ -43,12 +39,11 @@ export default function PreplyVirtualClassroom({
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Right Screen: Screen Share & Material Share State
-  const [activeShareTab, setActiveShareTab] = useState('material'); // 'material', 'desmos', 'wolfram'
-
-  // Material Viewer State
-  const [materialZoom, setMaterialZoom] = useState(100);
-  const [materialPage, setMaterialPage] = useState(1);
+  // Right Screen: Screen Share & Math Tools State
+  const [activeShareTab, setActiveShareTab] = useState('screenshare'); // 'screenshare', 'desmos', 'wolfram'
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenStream, setScreenStream] = useState(null);
+  const screenVideoRef = useRef(null);
 
   // Desmos Interactive Grapher Parameters
   const [graphA, setGraphA] = useState(1);
@@ -94,6 +89,203 @@ export default function PreplyVirtualClassroom({
       window.removeEventListener('resize', updateCanvasSize);
     };
   }, []);
+
+  // Screen Stream binding
+  useEffect(() => {
+    if (screenVideoRef.current && screenStream) {
+      screenVideoRef.current.srcObject = screenStream;
+    }
+  }, [screenStream, isScreenSharing]);
+
+  // Real Web Screen Share Handlers
+  const handleStartScreenShare = async () => {
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+        setScreenStream(stream);
+        setIsScreenSharing(true);
+        if (screenVideoRef.current) {
+          screenVideoRef.current.srcObject = stream;
+        }
+        stream.getVideoTracks()[0].onended = () => {
+          setIsScreenSharing(false);
+          setScreenStream(null);
+        };
+      } else {
+        // Fallback simulation state
+        setIsScreenSharing(true);
+      }
+    } catch (err) {
+      console.log('Screen share cancelled or not allowed', err);
+    }
+  };
+
+  const handleStopScreenShare = () => {
+    if (screenStream) {
+      screenStream.getTracks().forEach(track => track.stop());
+      setScreenStream(null);
+    }
+    setIsScreenSharing(false);
+  };
+
+  // Open PDF in dedicated new window/tab outside the classroom
+  const handleOpenPdfWindow = () => {
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${sharedDocumentName} - Nexa Academic PDF Viewer</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      background: #0b0f19;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .toolbar {
+      width: 100%;
+      max-width: 820px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 12px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .badge {
+      background: #f39228;
+      color: #0b0f19;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .doc-page {
+      width: 100%;
+      max-width: 820px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .doc-header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .doc-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+    .doc-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .btn {
+      background: #f39228;
+      color: #0b0f19;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn:hover { background: #e0821e; }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      border-left: 4px solid #f39228;
+      padding-left: 10px;
+      margin: 24px 0 12px 0;
+    }
+    .question-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    code {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div>
+      <span class="badge">Nexa Academic PDF Viewer</span>
+      <strong style="margin-left: 8px; font-size: 14px;">${sharedDocumentName}</strong>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn" onclick="window.print()">Print / Save PDF</button>
+    </div>
+  </div>
+
+  <div class="doc-page">
+    <div class="doc-header">
+      <div>
+        <div class="doc-title">${sharedDocumentName.replace('.pdf', '')}</div>
+        <div class="doc-meta">Curriculum Document • ${gradeLevel} • ${subject}</div>
+      </div>
+      <div style="text-align: right; font-size: 11px; color: #64748b;">
+        Nexa Academic Mentorship<br>
+        Assigned Teacher: ${mentorName}
+      </div>
+    </div>
+
+    <div class="section-title">Section A: Student Homework & Diagnostic Exercises</div>
+    <div class="question-box">
+      <strong>Problem 1: Simplifying Equations & Variable Operations</strong>
+      <p style="margin: 6px 0 0 0;">Solve for <em>x</em> in: <code>3x + 9 = 24</code></p>
+    </div>
+    <div class="question-box">
+      <strong>Problem 2: Fractions & Ratios</strong>
+      <p style="margin: 6px 0 0 0;">A recipe calls for 3/4 cup of sugar. If you double the recipe, how much sugar is needed?</p>
+    </div>
+    <div class="question-box">
+      <strong>Problem 3: Geometry & Perimeter</strong>
+      <p style="margin: 6px 0 0 0;">Find the perimeter of a rectangle with length 12 cm and width 5 cm.</p>
+    </div>
+
+    <div class="section-title">Section B: Classroom Screen Share Instructions</div>
+    <p style="font-size: 13px; color: #475569;">
+      This window is open outside the classroom tab. You can now click <strong>"Start Screen Share"</strong> in the Nexa Virtual Classroom to share this window or any PDF reader directly with Teacher ${mentorName}!
+    </p>
+  </div>
+</body>
+</html>
+    `;
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  };
 
   // Redraw Grapher Curve
   const graphCanvasRef = useRef(null);
@@ -419,127 +611,149 @@ export default function PreplyVirtualClassroom({
           </div>
 
           {/* ----------------------------------------------------------------- */}
-          {/* RIGHT HALF (50%): SCREEN SHARE & SHARED MATERIAL                  */}
+          {/* RIGHT HALF (50%): SCREEN SHARE & LIVE WINDOW (CHROME / DESMOS)     */}
           {/* ----------------------------------------------------------------- */}
           <div className="rounded-2xl bg-[#0f172a] border border-slate-700 flex flex-col justify-between overflow-hidden shadow-inner min-h-[460px]">
             
-            {/* Chrome Browser Bar */}
-            <div className="bg-[#1e293b] p-2.5 border-b border-slate-700 flex items-center justify-between gap-3 text-xs font-mono">
+            {/* Chrome Browser Bar with Direct Open PDF Button */}
+            <div className="bg-[#1e293b] p-2.5 border-b border-slate-700 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-                <span className="text-[11px] text-slate-300 font-bold ml-1.5 truncate">
-                  Chrome Screen Share: {activeShareTab === 'material' ? 'Shared Document' : activeShareTab === 'desmos' ? 'Desmos Grapher' : 'Wolfram Solver'}
+                <span className="text-[11px] text-slate-300 font-bold ml-1 truncate">
+                  Chrome Screen Share Stage
                 </span>
               </div>
 
-              {/* Tab Switcher: Shared Material, Desmos Grapher, Wolfram Solver */}
-              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+              {/* Action: Open PDF in New Window out of share tab */}
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setActiveShareTab('material')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
-                    activeShareTab === 'material'
-                      ? 'bg-[#f39228] text-dark-950 shadow'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
+                  onClick={handleOpenPdfWindow}
+                  className="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-[#f39228] text-[11px] font-bold flex items-center gap-1 transition-all"
+                  title="Open PDF in a separate window/tab"
                 >
-                  <FileText className="w-3 h-3" />
-                  <span>Shared PDF</span>
+                  <ExternalLink className="w-3 h-3" />
+                  <span>Open PDF in New Window ↗</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveShareTab('desmos')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
-                    activeShareTab === 'desmos'
-                      ? 'bg-[#f39228] text-dark-950 shadow'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Sliders className="w-3 h-3" />
-                  <span>Desmos Graph</span>
-                </button>
+                {/* Tab Switcher: Screen Share, Desmos Grapher, Wolfram Solver */}
+                <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setActiveShareTab('screenshare')}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                      activeShareTab === 'screenshare'
+                        ? 'bg-[#f39228] text-dark-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <ScreenShare className="w-3 h-3" />
+                    <span>Screen Share</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveShareTab('wolfram')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
-                    activeShareTab === 'wolfram'
-                      ? 'bg-[#f39228] text-dark-950 shadow'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>Wolfram</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveShareTab('desmos')}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                      activeShareTab === 'desmos'
+                        ? 'bg-[#f39228] text-dark-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Sliders className="w-3 h-3" />
+                    <span>Desmos Graph</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveShareTab('wolfram')}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                      activeShareTab === 'wolfram'
+                        ? 'bg-[#f39228] text-dark-950 shadow'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>Wolfram</span>
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Content Area for Right Half */}
             <div className="flex-1 p-3 overflow-y-auto">
               
-              {/* TAB 1: SHARED MATERIAL / PDF VIEWER */}
-              {activeShareTab === 'material' && (
-                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-4 text-xs font-mono">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-[#f39228]" />
-                      <span className="text-white font-bold truncate max-w-xs">{sharedDocumentName}</span>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => setMaterialZoom(prev => Math.max(70, prev - 15))}
-                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
-                        title="Zoom Out"
-                      >
-                        <ZoomOut className="w-3 h-3" />
-                      </button>
-                      <span className="px-1.5 text-[10px] text-slate-400">{materialZoom}%</span>
-                      <button
-                        type="button"
-                        onClick={() => setMaterialZoom(prev => Math.min(150, prev + 15))}
-                        className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
-                        title="Zoom In"
-                      >
-                        <ZoomIn className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Document Simulated Sheet */}
-                  <div 
-                    className="p-4 rounded-xl bg-[#090d16] border border-slate-800 space-y-3 transition-transform origin-top"
-                    style={{ transform: `scale(${materialZoom / 100})` }}
-                  >
-                    <div className="flex items-center justify-between text-[11px] text-slate-400 pb-2 border-b border-slate-800">
-                      <span className="text-amber-300 font-bold">NEXA SCHOLAR CURRICULUM SHEET</span>
-                      <span>Page {materialPage} of 2</span>
-                    </div>
-
-                    <div className="space-y-3 text-slate-200 text-xs">
-                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
-                        <strong className="text-[#f39228] block mb-1">Problem 1: Algebraic Operations</strong>
-                        Solve for x in the equation: <code className="text-amber-300">3x + 9 = 24</code>
-                        <div className="text-[11px] text-slate-400 mt-1">Hint: Subtract 9 from both sides, then divide by 3.</div>
+              {/* TAB 1: LIVE SCREEN SHARE / APPLICATION WINDOW */}
+              {activeShareTab === 'screenshare' && (
+                <div className="h-full flex flex-col justify-center items-center text-center p-6 space-y-4">
+                  {isScreenSharing ? (
+                    <div className="w-full h-full flex flex-col items-center justify-between space-y-3">
+                      <div className="w-full flex items-center justify-between p-2 rounded-xl bg-emerald-950/60 border border-emerald-800 text-xs font-mono text-emerald-300">
+                        <span className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          Live Screen Stream Active • Sharing to Classroom
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleStopScreenShare}
+                          className="px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold flex items-center gap-1"
+                        >
+                          <StopCircle className="w-3 h-3" />
+                          <span>Stop Share</span>
+                        </button>
                       </div>
 
-                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
-                        <strong className="text-[#f39228] block mb-1">Problem 2: Fractions & Ratios</strong>
-                        A recipe calls for <code className="text-amber-300">3/4 cup</code> of sugar. If you double the recipe, how much sugar is needed?
-                        <div className="text-[11px] text-slate-400 mt-1">Solution: 2 × (3/4) = 6/4 = 1 and 1/2 cups.</div>
-                      </div>
-
-                      <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
-                        <strong className="text-[#f39228] block mb-1">Problem 3: Geometry & Perimeter</strong>
-                        Calculate the perimeter of a rectangle with length <code className="text-amber-300">12 cm</code> and width <code className="text-amber-300">5 cm</code>.
-                        <div className="text-[11px] text-slate-400 mt-1">Formula: P = 2(l + w) = 2(12 + 5) = 34 cm.</div>
+                      <div className="w-full flex-1 min-h-[300px] rounded-xl overflow-hidden bg-black border border-slate-800 relative flex items-center justify-center">
+                        <video
+                          ref={screenVideoRef}
+                          autoPlay
+                          playsInline
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="max-w-md mx-auto space-y-4 my-auto">
+                      <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-[#f39228] flex items-center justify-center mx-auto shadow-lg">
+                        <Monitor className="w-8 h-8" />
+                      </div>
+
+                      <div>
+                        <h4 className="text-base font-bold text-white">
+                          Live Chrome & Window Screen Share
+                        </h4>
+                        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                          Share your open PDF reader, Acrobat, Chrome tab, or any application window on your laptop directly with {mentorName}.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+                        <button
+                          type="button"
+                          onClick={handleStartScreenShare}
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#f39228] hover:bg-[#e0821e] text-dark-950 font-bold text-xs uppercase font-mono shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all"
+                        >
+                          <ScreenShare className="w-4 h-4 text-dark-950" />
+                          <span>Start Screen Share</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleOpenPdfWindow}
+                          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs border border-slate-700 flex items-center justify-center gap-1.5 transition-all"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-[#f39228]" />
+                          <span>Open PDF in New Window ↗</span>
+                        </button>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-400">
+                        📎 Staged Document: <span className="text-amber-300">{sharedDocumentName}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
