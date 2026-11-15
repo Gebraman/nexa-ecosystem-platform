@@ -38,30 +38,7 @@ export default function K12ScholarsView({ onBackToHome }) {
       </div>
 
       {/* Main Studio Area */}
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
-        {/* Track Banner */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#212529] border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-950/80 border border-amber-800 text-amber-400 text-xs font-mono uppercase font-bold mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#f39228]" />
-              <span>1-on-1 Online Academic Mentorship</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
-              Nexa K-12 Academic Scholars Network
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-3xl leading-relaxed">
-              Empowering next-generation scholars: personalized 1-on-1 online academic coaching from verified senior university scholars and certified teachers for Grades 1–12 in Math, Sciences, and Programming.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-300 bg-dark-950 p-3 rounded-2xl border border-slate-800">
-            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
-            <span>100% Background-Checked Academic Faculty</span>
-          </div>
-        </div>
-
-        {/* Studio Body */}
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         <K12AcademicScholarsStudio />
       </div>
     </div>

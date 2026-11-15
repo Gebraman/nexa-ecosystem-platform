@@ -1,23 +1,9 @@
 import React, { useState } from 'react';
 import { 
-  GraduationCap, 
-  Award, 
   BookOpen, 
   Calendar, 
-  Clock, 
   CheckCircle2, 
-  Star, 
-  ChevronRight, 
-  Sparkles, 
-  ShieldCheck, 
   Calculator, 
-  UserCheck, 
-  HelpCircle,
-  ExternalLink,
-  MessageSquare,
-  Send,
-  Check,
-  Zap,
   Target
 } from 'lucide-react';
 import PreplyTutorBookingHub from './PreplyTutorBookingHub';
@@ -29,42 +15,6 @@ export default function K12AcademicScholarsStudio() {
   const [revealedSolutions, setRevealedSolutions] = useState({});
   const [diagnosticAnswers, setDiagnosticAnswers] = useState({});
   const [diagnosticSubmitted, setDiagnosticSubmitted] = useState(false);
-  const [inquiryMentor, setInquiryMentor] = useState('Ermias Tadesse');
-  const [inquiryNote, setInquiryNote] = useState('');
-  const [inquirySent, setInquirySent] = useState(false);
-
-  const mentors = [
-    {
-      id: 'm1',
-      name: 'Ermias Tadesse',
-      credentials: 'B.Sc. Electrical & Computer Engineering (Honors Graduate)',
-      specialty: 'High School Calculus, Physics & SAT Math Prep',
-      rating: '4.95',
-      sessions: '140+ Hours',
-      languages: 'English & Amharic',
-      badge: 'Nexa Senior Fellow'
-    },
-    {
-      id: 'm2',
-      name: 'Dr. Bethlehem Wolde',
-      credentials: 'MD Candidate & Medical Science Scholar',
-      specialty: 'Biology, Chemistry & Middle School Sciences',
-      rating: '4.98',
-      sessions: '180+ Hours',
-      languages: 'English & Amharic',
-      badge: 'Nexa Medical Science Fellow'
-    },
-    {
-      id: 'm3',
-      name: 'Natnael Mesfin',
-      credentials: 'B.Sc. Computer Science & Software Engineering',
-      specialty: 'Middle & High School Pre-Algebra, Geometry & Python Coding',
-      rating: '4.90',
-      sessions: '95+ Hours',
-      languages: 'English & Amharic',
-      badge: 'Nexa STEM Lead'
-    }
-  ];
 
   const practiceProblems = [
     {
@@ -146,14 +96,6 @@ export default function K12AcademicScholarsStudio() {
       if (diagnosticAnswers[q.id] === q.correct) score++;
     });
     return score;
-  };
-
-  const handleSendInquiry = (e) => {
-    e.preventDefault();
-    setInquirySent(true);
-    setTimeout(() => {
-      setInquiryNote('');
-    }, 3000);
   };
 
   return (
@@ -277,54 +219,7 @@ export default function K12AcademicScholarsStudio() {
         </div>
       </div>
 
-      {/* 2. NEXA CERTIFIED TEACHERS & SCHOLAR MENTOR DIRECTORY */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h4 className="text-xl font-serif font-bold text-white flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-[#f39228]" />
-            Verified Nexa Teachers & Academic Scholar Mentors
-          </h4>
-          <span className="text-xs font-mono text-[#f39228] hidden sm:inline">100% Background-Checked Academic Leaders</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {mentors.map((m) => (
-            <div 
-              key={m.id}
-              className="p-5 rounded-2xl bg-[#212529] border border-slate-800 hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-4 group shadow-lg"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 uppercase font-bold">
-                    {m.badge}
-                  </span>
-                  <div className="flex items-center gap-1 text-[#f39228] text-xs font-bold font-mono">
-                    <Star className="w-3.5 h-3.5 fill-[#f39228]" />
-                    <span>{m.rating}</span>
-                  </div>
-                </div>
-
-                <h5 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
-                  {m.name}
-                </h5>
-                <p className="text-xs text-[#f39228] font-mono mt-0.5">
-                  {m.credentials}
-                </p>
-                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                  {m.specialty}
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-                <span>{m.sessions}</span>
-                <span className="text-emerald-400 font-bold">{m.languages}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. INTERACTIVE 3-QUESTION DIAGNOSTIC ASSESSMENT */}
+      {/* 2. INTERACTIVE 3-QUESTION DIAGNOSTIC ASSESSMENT */}
       <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-7 space-y-5 shadow-2xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -404,7 +299,7 @@ export default function K12AcademicScholarsStudio() {
         </div>
       </div>
 
-      {/* 4. INTERACTIVE STEM PRACTICE PROBLEMS */}
+      {/* 3. INTERACTIVE STEM PRACTICE PROBLEMS */}
       <div className="rounded-3xl bg-[#212529] border border-amber-500/30 p-5 sm:p-7 space-y-5 shadow-2xl">
         <div className="flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-[#f39228]" />
