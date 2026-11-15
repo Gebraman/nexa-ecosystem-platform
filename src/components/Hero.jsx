@@ -105,8 +105,8 @@ export default function Hero({ onNavigate, onOpenService, customBgImage }) {
                 <Code2 className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-xs font-mono text-cyan-400 font-bold uppercase">Academy 02</p>
-                <h4 className="text-sm font-bold text-white group-hover:text-cyan-300">Full-Stack Web Dev</h4>
+                <p className="text-xs font-mono text-amber-400 font-bold uppercase">Academy 02</p>
+                <h4 className="text-sm font-bold text-white group-hover:text-amber-300">AI Tech Academy & Launchpad</h4>
               </div>
             </div>
             <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
