@@ -1,0 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+const verifyToken = require('../middleware/authMiddleware');
+
+// Public Authentication Endpoints
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
+
+// Protected Endpoint (Requires Bearer JWT Token in Authorization header)
+router.get('/me', verifyToken, authController.getMe);
+
+module.exports = router;
