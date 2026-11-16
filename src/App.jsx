@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import AboutSection from './components/AboutSection';
 import ProjectsSection from './components/ProjectsSection';
@@ -9,6 +9,7 @@ import ForexTradingView from './components/ForexTradingView';
 import TechAcademyPortal from './components/TechAcademy/TechAcademyPortal';
 import K12ScholarsView from './components/K12ScholarsView';
 import ProjectsView from './components/ProjectsView';
+import { getCurrentUser } from './api';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -23,12 +24,65 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(!currentUser);
   const [currentView, setCurrentView] = useState('home'); // 'home' | 'forex-trading' | 'fullstack-dev' | 'k12-scholars' | 'projects'
 
+  // Verify active JWT session with backend /api/auth/me on mount
+  useEffect(() => {
+    const verifySession = async () => {
+      const token = localStorage.getItem('nexa_token');
+      const storedUserStr = localStorage.getItem('nexa_user');
+
+      // If user is guest scholar, maintain guest session without backend verification
+      if (!token) {
+        if (storedUserStr) {
+          try {
+            const parsed = JSON.parse(storedUserStr);
+            if (parsed.isGuest) {
+              return;
+            }
+          } catch (e) {
+            // invalid JSON, clean up
+          }
+        }
+        // No valid session, clear and prompt auth modal
+        localStorage.removeItem('nexa_user');
+        setCurrentUser(null);
+        setIsAuthModalOpen(true);
+        return;
+      }
+
+      // Verify token with backend GET /api/auth/me
+      try {
+        const data = await getCurrentUser(token);
+        if (data && data.user) {
+          const verifiedUser = {
+            ...data.user,
+            token
+          };
+          setCurrentUser(verifiedUser);
+          localStorage.setItem('nexa_user', JSON.stringify(verifiedUser));
+          setIsAuthModalOpen(false);
+        } else {
+          throw new Error('Invalid user payload');
+        }
+      } catch (err) {
+        // Token expired or invalid - purge session and open auth gateway
+        console.warn('Session verification failed:', err.message);
+        localStorage.removeItem('nexa_token');
+        localStorage.removeItem('nexa_user');
+        setCurrentUser(null);
+        setIsAuthModalOpen(true);
+      }
+    };
+
+    verifySession();
+  }, []);
+
   const handleAuthSuccess = (user) => {
     setCurrentUser(user);
     setIsAuthModalOpen(false);
   };
 
   const handleSignOut = () => {
+    localStorage.removeItem('nexa_token');
     localStorage.removeItem('nexa_user');
     setCurrentUser(null);
     setCurrentView('home');

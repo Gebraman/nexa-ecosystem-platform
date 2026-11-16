@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   X
 } from 'lucide-react';
+import { loginUser, registerUser } from '../api';
 
 export default function AuthGatewayModal({ isOpen, onClose, onAuthSuccess }) {
   const [tab, setTab] = useState('login'); // 'login' | 'register'
@@ -27,7 +28,7 @@ export default function AuthGatewayModal({ isOpen, onClose, onAuthSuccess }) {
 
   if (!isOpen) return null;
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -37,21 +38,32 @@ export default function AuthGatewayModal({ isOpen, onClose, onAuthSuccess }) {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      const user = {
-        name: email.split('@')[0].replace(/[^a-zA-Z]/g, ' ') || 'Honors Scholar',
+    try {
+      const data = await loginUser({
         email: email.trim(),
-        role: 'Verified Scholar',
-        track: track,
-        token: 'nexa-token-' + Date.now()
-      };
-      localStorage.setItem('nexa_user', JSON.stringify(user));
-      onAuthSuccess(user);
-    }, 600);
+        password
+      });
+
+      if (data && data.token && data.user) {
+        // Persist real JWT token and authenticated user
+        localStorage.setItem('nexa_token', data.token);
+        const authenticatedUser = {
+          ...data.user,
+          token: data.token
+        };
+        localStorage.setItem('nexa_user', JSON.stringify(authenticatedUser));
+        onAuthSuccess(authenticatedUser);
+      } else {
+        throw new Error('Authentication succeeded but invalid response payload received.');
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed. Please check your credentials and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -69,29 +81,43 @@ export default function AuthGatewayModal({ isOpen, onClose, onAuthSuccess }) {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      const user = {
+    try {
+      const data = await registerUser({
         name: name.trim(),
         email: email.trim(),
+        password,
         phone: phone.trim(),
-        track: track,
-        role: 'Honors Scholar Candidate',
-        token: 'nexa-token-' + Date.now()
-      };
-      localStorage.setItem('nexa_user', JSON.stringify(user));
-      onAuthSuccess(user);
-    }, 700);
+        track
+      });
+
+      if (data && data.token && data.user) {
+        // Persist real JWT token and authenticated user
+        localStorage.setItem('nexa_token', data.token);
+        const authenticatedUser = {
+          ...data.user,
+          token: data.token
+        };
+        localStorage.setItem('nexa_user', JSON.stringify(authenticatedUser));
+        onAuthSuccess(authenticatedUser);
+      } else {
+        throw new Error('Registration completed but invalid response payload received.');
+      }
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please check the information provided.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGuestAccess = () => {
+    // Guest access must NOT generate or pretend to have a real backend JWT
+    localStorage.removeItem('nexa_token');
     const guestUser = {
       name: 'Guest Scholar',
       email: 'scholar@nexa.edu',
       role: 'Guest Scholar',
       track: 'fullstack-dev',
-      isGuest: true,
-      token: 'guest-' + Date.now()
+      isGuest: true
     };
     localStorage.setItem('nexa_user', JSON.stringify(guestUser));
     onAuthSuccess(guestUser);
